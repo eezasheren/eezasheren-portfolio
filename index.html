@@ -519,18 +519,27 @@
       border-radius: 100px;
     }
 
-    .pill-blue { background: #eff3ff; color: var(--blue); }
-    .pill-orange { background: #fff3ee; color: var(--orange); }
-    .pill-green { background: #f0fdf4; color: #16a34a; }
-    .pill-purple { background: #f5f3ff; color: #7c3aed; }
+    .pill-blue, .pill-orange, .pill-green, .pill-purple {
+      background: rgba(26,29,33,0.07);
+      color: var(--black);
+    }
 
     .proj-meta {
+      position: absolute;
+      top: 16px;
+      left: 20px;
       display: flex;
       align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      font-weight: 500;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
       color: #16a34a;
+      background: rgba(22,163,74,0.1);
+      padding: 5px 11px;
+      border-radius: 100px;
+      z-index: 2;
     }
 
     .proj-meta::before {
@@ -585,9 +594,12 @@
 
     .proj-card.wide.dark .proj-company { color: rgba(255,255,255,0.35); }
     .proj-card.wide.dark .proj-title { color: var(--white); }
-    .proj-card.wide.dark .proj-meta { color: rgba(255,255,255,0.45); }
-    .proj-card.wide.dark .proj-meta::before { background: rgba(255,255,255,0.4); }
-    .proj-card.wide.dark .pill-blue { background: rgba(31,75,255,0.2); color: #748fff; }
+    .proj-card.wide.dark .proj-meta { background: rgba(22,163,74,0.18); color: #4ade80; }
+    .proj-card.wide.dark .proj-meta::before { background: #4ade80; }
+    .proj-card.wide.dark .pill-blue,
+    .proj-card.wide.dark .pill-orange,
+    .proj-card.wide.dark .pill-green,
+    .proj-card.wide.dark .pill-purple { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.75); }
 
     /* ─── ABOUT ─── */
     #about { padding: 0; }
@@ -1172,19 +1184,16 @@
 
         <!-- UOB — Wide dark card -->
         <a href="uob.html" class="proj-card wide dark fade-up" style="transition-delay:0.05s">
+          <span class="proj-meta">Shipped</span>
           <div class="proj-text">
             <div>
               <p class="proj-company">UOB Singapore</p>
               <h3 class="proj-title">Evolving user experiences within corporate digital banking</h3>
               <div class="proj-pills">
-                <span class="pill pill-blue">
-                  <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 16h6M9 8h6"/></svg>
-                  UX Design
-                </span>
+                <span class="pill pill-blue">UX Design</span>
                 <span class="pill pill-blue">Banking</span>
               </div>
             </div>
-            <span class="proj-meta">Shipped</span>
           </div>
           <div class="proj-img">
             <img
@@ -1197,6 +1206,7 @@
 
         <!-- CuriousCore -->
         <a href="curiouscore.html" class="proj-card fade-up" style="transition-delay:0.1s">
+          <span class="proj-meta">Shipped</span>
           <div class="proj-text">
             <p class="proj-company">CuriousCore</p>
             <h3 class="proj-title">Increasing customer confidence and sales</h3>
@@ -1204,7 +1214,6 @@
               <span class="pill pill-orange">EdTech</span>
               <span class="pill pill-orange">Conversion</span>
             </div>
-            <span class="proj-meta">Shipped</span>
           </div>
           <div class="proj-img">
             <img
@@ -1217,6 +1226,7 @@
 
         <!-- Nutrition Clinic -->
         <a href="nutritionClinic.html" class="proj-card fade-up" style="transition-delay:0.15s">
+          <span class="proj-meta">Shipped</span>
           <div class="proj-text">
             <p class="proj-company">The Nutrition Clinic</p>
             <h3 class="proj-title">Creating a product to improve Singaporeans' sleep</h3>
@@ -1224,7 +1234,6 @@
               <span class="pill pill-green">HealthTech</span>
               <span class="pill pill-green">Product Design</span>
             </div>
-            <span class="proj-meta">Shipped</span>
           </div>
           <div class="proj-img">
             <img
@@ -1237,6 +1246,7 @@
 
         <!-- AirAsia -->
         <a href="airasia.html" class="proj-card fade-up" style="transition-delay:0.2s">
+          <span class="proj-meta">Shipped</span>
           <div class="proj-text">
             <p class="proj-company">AirAsia</p>
             <h3 class="proj-title">Optimising the check-in flow for passengers</h3>
@@ -1244,7 +1254,6 @@
               <span class="pill pill-purple">Travel</span>
               <span class="pill pill-purple">UX Research</span>
             </div>
-            <span class="proj-meta">Shipped</span>
           </div>
           <div class="proj-img">
             <img
@@ -1413,73 +1422,122 @@
         </div>
         <div class="testi-slider-outer fade-up" style="transition-delay:0.1s">
           <div class="testi-track">
-            <!-- Set 1 -->
+            <!-- Set 1 — real LinkedIn testimonials -->
             <div class="testi-card">
-              <p class="testi-quote">"Eeza showed <mark>remarkable initiative and thoughtful communication</mark> throughout our collaboration. Her research was thorough and always tied to clear design impact."</p>
+              <p class="testi-quote">"Rakeeza is a team player and has been <mark>proactive in helping us push our website UX and social media creatives to the next level.</mark> She is a candid and eloquent professional who takes her creative work seriously and <mark>ships quality work.</mark>"</p>
               <div class="testi-author">
-                <span class="testi-name">Sarah Lim</span>
-                <span class="testi-role">Product Lead · UOB Singapore</span>
+                <span class="testi-name">Daylon Soh</span>
+                <span class="testi-role">Founder · CuriousCore</span>
               </div>
             </div>
             <div class="testi-card">
-              <p class="testi-quote">"Her ability to <mark>translate complex requirements into clean, intuitive flows</mark> was impressive. She bridges the gap between business goals and user needs seamlessly."</p>
+              <p class="testi-quote">"Her experience in branding and design helped us consider different perspectives pertinent to our project. She <mark>collaborates well and is communicative</mark> about her ideas. She will contribute as a <mark>valuable team player</mark> in anything that she does!"</p>
               <div class="testi-author">
-                <span class="testi-name">Marcus Tan</span>
-                <span class="testi-role">Engineering Manager · FinTech SG</span>
+                <span class="testi-name">Christina Tan</span>
+                <span class="testi-role">UX Designer | Project Manager</span>
               </div>
             </div>
             <div class="testi-card">
-              <p class="testi-quote">"Eeza's <mark>systems-level thinking and attention to edge cases</mark> helped us ship a product we were genuinely proud of. A rare combination of rigour and creativity."</p>
+              <p class="testi-quote">"Rakeeza expressed <mark>enthusiasm throughout the project and delivered quality work</mark> on all deliverables. I was particularly <mark>impressed by her presentation skills</mark> — she was able to present our findings with such simplicity and ease."</p>
               <div class="testi-author">
-                <span class="testi-name">Priya Nair</span>
-                <span class="testi-role">Head of Design · HealthTech Startup</span>
+                <span class="testi-name">Leon Tan</span>
+                <span class="testi-role">Digital Product Owner · Banking & Fintech</span>
               </div>
             </div>
             <div class="testi-card">
-              <p class="testi-quote">"Her research was insightful and <mark>directly shaped our product strategy</mark>. She doesn't just design screens — she helps the whole team think through the problem better."</p>
+              <p class="testi-quote">"She <mark>does not shy away from challenges</mark> and takes them on with a great attitude. What really impressed me was her ability to <mark>articulate complex ideas into meaningful insights</mark> for the team and clients."</p>
               <div class="testi-author">
-                <span class="testi-name">James Wong</span>
-                <span class="testi-role">CEO · CuriousCore</span>
+                <span class="testi-name">Rachel Hor</span>
+                <span class="testi-role">Service Designer · IRAS</span>
               </div>
             </div>
             <div class="testi-card">
-              <p class="testi-quote">"Working with Eeza was a pleasure. Her <mark>collaborative nature and structured problem-solving</mark> made even the most ambiguous projects feel manageable and well-directed."</p>
+              <p class="testi-quote">"The ability to <mark>effectively articulate her ideas in a storytelling way to convince stakeholders.</mark> She provided expertise in brand strategies helping frame our research for a <mark>successful product launch.</mark>"</p>
               <div class="testi-author">
-                <span class="testi-name">Aizah Rahman</span>
-                <span class="testi-role">Founder · Deep Sleep</span>
+                <span class="testi-name">Velen Chew</span>
+                <span class="testi-role">Design · Enterprise Singapore</span>
+              </div>
+            </div>
+            <div class="testi-card">
+              <p class="testi-quote">"You can count on Rakeeza for <mark>creativity, being very resourceful, meeting timelines, and always smiling even under pressure.</mark> She steps in and <mark>takes the lead!</mark>"</p>
+              <div class="testi-author">
+                <span class="testi-name">Dahlia Sutrisno</span>
+                <span class="testi-role">C-suite Executive Coach · Ex-Gallup</span>
+              </div>
+            </div>
+            <div class="testi-card">
+              <p class="testi-quote">"Working with Rakeeza has always been great! She <mark>delivered works on time with amazing quality.</mark> Her happy vibes make working with her <mark>fun and productive!</mark>"</p>
+              <div class="testi-author">
+                <span class="testi-name">Silvia Tan</span>
+                <span class="testi-role">Senior Account Manager · Distilleri</span>
+              </div>
+            </div>
+            <div class="testi-card">
+              <p class="testi-quote">"She showed <mark>considerable potential as a designer and a thinker, and even as a writer.</mark> Despite her inexperience, she gamely threw herself into every assignment. Her <mark>enthusiasm for design and communication is infectious.</mark>"</p>
+              <div class="testi-author">
+                <span class="testi-name">Andrew Thomas</span>
+                <span class="testi-role">Managing Director · Equus</span>
               </div>
             </div>
             <!-- Set 2 — duplicate for seamless loop -->
             <div class="testi-card">
-              <p class="testi-quote">"Eeza showed <mark>remarkable initiative and thoughtful communication</mark> throughout our collaboration. Her research was thorough and always tied to clear design impact."</p>
+              <p class="testi-quote">"Rakeeza is a team player and has been <mark>proactive in helping us push our website UX and social media creatives to the next level.</mark> She is a candid and eloquent professional who takes her creative work seriously and <mark>ships quality work.</mark>"</p>
               <div class="testi-author">
-                <span class="testi-name">Sarah Lim</span>
-                <span class="testi-role">Product Lead · UOB Singapore</span>
+                <span class="testi-name">Daylon Soh</span>
+                <span class="testi-role">Founder · CuriousCore</span>
               </div>
             </div>
             <div class="testi-card">
-              <p class="testi-quote">"Her ability to <mark>translate complex requirements into clean, intuitive flows</mark> was impressive. She bridges the gap between business goals and user needs seamlessly."</p>
+              <p class="testi-quote">"Her experience in branding and design helped us consider different perspectives pertinent to our project. She <mark>collaborates well and is communicative</mark> about her ideas. She will contribute as a <mark>valuable team player</mark> in anything that she does!"</p>
               <div class="testi-author">
-                <span class="testi-name">Marcus Tan</span>
-                <span class="testi-role">Engineering Manager · FinTech SG</span>
+                <span class="testi-name">Christina Tan</span>
+                <span class="testi-role">UX Designer | Project Manager</span>
               </div>
             </div>
             <div class="testi-card">
-              <p class="testi-quote">"Eeza's <mark>systems-level thinking and attention to edge cases</mark> helped us ship a product we were genuinely proud of. A rare combination of rigour and creativity."</p>
+              <p class="testi-quote">"Rakeeza expressed <mark>enthusiasm throughout the project and delivered quality work</mark> on all deliverables. I was particularly <mark>impressed by her presentation skills</mark> — she was able to present our findings with such simplicity and ease."</p>
               <div class="testi-author">
-                <span class="testi-name">Priya Nair</span>
-                <span class="testi-role">Head of Design · HealthTech Startup</span>
+                <span class="testi-name">Leon Tan</span>
+                <span class="testi-role">Digital Product Owner · Banking & Fintech</span>
               </div>
             </div>
             <div class="testi-card">
-              <p class="testi-quote">"Her research was insightful and <mark>directly shaped our product strategy</mark>. She doesn't just design screens — she helps the whole team think through the problem better."</p>
+              <p class="testi-quote">"She <mark>does not shy away from challenges</mark> and takes them on with a great attitude. What really impressed me was her ability to <mark>articulate complex ideas into meaningful insights</mark> for the team and clients."</p>
               <div class="testi-author">
-                <span class="testi-name">James Wong</span>
-                <span class="testi-role">CEO · CuriousCore</span>
+                <span class="testi-name">Rachel Hor</span>
+                <span class="testi-role">Service Designer · IRAS</span>
               </div>
             </div>
             <div class="testi-card">
-              <p class="testi-quote">"Working with Eeza was a pleasure. Her <mark>collaborative nature and structured problem-solving</mark> made even the most ambiguous projects feel manageable and well-directed."</p>
+              <p class="testi-quote">"The ability to <mark>effectively articulate her ideas in a storytelling way to convince stakeholders.</mark> She provided expertise in brand strategies helping frame our research for a <mark>successful product launch.</mark>"</p>
+              <div class="testi-author">
+                <span class="testi-name">Velen Chew</span>
+                <span class="testi-role">Design · Enterprise Singapore</span>
+              </div>
+            </div>
+            <div class="testi-card">
+              <p class="testi-quote">"You can count on Rakeeza for <mark>creativity, being very resourceful, meeting timelines, and always smiling even under pressure.</mark> She steps in and <mark>takes the lead!</mark>"</p>
+              <div class="testi-author">
+                <span class="testi-name">Dahlia Sutrisno</span>
+                <span class="testi-role">C-suite Executive Coach · Ex-Gallup</span>
+              </div>
+            </div>
+            <div class="testi-card">
+              <p class="testi-quote">"Working with Rakeeza has always been great! She <mark>delivered works on time with amazing quality.</mark> Her happy vibes make working with her <mark>fun and productive!</mark>"</p>
+              <div class="testi-author">
+                <span class="testi-name">Silvia Tan</span>
+                <span class="testi-role">Senior Account Manager · Distilleri</span>
+              </div>
+            </div>
+            <div class="testi-card">
+              <p class="testi-quote">"She showed <mark>considerable potential as a designer and a thinker, and even as a writer.</mark> Despite her inexperience, she gamely threw herself into every assignment. Her <mark>enthusiasm for design and communication is infectious.</mark>"</p>
+              <div class="testi-author">
+                <span class="testi-name">Andrew Thomas</span>
+                <span class="testi-role">Managing Director · Equus</span>
+              </div>
+            </div>
+            <!-- placeholder to close old set 2 -->
+            <div class="testi-card" style="display:none;">
               <div class="testi-author">
                 <span class="testi-name">Aizah Rahman</span>
                 <span class="testi-role">Founder · Deep Sleep</span>
