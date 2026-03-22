@@ -55,15 +55,11 @@
       box-shadow: 0 1px 40px rgba(0,0,0,0.06);
       z-index: 100;
     }
-    .nav-logo { text-decoration: none; }
-    .nav-logo img { height: 32px; width: auto; display: block; }
-
-    .nav-center {
-      position: absolute; left: 50%; transform: translateX(-50%);
-    }
+    .nav-logo { font-size: 17px; font-weight: 800; letter-spacing: -0.5px; color: var(--black); text-decoration: none; }
+    .nav-center { position: absolute; left: 50%; transform: translateX(-50%); }
     .nav-pill {
       display: flex; align-items: center; gap: 2px;
-      background: rgba(255,255,255,0.7); backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
       border-radius: 100px; padding: 6px 8px;
       border: 1px solid rgba(0,0,0,0.07);
       box-shadow: 0 2px 16px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.8);
@@ -74,17 +70,18 @@
       text-decoration: none; padding: 8px 20px; border-radius: 100px;
       transition: background 0.2s, color 0.2s; white-space: nowrap;
     }
-    .nav-pill a:hover, .nav-pill a.active { background: var(--lime); color: var(--black); }
-
+    .nav-pill a:hover { background: var(--lime); color: var(--black) !important; }
     .nav-right { display: flex; gap: 12px; align-items: center; }
-    .btn-dark {
+    .btn-sm {
       display: inline-flex; align-items: center; gap: 6px;
       padding: 11px 22px; border-radius: 100px;
       font-size: 15px; font-weight: 600; text-decoration: none;
-      background: var(--black); color: #fff;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
+    .btn-dark { background: var(--black); color: #fff; }
     .btn-dark:hover { background: var(--lime); color: var(--black); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; border: none; background: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--black); border-radius: 2px; }
 
     /* ─── PAGE SHELL ─── */
     .page { padding-top: var(--nav-h); }
@@ -405,17 +402,21 @@
   <!-- NAV -->
   <nav>
     <a href="index.html" class="nav-logo">
-      <img src="logo.png" alt="Eezasheren" />
+      <img src="logo.png" alt="Eezasheren" style="height:32px;width:auto;display:block;" />
     </a>
     <div class="nav-center">
       <ul class="nav-pill">
-        <li><a href="about.html" class="active">About</a></li>
         <li><a href="index.html#work">Work</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="about.html" class="active">About</a></li>
+        <li><a href="index.html#method">Method</a></li>
+        <li><a href="index.html#awards">Awards</a></li>
       </ul>
     </div>
     <div class="nav-right">
-      <a href="index.html#contact" class="btn-dark">Let's talk</a>
+      <a href="mailto:eezasheren@gmail.com" class="btn-sm btn-dark">Let's talk</a>
+      <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.add('open')" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
 
