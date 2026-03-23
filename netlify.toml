@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/api/rss"
+  to = "https://eezasheren.substack.com/feed"
+  status = 200
+  force = true

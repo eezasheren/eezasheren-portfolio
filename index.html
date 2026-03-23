@@ -1696,8 +1696,21 @@
       const track = document.getElementById('blog-track');
       if (!track) return;
 
-      fetch('https://corsproxy.io/?https://eezasheren.substack.com/feed')
-        .then(res => res.text())
+      const SUBSTACK_URL = 'https://eezasheren.substack.com/feed';
+      const proxies = [
+        () => fetch('/api/rss').then(r => r.text()),
+        () => fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(SUBSTACK_URL)).then(r => r.json()).then(d => d.contents),
+        () => fetch('https://corsproxy.io/?' + SUBSTACK_URL).then(r => r.text())
+      ];
+
+      (async () => {
+        let xmlText = null;
+        for (const proxy of proxies) {
+          try { xmlText = await proxy(); if (xmlText && xmlText.includes('<item>')) break; } catch(e) {}
+        }
+        if (!xmlText) throw new Error('All proxies failed');
+        return xmlText;
+      })()
         .then(xmlText => {
           const parser = new DOMParser();
           const xml = parser.parseFromString(xmlText, 'text/xml');
