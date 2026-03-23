@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Designing for Complexity: What 8 Years in UX Taught Me — Eeza Sheren</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Lexend:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --page-bg:   #edeae4;
+      --card-bg:   #f4f4f4;
+      --black:     #1a1d21;
+      --gray-1:    #6b7280;
+      --gray-2:    #9ca3af;
+      --gray-3:    #e5e7eb;
+      --white:     #ffffff;
+      --blue:      #1f4bff;
+      --orange:    #ff7442;
+      --lime:      #c5f135;
+      --lime-dark: #1a1d21;
+      --nav-h:     80px;
+      --radius:    20px;
+      --font-heading: 'Lexend', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-heading);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      color: var(--black);
+      background-color: var(--page-bg);
+      background-image: radial-gradient(circle, rgba(0,0,0,0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 1px 40px rgba(0,0,0,0.06);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--black);
+      text-decoration: none;
+    }
+
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .nav-pill {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 100px;
+      padding: 6px 8px;
+      border: 1px solid rgba(0,0,0,0.07);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.8);
+      list-style: none;
+    }
+
+    .nav-pill a {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--gray-1);
+      text-decoration: none;
+      padding: 8px 20px;
+      border-radius: 100px;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+
+    .nav-pill a:hover { background: rgba(0,0,0,0.05); color: var(--black); }
+
+    .nav-right { display: flex; gap: 12px; align-items: center; }
+
+    .btn-sm {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 11px 22px;
+      border-radius: 100px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-dark { background: var(--black); color: #fff; }
+    .btn-dark:hover { background: var(--lime); color: var(--black); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; border: none; background: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--black); border-radius: 2px; }
+
+    /* ─── MOBILE MENU ─── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--page-bg);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: var(--black); text-decoration: none; }
+    .mobile-menu a:hover { color: var(--blue); }
+
+    .mobile-close {
+      position: absolute;
+      top: 28px; right: 28px;
+      background: none; border: none;
+      font-size: 24px; cursor: pointer;
+      color: var(--black);
+    }
+
+    /* ─── PAGE LAYOUT ─── */
+    .page-wrap {
+      padding: calc(var(--nav-h) + 32px) 40px 40px;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    /* ─── BACK LINK ─── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-1);
+      text-decoration: none;
+      margin-bottom: 28px;
+      transition: color 0.2s;
+    }
+    .back-link:hover { color: var(--black); }
+    .back-link svg { transition: transform 0.2s; }
+    .back-link:hover svg { transform: translateX(-3px); }
+
+    /* ─── ARTICLE BOX ─── */
+    .article-box {
+      background: var(--white);
+      border-radius: 28px;
+      box-shadow: 0 4px 40px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    /* ─── HERO IMAGE ─── */
+    .article-hero-img {
+      width: 100%;
+      height: 420px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ─── ARTICLE INNER ─── */
+    .article-inner {
+      padding: 48px 64px 64px;
+    }
+
+    /* ─── META ─── */
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+
+    .article-cat {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(31,75,255,0.08);
+      color: var(--blue);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+    }
+
+    .article-date-time {
+      font-size: 13px;
+      color: var(--gray-2);
+    }
+
+    .meta-dot {
+      width: 4px; height: 4px;
+      background: var(--gray-3);
+      border-radius: 50%;
+    }
+
+    /* ─── ARTICLE HEADING ─── */
+    .article-title {
+      font-family: var(--font-heading);
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      color: var(--black);
+      margin-bottom: 32px;
+    }
+
+    /* ─── ARTICLE BODY ─── */
+    .article-body {
+      font-size: 17px;
+      line-height: 1.8;
+      color: #2d3139;
+    }
+
+    .article-body p {
+      margin-bottom: 24px;
+    }
+
+    .article-body h2 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+      color: var(--black);
+      margin-top: 48px;
+      margin-bottom: 16px;
+    }
+
+    .article-body h3 {
+      font-family: var(--font-heading);
+      font-size: 19px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      line-height: 1.35;
+      color: var(--black);
+      margin-top: 36px;
+      margin-bottom: 12px;
+    }
+
+    .article-body blockquote {
+      margin: 36px 0;
+      padding: 24px 32px;
+      background: var(--card-bg);
+      border-left: 4px solid var(--lime);
+      border-radius: 0 16px 16px 0;
+      font-size: 18px;
+      font-style: italic;
+      color: var(--black);
+      line-height: 1.65;
+    }
+
+    .article-body blockquote cite {
+      display: block;
+      margin-top: 12px;
+      font-size: 13px;
+      font-style: normal;
+      font-weight: 600;
+      color: var(--gray-1);
+    }
+
+    .article-body strong { font-weight: 700; color: var(--black); }
+
+    /* ─── DIVIDER ─── */
+    .article-divider {
+      border: none;
+      border-top: 1px solid var(--gray-3);
+      margin: 40px 0;
+    }
+
+    /* ─── AUTHOR BYLINE ─── */
+    .article-author {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .author-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--lime);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--black);
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+
+    .author-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .author-info { display: flex; flex-direction: column; gap: 2px; }
+    .author-name { font-size: 15px; font-weight: 700; color: var(--black); }
+    .author-role { font-size: 13px; color: var(--gray-1); }
+
+    /* ─── FOOTER ─── */
+    .footer-wrap {
+      padding: 0 40px 40px;
+      max-width: 920px;
+      margin: 0 auto;
+    }
+
+    .footer-box {
+      background: var(--black);
+      border-radius: 28px;
+      padding: 40px 64px;
+      color: #fff;
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-copy { font-size: 13px; color: var(--gray-2); }
+
+    .footer-links { display: flex; gap: 20px; list-style: none; }
+    .footer-links a { font-size: 13px; color: var(--gray-2); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: #fff; }
+
+    /* ─── ANIMATIONS ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .nav-center { display: none; }
+      .hamburger { display: flex; }
+
+      .page-wrap,
+      .footer-wrap {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .article-inner { padding: 28px 24px 40px; }
+
+      .article-hero-img { height: 240px; }
+
+      .article-body h2 { font-size: 20px; }
+      .article-body blockquote { padding: 16px 20px; font-size: 16px; }
+
+      .footer-box { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" alt="Eezasheren" style="height:32px;width:auto;display:block;" />
+    </a>
+
+    <div class="nav-center">
+      <ul class="nav-pill">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="index.html#method">Method</a></li>
+        <li><a href="index.html#awards">Awards</a></li>
+      </ul>
+    </div>
+
+    <div class="nav-right">
+      <a href="mailto:eezasheren@gmail.com" class="btn-sm btn-dark">Let's talk</a>
+      <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.add('open')" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu">
+    <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">✕</button>
+    <a href="index.html#work" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Work</a>
+    <a href="about.html" onclick="document.querySelector('.mobile-menu').classList.remove('open')">About</a>
+    <a href="index.html#method" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Method</a>
+    <a href="index.html#awards" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Awards</a>
+    <a href="index.html#contact" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Contact</a>
+  </div>
+
+  <!-- ARTICLE -->
+  <div class="page-wrap">
+
+    <a href="index.html#blog" class="back-link fade-up">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 12H5M5 12l7-7M5 12l7 7"/></svg>
+      Back to all posts
+    </a>
+
+    <article class="article-box fade-up" style="transition-delay:0.05s">
+      <img
+        class="article-hero-img"
+        src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=1280&h=640&fit=crop&auto=format"
+        alt="UX Design complexity — wires and systems"
+        loading="eager"
+      />
+
+      <div class="article-inner">
+        <div class="article-meta">
+          <span class="article-cat">UX Design</span>
+          <span class="meta-dot"></span>
+          <span class="article-date-time">March 2025</span>
+          <span class="meta-dot"></span>
+          <span class="article-date-time">6 min read</span>
+        </div>
+
+        <h1 class="article-title">Designing for Complexity: What 8 Years in UX Taught Me</h1>
+
+        <div class="article-body">
+
+          <p>When I started in UX, I thought design was mostly about making things beautiful. Clean layouts, tight grids, pleasing colour palettes. It took a few humbling projects in banking — systems with hundreds of edge cases and legacy constraints — before I understood what the job was actually about.</p>
+
+          <p>It's about <strong>making complexity disappear</strong>. Not hiding it, not ignoring it, but doing the hard work of understanding it deeply enough that the person using your product never has to.</p>
+
+          <h2>The complexity tax</h2>
+
+          <p>Every product carries what I call a "complexity tax." It's the cognitive burden placed on users when the system's internal logic leaks into the interface. Form fields that only make sense if you know how the backend is structured. Error messages written by engineers for engineers. Navigation built around org charts instead of user goals.</p>
+
+          <p>Most of the time, this tax isn't malicious. Teams ship under pressure. Constraints accumulate. One compromise leads to another. Before long, you have a product that works technically but exhausts the people using it.</p>
+
+          <blockquote>
+            The measure of good design isn't how much you've added — it's how much you've been willing to remove, simplify, or absorb into the system so the user never has to think about it.
+            <cite>— A lesson learned the hard way</cite>
+          </blockquote>
+
+          <h2>What banking taught me about constraints</h2>
+
+          <p>I spent several years designing for financial services. If you've never worked in a heavily regulated industry, it's hard to describe how layered the constraints are. Compliance requirements. Legal disclaimers. Risk flags. Accessibility mandates. Localisation across markets. Approval chains that can stretch for weeks.</p>
+
+          <p>Early on, I treated these as blockers. Now I understand them as the material I work with. A skilled designer in a constrained environment doesn't fight the constraints — they find the room to breathe within them.</p>
+
+          <h3>Finding the degrees of freedom</h3>
+
+          <p>In every constrained brief, there are degrees of freedom: decisions that are genuinely yours to make. The challenge is identifying them quickly, then using them well. This requires close relationships with legal, engineering, and product — not to get sign-off, but to genuinely understand where the edges are.</p>
+
+          <p>Once you know what's fixed, everything else is a design decision. And those decisions, even small ones, compound into the experience a user actually has.</p>
+
+          <h2>Systems thinking as a core skill</h2>
+
+          <p>The biggest shift in how I work over the past eight years has been moving from thinking about screens to thinking about systems. A screen is a moment. A system is the full shape of how something works across time, context, and different kinds of users.</p>
+
+          <p>When you design systemically, you stop optimising individual flows and start asking: how does this decision affect the rest of the product? What happens when this user is also that user — someone who is both a customer and an admin? What breaks at scale?</p>
+
+          <p>These questions are harder and slower than pushing pixels. But they're where the real value lives.</p>
+
+          <h3>Research as a systems tool</h3>
+
+          <p>I use research not just to understand user needs but to map the system I'm designing into. What mental models do users bring? Where do those models conflict with how the product actually works? What language do users use — and how different is it from the language in the product?</p>
+
+          <p>Gaps between user mental models and system logic are almost always where usability problems live. Finding them early is one of the highest-leverage things a designer can do.</p>
+
+          <h2>Eight years later</h2>
+
+          <p>If I had to distil everything into a single principle, it would be this: <strong>do the hard work so your user doesn't have to.</strong> That means sitting with ambiguity longer than is comfortable. It means pushing back on scope when it's wrong, not when it's inconvenient. It means shipping something that feels effortless — knowing that effortlessness is the result of enormous effort.</p>
+
+          <p>That's the job. And it's still the one I'd choose.</p>
+
+        </div>
+
+        <hr class="article-divider" />
+
+        <div class="article-author">
+          <div class="author-avatar">ES</div>
+          <div class="author-info">
+            <span class="author-name">Eeza Sheren</span>
+            <span class="author-role">UX Designer · Singapore</span>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer-wrap">
+    <div class="footer-box fade-up">
+      <div class="footer-row">
+        <p class="footer-copy">© 2026 Eezasheren. All rights reserved.</p>
+        <ul class="footer-links">
+          <li><a href="https://www.linkedin.com/in/eezasheren" target="_blank" rel="noopener">LinkedIn</a></li>
+          <li><a href="mailto:eezasheren@gmail.com">Email</a></li>
+          <li><a href="https://www.eezasheren.com" target="_blank" rel="noopener">Wix Site</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fade-up on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -30px 0px' });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
