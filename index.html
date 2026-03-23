@@ -1757,63 +1757,76 @@
     document.querySelectorAll('[data-target]').forEach(el => countObserver.observe(el));
 
     // ── Dynamic blog cards from Substack RSS ──
-    function createBlogCard(item) {
-      const date = new Date(item.pubDate).toLocaleDateString('en-SG', {month:'long', year:'numeric'});
-      const excerpt = item.description.replace(/<[^>]*>/g, '').substring(0, 120) + '…';
-      const img = item.thumbnail || (item.enclosure && item.enclosure.link) || 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=640&h=400&fit=crop';
+    function createBlogCard(title, date, excerpt, link, imgSrc) {
+      const img = imgSrc || 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=640&h=400&fit=crop';
       const card = document.createElement('a');
-      card.href = item.link;
+      card.href = link;
       card.target = '_blank';
       card.rel = 'noopener';
       card.className = 'blog-card';
       card.innerHTML = `
-        <div class="blog-img"><img src="${img}" alt="${item.title}" loading="lazy"/></div>
+        <div class="blog-img"><img src="${img}" alt="${title}" loading="lazy"/></div>
         <div class="blog-content">
           <p class="blog-date">${date}</p>
           <p class="blog-cat">Substack</p>
-          <h3 class="blog-title">${item.title}</h3>
+          <h3 class="blog-title">${title}</h3>
           <p class="blog-excerpt">${excerpt}</p>
           <span class="blog-read">Read on Substack <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10"/></svg></span>
         </div>`;
       return card;
     }
 
+    function injectBlogCards(items, track) {
+      [1, 2].forEach(() => {
+        items.forEach(({ title, date, excerpt, link, img }) => {
+          track.appendChild(createBlogCard(title, date, excerpt, link, img));
+        });
+      });
+      const totalWidth = items.length * (320 + 20);
+      const styleEl = document.createElement('style');
+      styleEl.textContent = `@keyframes blogScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-${totalWidth}px); } }`;
+      document.head.appendChild(styleEl);
+    }
+
     function loadBlogPosts() {
       const track = document.getElementById('blog-track');
       if (!track) return;
 
-      fetch('https://api.rss2json.com/v1/api.json?rss_url=https://eezasheren.substack.com/feed&count=4')
-        .then(res => res.json())
-        .then(data => {
-          const items = (data.items && data.items.length) ? data.items : null;
-          if (!items) throw new Error('No items');
+      fetch('https://corsproxy.io/?https://eezasheren.substack.com/feed')
+        .then(res => res.text())
+        .then(xmlText => {
+          const parser = new DOMParser();
+          const xml = parser.parseFromString(xmlText, 'text/xml');
+          const xmlItems = Array.from(xml.querySelectorAll('item')).slice(0, 4);
+          if (!xmlItems.length) throw new Error('No items');
 
-          // Inject cards twice for seamless scroll loop
-          [1, 2].forEach(() => {
-            items.forEach(item => track.appendChild(createBlogCard(item)));
+          const items = xmlItems.map(el => {
+            const title = el.querySelector('title')?.textContent || 'Untitled';
+            const link  = el.querySelector('link')?.textContent || 'https://eezasheren.substack.com';
+            const rawDate = el.querySelector('pubDate')?.textContent || '';
+            const date  = rawDate ? new Date(rawDate).toLocaleDateString('en-SG', { month:'long', year:'numeric' }) : '';
+            const rawDesc = el.querySelector('description')?.textContent || '';
+            const excerpt = rawDesc.replace(/<[^>]*>/g, '').replace(/&[a-z]+;/gi, ' ').trim().substring(0, 120) + '…';
+            // Try to find image in enclosure or media:content or content:encoded
+            const enclosure = el.querySelector('enclosure');
+            const mediaContent = el.getElementsByTagNameNS('http://search.yahoo.com/mrss/', 'content')[0];
+            const contentEncoded = el.getElementsByTagNameNS('http://purl.org/rss/1.0/modules/content/', 'encoded')[0]?.textContent || '';
+            const imgMatch = contentEncoded.match(/<img[^>]+src=["']([^"']+)["']/i);
+            const img = enclosure?.getAttribute('url') || mediaContent?.getAttribute('url') || imgMatch?.[1] || '';
+            return { title, link, date, excerpt, img };
           });
 
-          // Set animation width based on single set of cards and start scroll
-          const cardWidth = 320 + 20; // card width + gap
-          const totalWidth = items.length * cardWidth;
-          // Update blogScroll keyframe dynamically
-          const styleEl = document.createElement('style');
-          styleEl.textContent = `@keyframes blogScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-${totalWidth}px); } }`;
-          document.head.appendChild(styleEl);
-          track.style.animationPlayState = 'running';
+          injectBlogCards(items, track);
         })
         .catch(() => {
-          // Fallback: 4 placeholder cards
+          // Fallback placeholder cards
           const fallbacks = [
-            { title: 'Visit our Substack for the latest posts', pubDate: new Date().toISOString(), description: 'Visit our Substack for the latest posts on design, research and craft.', link: 'https://eezasheren.substack.com', thumbnail: '' },
-            { title: 'Design Thinking & UX', pubDate: new Date().toISOString(), description: 'Explore articles on UX design, user research, and product thinking on Substack.', link: 'https://eezasheren.substack.com', thumbnail: '' },
-            { title: 'Research & Craft', pubDate: new Date().toISOString(), description: 'Deep dives into research methods and design craft. Read more on Substack.', link: 'https://eezasheren.substack.com', thumbnail: '' },
-            { title: 'More on Substack', pubDate: new Date().toISOString(), description: 'Follow along on Substack for regular posts on design and UX leadership.', link: 'https://eezasheren.substack.com', thumbnail: '' }
+            { title: 'Why Good UX in Banking Is Often Invisible', date: 'March 2026', excerpt: 'The best banking experiences are the ones you never notice. Here\'s why invisibility is the goal — and how to design for it…', link: 'https://eezasheren.substack.com', img: '' },
+            { title: 'Slowness as a Design Superpower', date: 'March 2026', excerpt: 'In a world obsessed with speed, slowing down your design process might be the most powerful thing you can do for your users…', link: 'https://eezasheren.substack.com', img: '' },
+            { title: 'More on Substack', date: '', excerpt: 'Follow along on Substack for regular posts on design, research, and UX leadership.', link: 'https://eezasheren.substack.com', img: '' },
+            { title: 'Design Thinking & Craft', date: '', excerpt: 'Explore articles on UX design, user research, and product thinking on Substack.', link: 'https://eezasheren.substack.com', img: '' }
           ];
-          [1, 2].forEach(() => {
-            fallbacks.forEach(item => track.appendChild(createBlogCard(item)));
-          });
-          track.style.animationPlayState = 'running';
+          injectBlogCards(fallbacks, track);
         });
     }
 
