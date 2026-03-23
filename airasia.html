@@ -225,7 +225,7 @@
       border-radius: var(--radius);
       overflow: hidden;
       background: var(--white);
-      margin: 24px 0;
+      margin: 0;
     }
     .img-wrap-full img { width: 100%; display: block; }
 
@@ -520,6 +520,11 @@
         <li><a href="#overview">Overview</a></li>
         <li><a href="#challenge">Challenge</a></li>
         <li><a href="#research">Research</a></li>
+        <li><a href="#desk-research">Desk Research</a></li>
+        <li><a href="#heuristic">Heuristic Evaluation</a></li>
+        <li><a href="#competitor">Competitor Analysis</a></li>
+        <li><a href="#interviews">User Interview</a></li>
+        <li><a href="#persona">User Persona</a></li>
         <li><a href="#prototype">Final Prototype</a></li>
         <li><a href="#reflection">Reflection</a></li>
       </ul>
@@ -565,11 +570,19 @@
         <!-- Hero image -->
         <div class="hero-img-wrap">
           <img
-            src="https://static.wixstatic.com/media/c66d1c_80bc44bf073f444a8606515a559786cf~mv2.png/v1/fill/w_1400,h_700,al_c,q_90,enc_avif/thumbnail.png"
+            src="https://static.wixstatic.com/media/c66d1c_dffdacd529654788a374a4b3d375f5de~mv2.png/v1/fit/w_1400,h_900/file.png"
             alt="AirAsia check-in flow redesign"
           />
         </div>
         <p class="img-caption">Redesigning the mobile check-in experience for AirAsia's super app</p>
+
+      <div class="fade-up" style="text-align:left;margin-top:24px;margin-bottom:8px;transition-delay:0.2s">
+        <a href="#prototype" class="btn-sm btn-dark" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;">
+          View Prototype
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
+
       </header>
 
       <!-- OVERVIEW -->
@@ -653,66 +666,124 @@
           </div>
         </div>
 
-        <p class="sec-sub">Research Findings</p>
-        <div class="img-wrap-full">
-          <img
-            src="https://static.wixstatic.com/media/c66d1c_60cc54c928bc4c48846eb3d7344e1eee~mv2.png/v1/fill/w_1400,h_800,al_c,q_90,enc_avif/Screenshot.png"
-            alt="Research findings — survey and desk research data"
-          />
-        </div>
+        <!-- Desk Research -->
+        <div id="desk-research" style="margin-top:48px;">
+          <p class="sec-sub">Desk Research</p>
+          <div class="sec-body">
+            <p>We went to research if our hypothesis was true by looking through reviews, articles, comments and journal articles. We then gathered our findings.</p>
+          </div>
 
-        <div class="img-grid-2">
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_aeba3185709541a3a783168837986115~mv2.png/v1/fill/w_700,h_500,al_c,q_90,enc_avif/Screenshot.png"
-              alt="Research data 1"
-            />
+          <!-- Journal articles -->
+          <div style="margin-top:24px; display:flex; flex-direction:column; gap:20px;">
+            <div>
+              <p style="font-size:15px; font-weight:700; color:var(--black); margin-bottom:6px;">Journal article 1:</p>
+              <ul style="list-style:disc; padding-left:20px; font-size:15px; line-height:1.7; color:var(--gray-1);">
+                <li>Flight ticket booking app on mobile devices: Examining the determinants of individual intention to use<br/>
+                <em style="color:var(--gray-2);">Malaysia, 2017, Sample size of 300</em></li>
+              </ul>
+            </div>
+            <div>
+              <p style="font-size:15px; font-weight:700; color:var(--black); margin-bottom:6px;">Journal article 2:</p>
+              <ul style="list-style:disc; padding-left:20px; font-size:15px; line-height:1.7; color:var(--gray-1);">
+                <li>Airport passengers' adoption behaviour towards self-check-in Kiosk Services: the roles of perceived ease of use, perceived usefulness and need for human interaction<br/>
+                <em style="color:var(--gray-2);">Malaysia, 2019, Sample size of 402</em></li>
+              </ul>
+            </div>
           </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_542ea1bb79394895adce9ddb8cb8ce74~mv2.png/v1/fill/w_700,h_500,al_c,q_90,enc_avif/Screenshot.png"
-              alt="Research data 2"
-            />
-          </div>
-        </div>
 
-        <p class="sec-sub">Heuristic Evaluation & Competitive Analysis</p>
-        <div class="img-grid-3">
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_72ae22587e894dd08f2a1412cd834e89~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Screenshot.png"
-              alt="Heuristic evaluation screenshot 1"
-            />
+          <div class="sec-body" style="margin-top:24px;">
+            <p>We went to research if our hypothesis was true by looking through reviews, articles, comments and journal articles. We then gathered our findings.</p>
           </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_aa6122825945469fa3342299ee62e0dd~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Screenshot.png"
-              alt="Heuristic evaluation screenshot 2"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_394879ca662a42968cb70e2ae3d954d9~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Screenshot.png"
-              alt="Competitive analysis screenshot"
-            />
+
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:24px;">
+            <div class="img-wrap-full">
+              <img src="https://static.wixstatic.com/media/c66d1c_60cc54c928bc4c48846eb3d7344e1eee~mv2.png/v1/fit/w_1400,h_900/Screenshot.png" alt="Desk research — affinity map and findings" />
+            </div>
+            <div class="img-wrap-full">
+              <img src="https://static.wixstatic.com/media/c66d1c_aeba3185709541a3a783168837986115~mv2.png/v1/fit/w_1400,h_900/file.png" alt="Desk research — customer profile and insights board" />
+            </div>
           </div>
         </div>
 
-        <p class="sec-sub">User Interviews & Personas</p>
-        <div class="img-grid-2">
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_e3c2034bce5c444cb697eb07aa22796e~mv2.png/v1/fill/w_700,h_500,al_c,q_90,enc_avif/Screenshot.png"
-              alt="User interview findings"
-            />
+        <!-- Heuristic Evaluation -->
+        <div id="heuristic" style="margin-top:48px;">
+          <p class="sec-sub">Heuristic Evaluation</p>
+          <div class="sec-body">
+            <p>We conducted an independent walkthrough of the current flow to rest usability and interface issues, we evaluated them with Heuristic Evaluation.</p>
           </div>
-          <div class="img-cell">
+          <div class="img-wrap-full" style="margin-top:24px;">
             <img
-              src="https://static.wixstatic.com/media/c66d1c_943b2be124624676a0726606afebf452~mv2.png/v1/fill/w_700,h_500,al_c,q_90,enc_avif/Screenshot.png"
-              alt="Persona"
+              src="https://static.wixstatic.com/media/c66d1c_a5336ded906048e8a54d5877fa354daf~mv2.png/v1/fit/w_1400,h_900/file.png"
+              alt="Heuristic evaluation — Rule 4 Consistency, Rule 8 Design, Rule 1 Visibility"
             />
           </div>
         </div>
+
+        <!-- Competitor Analysis -->
+        <div id="competitor" style="margin-top:48px;">
+          <p class="sec-sub">Competitor Analysis</p>
+          <div class="sec-body">
+            <p>We wanted to focus on 3 aspects in our Analysis:</p>
+            <ul style="list-style:none; padding:0; margin-top:8px; display:flex; flex-direction:column; gap:4px; font-size:15px; color:var(--gray-1);">
+              <li>✅ How is their process of check-in is like?</li>
+              <li>✅ How are relevant information presented?</li>
+              <li>✅ What do users think about their app?</li>
+            </ul>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:24px;">
+            <div class="img-wrap-full">
+              <img src="https://static.wixstatic.com/media/c66d1c_542ea1bb79394895adce9ddb8cb8ce74~mv2.png/v1/fit/w_1400,h_600/Screenshot.png" alt="Competitor comparison table — Jetstar, Citilink, IndiGo" />
+            </div>
+            <div class="img-wrap-full">
+              <img src="https://static.wixstatic.com/media/c66d1c_72ae22587e894dd08f2a1412cd834e89~mv2.png/v1/fit/w_1400,h_700/Screenshot.png" alt="Competitor analysis — Citilink app screens" />
+            </div>
+            <div class="img-wrap-full">
+              <img src="https://static.wixstatic.com/media/c66d1c_aa6122825945469fa3342299ee62e0dd~mv2.png/v1/fit/w_1400,h_700/Screenshot.png" alt="Competitor analysis — Jetstar app screens" />
+            </div>
+            <div class="img-wrap-full">
+              <img src="https://static.wixstatic.com/media/c66d1c_394879ca662a42968cb70e2ae3d954d9~mv2.png/v1/fit/w_1400,h_700/Screenshot.png" alt="Competitor analysis — IndiGo app screens" />
+            </div>
+          </div>
+        </div>
+
+        <!-- User Interview -->
+        <div id="interviews" style="margin-top:48px;">
+          <p class="sec-sub">User Interview</p>
+          <div class="sec-body">
+            <p>We conducted user surveys and interviews to understand passenger attitudes, behaviours, and self-reported usability challenges with mobile check-in (n=42).</p>
+          </div>
+          <div style="margin-top:24px;">
+            <img
+              src="https://static.wixstatic.com/media/c66d1c_e3c2034bce5c444cb697eb07aa22796e~mv2.png/v1/fit/w_1400,h_900/Screenshot.png"
+              alt="User interview — legend key"
+              style="max-width:280px; display:block; border-radius:12px;"
+            />
+          </div>
+          <!-- 6 survey data slides + H/N/T comparison card — stacked vertically full-width -->
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:24px;">
+            <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_1db2e546c706474fa2e69e220a7ecdaf~mv2.png/v1/fit/w_1400,h_800/file.png" alt="Survey slide — Check-in attitudes" /></div>
+            <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_3366dbcaa50f4a169be90da6d8d6907e~mv2.png/v1/fit/w_1400,h_800/file.png" alt="Survey slide — Check-in attitudes 2" /></div>
+            <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_d14b69fc612847e68d2b24b3c79182f6~mv2.png/v1/fit/w_1400,h_800/file.png" alt="Survey slide — Boarding pass preference" /></div>
+            <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_de063f580f094e4d94d59a906726ac96~mv2.png/v1/fit/w_1400,h_800/file.png" alt="Survey slide — Boarding pass preference 2" /></div>
+            <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_46168c137959455385c80827b966c93f~mv2.png/v1/fit/w_1400,h_800/file.png" alt="Survey slide — Check-in pain points" /></div>
+            <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_f2d6125a5c3648aca89749c57e7b257b~mv2.png/v1/fit/w_1400,h_800/file.png" alt="Survey slide — Check-in pain points 2" /></div>
+            <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_943b2be124624676a0726606afebf452~mv2.png/v1/fit/w_1400,h_900/Screenshot.png" alt="User interview — H, N, T participant comparison (age, location, check-in frequency)" /></div>
+          </div>
+        </div>
+
+        <!-- User Persona -->
+        <div id="persona" style="margin-top:48px;">
+          <p class="sec-sub">User Persona</p>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-top:24px;">
+            <div class="img-wrap-full">
+              <img src="Screenshot 2023-08-15 at 4.31.39 PM.png" alt="User Persona I — Farah Nazim, the Working Mum with Many Hats" />
+            </div>
+            <div class="img-wrap-full">
+              <img src="Screenshot 2023-08-15 at 4.31.47 PM.png" alt="User Persona II — Lim Sim Lock, Primary School Teacher" />
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- FINAL PROTOTYPE -->
@@ -723,71 +794,11 @@
           <p>The wireframes were developed from our research findings, turning insights into structured, solution-driven design decisions. The final prototype simplifies the check-in journey so passengers can complete it quickly and confidently.</p>
         </div>
 
-        <div class="img-grid-2">
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_8b3ba1e9a2ac42a7b16b477524e0fdb7~mv2.png/v1/fill/w_700,h_560,al_c,q_90,enc_avif/Artboard.png"
-              alt="Check-in flow screen 1"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_e703e70104d8403fac430aa82e42720b~mv2.png/v1/fill/w_700,h_560,al_c,q_90,enc_avif/Artboard.png"
-              alt="Check-in flow screen 2"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_48cff5e1ff0e4439ba6764c27ffa0cf0~mv2.png/v1/fill/w_700,h_560,al_c,q_90,enc_avif/Artboard.png"
-              alt="Check-in flow screen 3"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_e925bf22fc9a4374a1749e49062257ad~mv2.png/v1/fill/w_700,h_560,al_c,q_90,enc_avif/Artboard.png"
-              alt="Check-in flow screen 4"
-            />
-          </div>
-        </div>
-
-        <p class="sec-sub">Full Artboard Screens</p>
-        <div class="img-grid-3">
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_b38556c673f3448a93bccbba11cb2ec3~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Artboard19.png"
-              alt="Artboard 19"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_d80018bf5ba94a6d8a5205a93ed912a4~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Artboard1copy8.png"
-              alt="Artboard copy 8"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_cc17e720e6634242a1c3cd3d88652540~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Artboard1copy9.png"
-              alt="Artboard copy 9"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_cd73d13562c34891b7ee437661c02b88~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Artboard1copy10.png"
-              alt="Artboard copy 10"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_bfea468f96c4476ba15b3399177b8572~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Artboard1copy11.png"
-              alt="Artboard copy 11"
-            />
-          </div>
-          <div class="img-cell">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_a1b4071679ec4e27881b1db6f7e9497b~mv2.png/v1/fill/w_500,h_400,al_c,q_90,enc_avif/Artboard1copy12.png"
-              alt="Artboard copy 12"
-            />
-          </div>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:24px;">
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_8b3ba1e9a2ac42a7b16b477524e0fdb7~mv2.png/v1/fit/w_1400,h_900/Artboard.png" alt="Check-in flow screen 1" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_e703e70104d8403fac430aa82e42720b~mv2.png/v1/fit/w_1400,h_900/Artboard.png" alt="Check-in flow screen 2" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_48cff5e1ff0e4439ba6764c27ffa0cf0~mv2.png/v1/fit/w_1400,h_900/Artboard.png" alt="Check-in flow screen 3" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_e925bf22fc9a4374a1749e49062257ad~mv2.png/v1/fit/w_1400,h_900/Artboard.png" alt="Check-in flow screen 4" /></div>
         </div>
 
         <p class="sec-sub">Prototype in Motion</p>
@@ -797,6 +808,17 @@
             alt="Check-in flow prototype animation"
             style="border-radius: 24px; max-width: 320px; box-shadow: 0 12px 48px rgba(0,0,0,0.12);"
           />
+        </div>
+
+        <p class="sec-sub">Full Artboard Screens</p>
+        <div style="display:flex; flex-direction:column; gap:8px; margin-top:24px;">
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_b38556c673f3448a93bccbba11cb2ec3~mv2.png/v1/fit/w_1400,h_900/Artboard19.png" alt="Artboard 19" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_d80018bf5ba94a6d8a5205a93ed912a4~mv2.png/v1/fit/w_1400,h_900/Artboard1copy8.png" alt="Artboard copy 8" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_cc17e720e6634242a1c3cd3d88652540~mv2.png/v1/fit/w_1400,h_900/Artboard1copy9.png" alt="Artboard copy 9" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_cd73d13562c34891b7ee437661c02b88~mv2.png/v1/fit/w_1400,h_900/Artboard1copy10.png" alt="Artboard copy 10" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_bfea468f96c4476ba15b3399177b8572~mv2.png/v1/fit/w_1400,h_900/Artboard1copy11.png" alt="Artboard copy 11" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_a1b4071679ec4e27881b1db6f7e9497b~mv2.png/v1/fit/w_1400,h_900/Artboard1copy12.png" alt="Artboard copy 12" /></div>
+          <div class="img-wrap-full"><img src="https://static.wixstatic.com/media/c66d1c_2af00d89377b4f5e97e945493c30d3d2~mv2.png/v1/fit/w_1400,h_900/Artboard1copy13.png" alt="Artboard copy 13" /></div>
         </div>
       </section>
 
@@ -857,7 +879,7 @@
 
   <script>
     // Sidebar active link on scroll
-    const sections = document.querySelectorAll('.cs-section');
+    const sections = document.querySelectorAll('.cs-section, #desk-research, #heuristic, #competitor, #interviews, #persona');
     const navLinks = document.querySelectorAll('#sidebar-nav a');
     const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 80;
 
