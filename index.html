@@ -1070,6 +1070,12 @@
   .blog-read svg { transition: transform 0.2s; }
   .blog-card:hover .blog-read svg { transform: translateX(3px); }
   .blog-date { font-size: 12px; color: var(--gray-2); margin-bottom: 6px; }
+  .blog-readtime {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; color: var(--gray-1);
+    background: rgba(26,29,33,0.06); border-radius: 100px;
+    padding: 4px 10px; margin-bottom: 10px; width: fit-content;
+  }
 
   </style>
 </head>
@@ -1644,8 +1650,15 @@
     document.querySelectorAll('[data-target]').forEach(el => countObserver.observe(el));
 
     // ── Dynamic blog cards from Substack RSS ──
-    function createBlogCard(title, date, excerpt, link, imgSrc) {
+    function calcReadTime(rawHtml) {
+      const text = rawHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+      const words = text.split(' ').filter(Boolean).length;
+      return Math.max(1, Math.ceil(words / 200));
+    }
+
+    function createBlogCard(title, date, excerpt, link, imgSrc, readMins) {
       const img = imgSrc || 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=640&h=400&fit=crop';
+      const readLabel = readMins ? `<span class="blog-readtime"><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M12 6v6l4 2"/></svg>${readMins} min read</span>` : '';
       const card = document.createElement('a');
       card.href = link;
       card.target = '_blank';
@@ -1654,6 +1667,7 @@
       card.innerHTML = `
         <div class="blog-img"><img src="${img}" alt="${title}" loading="lazy"/></div>
         <div class="blog-content">
+          ${readLabel}
           <p class="blog-date">${date}</p>
           <p class="blog-cat">Substack</p>
           <h3 class="blog-title">${title}</h3>
@@ -1665,8 +1679,8 @@
 
     function injectBlogCards(items, track) {
       [1, 2].forEach(() => {
-        items.forEach(({ title, date, excerpt, link, img }) => {
-          track.appendChild(createBlogCard(title, date, excerpt, link, img));
+        items.forEach(({ title, date, excerpt, link, img, readMins }) => {
+          track.appendChild(createBlogCard(title, date, excerpt, link, img, readMins));
         });
       });
       const totalWidth = items.length * (320 + 20);
@@ -1700,7 +1714,8 @@
             const contentEncoded = el.getElementsByTagNameNS('http://purl.org/rss/1.0/modules/content/', 'encoded')[0]?.textContent || '';
             const imgMatch = contentEncoded.match(/<img[^>]+src=["']([^"']+)["']/i);
             const img = enclosure?.getAttribute('url') || mediaContent?.getAttribute('url') || imgMatch?.[1] || '';
-            return { title, link, date, excerpt, img };
+            const readMins = calcReadTime(contentEncoded || rawDesc);
+            return { title, link, date, excerpt, img, readMins };
           });
 
           injectBlogCards(items, track);
@@ -1708,10 +1723,10 @@
         .catch(() => {
           // Fallback placeholder cards
           const fallbacks = [
-            { title: 'Why Good UX in Banking Is Often Invisible', date: 'March 2026', excerpt: 'The best banking experiences are the ones you never notice. Here\'s why invisibility is the goal — and how to design for it…', link: 'https://eezasheren.substack.com', img: '' },
-            { title: 'Slowness as a Design Superpower', date: 'March 2026', excerpt: 'In a world obsessed with speed, slowing down your design process might be the most powerful thing you can do for your users…', link: 'https://eezasheren.substack.com', img: '' },
-            { title: 'More on Substack', date: '', excerpt: 'Follow along on Substack for regular posts on design, research, and UX leadership.', link: 'https://eezasheren.substack.com', img: '' },
-            { title: 'Design Thinking & Craft', date: '', excerpt: 'Explore articles on UX design, user research, and product thinking on Substack.', link: 'https://eezasheren.substack.com', img: '' }
+            { title: 'Why Good UX in Banking Is Often Invisible', date: 'March 2026', excerpt: 'The best banking experiences are the ones you never notice. Here\'s why invisibility is the goal — and how to design for it…', link: 'https://eezasheren.substack.com', img: '', readMins: 4 },
+            { title: 'Slowness as a Design Superpower', date: 'March 2026', excerpt: 'In a world obsessed with speed, slowing down your design process might be the most powerful thing you can do for your users…', link: 'https://eezasheren.substack.com', img: '', readMins: 3 },
+            { title: 'More on Substack', date: '', excerpt: 'Follow along on Substack for regular posts on design, research, and UX leadership.', link: 'https://eezasheren.substack.com', img: '', readMins: 2 },
+            { title: 'Design Thinking & Craft', date: '', excerpt: 'Explore articles on UX design, user research, and product thinking on Substack.', link: 'https://eezasheren.substack.com', img: '', readMins: 3 }
           ];
           injectBlogCards(fallbacks, track);
         });
