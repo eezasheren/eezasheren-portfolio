@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Her Velvet Vase — Eeza Sheren</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --page-bg:  #ffffff;
+      --white:    #f2f3f5;
+      --black:    #1a1d21;
+      --gray-1:   #6b7280;
+      --gray-2:   #9ca3af;
+      --gray-3:   #e5e7eb;
+      --lime:     #c5f135;
+      --hvv:      #b5637a;
+      --hvv-soft: rgba(181,99,122,0.1);
+      --nav-h:    80px;
+      --radius:   20px;
+      --sidebar:  220px;
+    }
+
+    html { scroll-behavior: smooth; }
+    h1, h2, h3, h4 { font-family: 'Bricolage Grotesque', sans-serif; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      color: var(--black);
+      background: var(--page-bg);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.5);
+      box-shadow: 0 1px 40px rgba(0,0,0,0.06);
+      z-index: 100;
+    }
+    .nav-logo { font-size: 17px; font-weight: 800; letter-spacing: -0.5px; color: var(--black); text-decoration: none; }
+    .nav-center { position: absolute; left: 50%; transform: translateX(-50%); }
+    .nav-pill {
+      display: flex; align-items: center; gap: 2px;
+      background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: 100px; padding: 6px 8px;
+      border: 1px solid rgba(0,0,0,0.07);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.8);
+      list-style: none;
+    }
+    .nav-pill a {
+      font-size: 15px; font-weight: 500; color: var(--gray-1);
+      text-decoration: none; padding: 8px 20px; border-radius: 100px;
+      transition: background 0.2s, color 0.2s; white-space: nowrap;
+    }
+    .nav-pill a:hover { background: var(--lime); color: var(--black) !important; }
+    .nav-right { display: flex; gap: 12px; align-items: center; }
+    .btn-sm {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 11px 22px; border-radius: 100px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-dark { background: var(--black); color: #fff; }
+    .btn-dark:hover { background: var(--lime); color: var(--black); }
+
+    /* ─── LAYOUT ─── */
+    .page-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar) 1fr;
+      min-height: 100vh;
+      padding-top: var(--nav-h);
+      max-width: 1440px;
+      margin: 0 auto;
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar {
+      position: sticky;
+      top: var(--nav-h);
+      height: calc(100vh - var(--nav-h));
+      padding: 80px 24px 32px 32px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    .sidebar-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gray-2);
+      margin-bottom: 12px; padding-left: 12px;
+    }
+    .sidebar-nav { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+    .sidebar-nav a {
+      display: block; font-size: 13px; font-weight: 500; color: var(--gray-2);
+      text-decoration: none; padding: 8px 12px; border-radius: 8px;
+      transition: background 0.2s, color 0.2s; line-height: 1.4;
+    }
+    .sidebar-nav a:hover { background: var(--white); color: var(--black); }
+    .sidebar-nav a.active { background: var(--white); color: var(--black); font-weight: 600; }
+
+    /* ─── MAIN ─── */
+    .main-content { padding: 48px 56px 100px 40px; max-width: 1100px; }
+
+    /* ─── HERO ─── */
+    .case-hero { margin-bottom: 12px; }
+    .case-company {
+      font-size: 13px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--hvv);
+      margin-bottom: 16px; display: flex; align-items: center; gap: 8px;
+    }
+    .case-company::before {
+      content: ''; display: inline-block;
+      width: 8px; height: 8px; border-radius: 50%; background: var(--hvv);
+    }
+    .case-title {
+      font-size: clamp(36px, 5vw, 58px); font-weight: 800;
+      letter-spacing: -1.5px; line-height: 1.1;
+      margin-bottom: 12px; color: var(--black);
+    }
+    .case-subtitle {
+      font-size: 20px; line-height: 1.7; color: var(--gray-1);
+      max-width: 680px; margin-bottom: 32px; font-weight: 400;
+    }
+
+    /* ─── META STRIP ─── */
+    .project-meta-strip {
+      display: flex; align-items: flex-start; gap: 24px;
+      background: var(--white); border-radius: 16px; padding: 28px 32px;
+      margin-bottom: 40px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); flex-wrap: wrap;
+    }
+    .pms-item { display: flex; flex-direction: column; gap: 8px; }
+    .pms-divider { width: 1px; background: var(--gray-3); align-self: stretch; flex-shrink: 0; }
+    .pms-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--gray-2); }
+    .pms-value { font-size: 15px; font-weight: 600; color: var(--black); }
+    .pms-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pms-tag {
+      font-size: 12px; font-weight: 500; color: var(--gray-1);
+      background: var(--page-bg); padding: 4px 11px;
+      border-radius: 100px; border: 1px solid var(--gray-3);
+    }
+
+    /* ─── IMAGES ─── */
+    .hero-img-wrap {
+      border-radius: var(--radius); overflow: hidden;
+      background: #fdf0f3; margin-bottom: 8px;
+    }
+    .hero-img-wrap img { width: 100%; display: block; object-fit: cover; max-height: 460px; }
+    .img-caption {
+      font-size: 12px; color: var(--gray-2); text-align: center;
+      margin-top: 8px; margin-bottom: 40px;
+    }
+    .img-wrap-full {
+      border-radius: var(--radius); overflow: hidden;
+      background: var(--white); margin: 24px 0;
+    }
+    .img-wrap-full img { width: 100%; display: block; max-height: 680px; object-fit: contain; background: #f8f9fb; }
+    .img-grid-2 {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0;
+    }
+    .img-grid-2 .img-cell { border-radius: 12px; overflow: hidden; background: var(--white); }
+    .img-grid-2 .img-cell img { width: 100%; display: block; object-fit: cover; }
+    .img-grid-3 {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 24px 0;
+    }
+    .img-grid-3 .img-cell { border-radius: 12px; overflow: hidden; background: var(--white); }
+    .img-grid-3 .img-cell img { width: 100%; display: block; }
+
+    /* ─── SECTIONS ─── */
+    .cs-section { scroll-margin-top: calc(var(--nav-h) + 24px); margin-bottom: 64px; }
+    .cs-section:last-child { margin-bottom: 0; }
+    .sec-tag {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--gray-2); margin-bottom: 24px;
+    }
+    .sec-tag::before { content: ''; display: block; width: 20px; height: 1px; background: var(--gray-2); }
+    .sec-heading {
+      font-size: clamp(24px, 3vw, 34px); font-weight: 800;
+      letter-spacing: -0.8px; line-height: 1.2; margin-bottom: 16px; color: var(--black);
+    }
+    .sec-body { font-size: 18px; line-height: 1.8; color: var(--gray-1); }
+    .sec-body p { margin-bottom: 16px; }
+    .sec-body p:last-child { margin-bottom: 0; }
+
+    /* ─── OVERVIEW CARD ─── */
+    .overview-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 36px; margin-bottom: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .overview-card p { font-size: 18px; line-height: 1.8; color: var(--gray-1); }
+
+    /* ─── PROBLEM CARD ─── */
+    .problem-card { background: var(--black); border-radius: var(--radius); padding: 36px; margin: 24px 0; }
+    .problem-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.35); margin-bottom: 16px;
+    }
+    .problem-card p {
+      font-size: 20px; font-weight: 600; line-height: 1.6;
+      color: rgba(255,255,255,0.9); letter-spacing: -0.3px;
+    }
+
+    /* ─── NUMBERED LIST ─── */
+    .objectives-list { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+    .objectives-list li {
+      display: flex; align-items: flex-start; gap: 16px;
+      background: var(--white); border-radius: 12px; padding: 20px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .obj-num {
+      font-size: 12px; font-weight: 700; color: var(--hvv);
+      background: var(--hvv-soft); border-radius: 6px; padding: 3px 9px;
+      flex-shrink: 0; margin-top: 2px;
+    }
+    .obj-text { font-size: 15px; line-height: 1.7; color: var(--black); font-weight: 500; }
+
+    /* ─── FINDINGS LIST ─── */
+    .findings-list { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+    .findings-list li {
+      display: flex; align-items: flex-start; gap: 14px;
+      background: var(--white); border-radius: 12px; padding: 18px 22px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .fi-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--hvv); flex-shrink: 0; margin-top: 7px;
+    }
+    .fi-text { font-size: 15px; line-height: 1.7; color: var(--black); font-weight: 500; }
+
+    /* ─── STAT CARDS ─── */
+    .stats-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin: 24px 0; }
+    .stat-card {
+      background: var(--white); border-radius: 14px; padding: 28px 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04); text-align: center;
+    }
+    .stat-number {
+      font-size: 40px; font-weight: 800; letter-spacing: -1.5px;
+      color: var(--hvv); margin-bottom: 10px; display: block; line-height: 1;
+    }
+    .stat-label { font-size: 14px; line-height: 1.6; color: var(--gray-1); }
+
+    /* ─── HIGHLIGHT CARDS (2-col) ─── */
+    .highlight-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    .highlight-card {
+      background: var(--white); border-radius: 14px; padding: 24px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .highlight-card-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--hvv); margin-bottom: 10px;
+    }
+    .highlight-card p { font-size: 15px; line-height: 1.7; color: var(--gray-1); }
+
+    /* ─── IMPLICATION ─── */
+    .implication-card {
+      background: var(--hvv-soft); border-left: 3px solid var(--hvv);
+      border-radius: 12px; padding: 24px 28px; margin-top: 16px;
+    }
+    .implication-card p { font-size: 15px; line-height: 1.7; color: var(--black); font-weight: 500; }
+
+    /* ─── QUOTE ─── */
+    .quote-block {
+      background: var(--black); border-radius: var(--radius);
+      padding: 40px; margin: 32px 0; position: relative;
+    }
+    .quote-block::before {
+      content: '\201C';
+      font-size: 80px; line-height: 0.8;
+      color: var(--hvv); font-family: Georgia, serif;
+      display: block; margin-bottom: 16px;
+    }
+    .quote-block p {
+      font-size: 19px; line-height: 1.7; color: rgba(255,255,255,0.88);
+      font-style: italic; margin-bottom: 20px; font-weight: 400;
+    }
+    .quote-attr { font-size: 13px; font-weight: 600; color: var(--hvv); letter-spacing: 0.5px; }
+
+    /* ─── REFLECTION ─── */
+    .reflection-card {
+      background: var(--white); border-radius: var(--radius);
+      padding: 36px; box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .reflection-card p { font-size: 17px; line-height: 1.8; color: var(--gray-1); margin-bottom: 14px; }
+    .reflection-card p:last-child { margin-bottom: 0; }
+
+    /* ─── FLOW STEPS ─── */
+    .flow-steps {
+      display: flex; align-items: center; gap: 0;
+      flex-wrap: wrap; margin: 24px 0; gap: 8px;
+    }
+    .flow-step {
+      background: var(--white); border-radius: 10px;
+      padding: 10px 18px; font-size: 13px; font-weight: 600;
+      color: var(--black); box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .flow-step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--hvv-soft); color: var(--hvv);
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .flow-arrow { color: var(--gray-3); font-size: 18px; font-weight: 300; }
+
+    /* ─── SLIDESHOW GALLERY ─── */
+    .gallery-wrap { margin: 28px 0; }
+
+    .gallery-main {
+      position: relative;
+      border-radius: 16px;
+      overflow: hidden;
+      background: #f4f4f6;
+      border: 1px solid var(--gray-3);
+      aspect-ratio: 16/7;
+    }
+    .gallery-main img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .gallery-main img.active { opacity: 1; }
+
+    .gallery-nav {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      display: flex; align-items: center; justify-content: center;
+      width: 40px; height: 40px;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 2;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    }
+    .gallery-nav:hover { background: #fff; transform: translateY(-50%) scale(1.08); }
+    .gallery-nav.prev { left: 14px; }
+    .gallery-nav.next { right: 14px; }
+    .gallery-nav svg { width: 18px; height: 18px; stroke: var(--black); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .gallery-counter {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.5);
+      color: #fff; font-size: 12px; font-weight: 600;
+      padding: 4px 12px; border-radius: 100px;
+      z-index: 2; letter-spacing: 0.5px;
+    }
+
+    .gallery-thumbs {
+      display: flex; gap: 8px; margin-top: 10px;
+      overflow-x: auto; padding-bottom: 4px;
+    }
+    .gallery-thumbs::-webkit-scrollbar { height: 4px; }
+    .gallery-thumbs::-webkit-scrollbar-track { background: transparent; }
+    .gallery-thumbs::-webkit-scrollbar-thumb { background: var(--gray-3); border-radius: 4px; }
+
+    .gallery-thumb {
+      flex-shrink: 0;
+      width: 100px; height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: border-color 0.2s, opacity 0.2s;
+      opacity: 0.5;
+      background: #f4f4f6;
+    }
+    .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .gallery-thumb.active { border-color: var(--hvv); opacity: 1; }
+    .gallery-thumb:hover { opacity: 0.85; }
+
+    /* ─── GIF PREVIEW ─── */
+    .gif-wrap {
+      border-radius: var(--radius); overflow: hidden;
+      background: #f8f9fb; border: 1px solid var(--gray-3);
+      margin: 24px 0; text-align: center;
+    }
+    .gif-wrap img { max-width: 100%; display: block; margin: 0 auto; }
+
+    /* ─── FADE UP ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1);
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── STAR CURSOR ─── */
+    #cursor-dot {
+      position: fixed;
+      width: 16px; height: 16px;
+      background: var(--hvv);
+      clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
+      pointer-events: none;
+      z-index: 9999;
+      animation: starSpin 3s linear infinite;
+    }
+    @keyframes starSpin {
+      from { transform: translate(6px, -20px) rotate(0deg); }
+      to   { transform: translate(6px, -20px) rotate(360deg); }
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main-content { padding: 32px 24px 80px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .highlight-cards { grid-template-columns: 1fr; }
+      .wireframe-gallery { grid-template-columns: 1fr 1fr; }
+      .img-grid-2 { grid-template-columns: 1fr; }
+      .img-grid-3 { grid-template-columns: 1fr; }
+      .flow-steps { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="cursor-dot"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Eeza.</a>
+  <div class="nav-center">
+    <ul class="nav-pill">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html#projects">Projects</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <a href="mailto:eezasheren@gmail.com" class="btn-sm btn-dark">Let's Talk</a>
+  </div>
+</nav>
+
+<div class="page-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <p class="sidebar-label">Case Study</p>
+    <ul class="sidebar-nav">
+      <li><a href="#overview" class="active">Overview</a></li>
+      <li><a href="#challenge">The Challenge</a></li>
+      <li><a href="#heuristic">Heuristic Evaluation</a></li>
+      <li><a href="#competitive">Competitive Analysis</a></li>
+      <li><a href="#research">User Research</a></li>
+      <li><a href="#personas">Personas</a></li>
+      <li><a href="#wireframes">Wireframes</a></li>
+      <li><a href="#testing">Usability Testing</a></li>
+      <li><a href="#reflection">Reflection</a></li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-content">
+
+    <!-- HERO -->
+    <div class="case-hero fade-up">
+      <div class="case-company">Her Velvet Vase</div>
+      <h1 class="case-title">From browse to buy — fixing the checkout experience</h1>
+      <p class="case-subtitle">
+        A UX research and wireframing project focused on diagnosing cart abandonment for a Singapore-based women's fashion e-commerce brand.
+      </p>
+    </div>
+
+    <!-- META STRIP -->
+    <div class="project-meta-strip fade-up">
+      <div class="pms-item">
+        <span class="pms-label">Year</span>
+        <span class="pms-value">2022</span>
+      </div>
+      <div class="pms-divider"></div>
+      <div class="pms-item">
+        <span class="pms-label">Timeline</span>
+        <span class="pms-value">4 Weeks</span>
+      </div>
+      <div class="pms-divider"></div>
+      <div class="pms-item">
+        <span class="pms-label">Team</span>
+        <span class="pms-value">4 UX Designers</span>
+      </div>
+      <div class="pms-divider"></div>
+      <div class="pms-item">
+        <span class="pms-label">My Role</span>
+        <div class="pms-tags">
+          <span class="pms-tag">UX Research</span>
+          <span class="pms-tag">User Interviews</span>
+          <span class="pms-tag">Wireframing</span>
+        </div>
+      </div>
+      <div class="pms-divider"></div>
+      <div class="pms-item">
+        <span class="pms-label">Type</span>
+        <span class="pms-value">Research / Wireframe</span>
+      </div>
+    </div>
+
+    <!-- HERO IMAGE -->
+    <div class="hero-img-wrap fade-up">
+      <img src="https://static.wixstatic.com/media/c66d1c_3512807ccd6e440cbffb6ea2686da0a9~mv2.png" alt="Her Velvet Vase project overview" />
+    </div>
+    <p class="img-caption fade-up">Her Velvet Vase — final wireframe screens</p>
+
+    <!-- OVERVIEW -->
+    <section class="cs-section" id="overview">
+      <p class="sec-tag fade-up">Background</p>
+      <h2 class="sec-heading fade-up">About the project</h2>
+      <div class="overview-card fade-up">
+        <p>Her Velvet Vase is a Singapore-based e-commerce fashion brand focused on basic women's clothing. They approached us with a pressing challenge — a significant number of customers were abandoning their carts, resulting in a high bounce rate and unfinished transactions.</p>
+        <p style="margin-top:16px;">Their target audience comprises local and Asian females aged 20 to 45. Our task was to understand why this was happening and redesign key touchpoints to reduce abandonment and improve the overall purchasing experience.</p>
+      </div>
+
+      <!-- Project flow -->
+      <h3 class="sec-heading fade-up" style="font-size:20px; margin-top:32px;">Project Flow</h3>
+      <div class="flow-steps fade-up">
+        <div class="flow-step"><span class="flow-step-num">1</span> Challenge</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="flow-step-num">2</span> Competitive Analysis</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="flow-step-num">3</span> Heuristic Evaluation</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="flow-step-num">4</span> User Interviews</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="flow-step-num">5</span> Usability Testing</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="flow-step-num">6</span> Personas</div>
+        <span class="flow-arrow">→</span>
+        <div class="flow-step"><span class="flow-step-num">7</span> Wireframe / Prototype</div>
+      </div>
+    </section>
+
+    <!-- CHALLENGE -->
+    <section class="cs-section" id="challenge">
+      <p class="sec-tag fade-up">Step 01</p>
+      <h2 class="sec-heading fade-up">The Challenge</h2>
+      <div class="problem-card fade-up">
+        <p class="problem-label">Problem Statement</p>
+        <p>How might we reduce cart abandonment on Her Velvet Vase and improve the end-to-end purchasing experience for local and international customers?</p>
+      </div>
+      <ul class="objectives-list fade-up">
+        <li>
+          <span class="obj-num">01</span>
+          <span class="obj-text">Lack of structured feedback from existing and new customers on the purchasing experience on HVV</span>
+        </li>
+        <li>
+          <span class="obj-num">02</span>
+          <span class="obj-text">Lack of understanding of what international customers were experiencing when navigating the platform</span>
+        </li>
+        <li>
+          <span class="obj-num">03</span>
+          <span class="obj-text">Identifying friction points in the checkout flow that led to high cart abandonment rates</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- HEURISTIC -->
+    <section class="cs-section" id="heuristic">
+      <p class="sec-tag fade-up">Step 02</p>
+      <h2 class="sec-heading fade-up">Heuristic Evaluation</h2>
+      <div class="sec-body fade-up">
+        <p>We evaluated the existing Her Velvet Vase website against Nielsen's 10 usability heuristics to identify fundamental UX issues before conducting user research.</p>
+      </div>
+
+      <div class="stats-grid fade-up">
+        <div class="stat-card">
+          <span class="stat-number">76%</span>
+          <p class="stat-label">Heuristic compliance score across 8 evaluated principles</p>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">#1</span>
+          <p class="stat-label">Visibility of system status — biggest area of concern</p>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">8</span>
+          <p class="stat-label">Heuristics evaluated across the full shopping flow</p>
+        </div>
+      </div>
+
+      <h3 class="sec-heading fade-up" style="font-size:20px; margin-top:8px;">Key Findings</h3>
+      <ul class="findings-list fade-up">
+        <li>
+          <span class="fi-dot"></span>
+          <span class="fi-text">Low colour contrast — poor visibility of copy and CTAs throughout the site</span>
+        </li>
+        <li>
+          <span class="fi-dot"></span>
+          <span class="fi-text">Lacks visible differentiation between clickable, disabled states, and required fields in forms</span>
+        </li>
+        <li>
+          <span class="fi-dot"></span>
+          <span class="fi-text">No "No results found" message when no relevant products appear based on applied filters</span>
+        </li>
+        <li>
+          <span class="fi-dot"></span>
+          <span class="fi-text">System status feedback missing during loading and checkout transitions</span>
+        </li>
+      </ul>
+
+      <div class="img-grid-3 fade-up">
+        <div class="img-cell">
+          <img src="https://static.wixstatic.com/media/c66d1c_fc914b509f5c4c2fa45ef0ca75c8ce5e~mv2.png" alt="Heuristic finding 1" />
+        </div>
+        <div class="img-cell">
+          <img src="https://static.wixstatic.com/media/c66d1c_7b750c035d44444c99d04473aa19293c~mv2.png" alt="Heuristic finding 2" />
+        </div>
+        <div class="img-cell">
+          <img src="https://static.wixstatic.com/media/c66d1c_88e90fd24a374ced9fe18d9545279af8~mv2.png" alt="Heuristic finding 3" />
+        </div>
+      </div>
+    </section>
+
+    <!-- COMPETITIVE -->
+    <section class="cs-section" id="competitive">
+      <p class="sec-tag fade-up">Step 03</p>
+      <h2 class="sec-heading fade-up">Competitive Analysis</h2>
+      <div class="sec-body fade-up">
+        <p>We benchmarked Her Velvet Vase against local brands, overseas markets, and international players to identify gaps and uncover opportunities for differentiation.</p>
+      </div>
+
+      <div class="img-grid-2 fade-up">
+        <div class="img-cell">
+          <img src="https://static.wixstatic.com/media/c66d1c_8b7364a765a94245913830b4dd421176~mv2.png" alt="Competitive analysis — local brands" />
+        </div>
+        <div class="img-cell">
+          <img src="https://static.wixstatic.com/media/c66d1c_ec38ceae0c6b4190ad54cd074d46288e~mv2.png" alt="Competitive analysis — overseas market" />
+        </div>
+      </div>
+
+      <div class="highlight-cards fade-up">
+        <div class="highlight-card">
+          <p class="highlight-card-label">Commonalities</p>
+          <p>Same visual language across brands with similar products and target audiences — minimalist aesthetic, neutral colours, restocks and backorder features.</p>
+        </div>
+        <div class="highlight-card">
+          <p class="highlight-card-label">Opportunities</p>
+          <p>Social commerce on LINE and WeChat to reach new audiences. Moodboxes, exclusive prints, and brand loyalty programmes as key differentiators. Highlight international shipping options prominently.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- USER RESEARCH -->
+    <section class="cs-section" id="research">
+      <p class="sec-tag fade-up">Step 04</p>
+      <h2 class="sec-heading fade-up">User Research</h2>
+      <div class="sec-body fade-up">
+        <p>We conducted interviews with 9 users — 5 existing HVV customers and 4 new users — aged 20–30, Singaporean, and experienced online shoppers.</p>
+      </div>
+
+      <div class="stats-grid fade-up">
+        <div class="stat-card">
+          <span class="stat-number">9</span>
+          <p class="stat-label">Total users interviewed</p>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">5</span>
+          <p class="stat-label">Existing HVV customers</p>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">4</span>
+          <p class="stat-label">New users unfamiliar with HVV</p>
+        </div>
+      </div>
+
+      <h3 class="sec-heading fade-up" style="font-size:20px; margin-top:8px;">What motivated their purchases</h3>
+      <ul class="findings-list fade-up">
+        <li><span class="fi-dot"></span><span class="fi-text">Cheaper prices during promotions and flash sales</span></li>
+        <li><span class="fi-dot"></span><span class="fi-text">Love for the designs, quality, and unique floral prints</span></li>
+        <li><span class="fi-dot"></span><span class="fi-text">Posting on Instagram to earn HVV loyalty points and rewards</span></li>
+        <li><span class="fi-dot"></span><span class="fi-text">Influenced by friends, social media, and influencer recommendations</span></li>
+      </ul>
+
+      <div class="img-wrap-full fade-up">
+        <img src="https://static.wixstatic.com/media/c66d1c_3512807ccd6e440cbffb6ea2686da0a9~mv2.png" alt="User interview insights" style="max-height:380px;object-fit:contain;background:#f8f9fb;" />
+      </div>
+
+      <div class="implication-card fade-up">
+        <p>Users valued the brand's aesthetic and community, but friction in the checkout flow — especially unclear form states and missing feedback — interrupted what should have been a motivated purchase journey.</p>
+      </div>
+    </section>
+
+    <!-- PERSONAS -->
+    <section class="cs-section" id="personas">
+      <p class="sec-tag fade-up">Step 05</p>
+      <h2 class="sec-heading fade-up">Personas</h2>
+      <div class="sec-body fade-up">
+        <p>We developed personas after our research to ground design decisions in real user motivations and frustrations. Initially we skipped this step in favour of empathy maps — but quickly realised the brand needed defined personas to guide prioritisation.</p>
+      </div>
+      <div class="img-wrap-full fade-up">
+        <img src="https://static.wixstatic.com/media/c66d1c_1c7480dd4fc840ee8bdd3c6c0cb9b86b~mv2.png" alt="User persona — Stephanie" />
+      </div>
+      <div class="img-wrap-full fade-up">
+        <img src="https://static.wixstatic.com/media/c66d1c_9cdbb7ae38104f5cbd6175e94496e5ec~mv2.png" alt="Empathy map" />
+      </div>
+      <div class="img-wrap-full fade-up">
+        <img src="https://static.wixstatic.com/media/c66d1c_471e3e39acf3449fa11d2a27de088b18~mv2.png" alt="Customer journey map" />
+      </div>
+    </section>
+
+    <!-- WIREFRAMES -->
+    <section class="cs-section" id="wireframes">
+      <p class="sec-tag fade-up">Step 06</p>
+      <h2 class="sec-heading fade-up">Wireframes & Prototype</h2>
+      <div class="sec-body fade-up">
+        <p>We redesigned key screens across the browsing, product, and checkout flows — addressing the friction points surfaced in our research. The wireframes focused on clearer states, better feedback loops, and a more intuitive path to purchase.</p>
+      </div>
+
+      <!-- Wireframe slideshow gallery -->
+      <div class="gallery-wrap fade-up" id="wfGallery">
+        <div class="gallery-main">
+          <img src="https://static.wixstatic.com/media/c66d1c_a13083025d6c49cc8b76110ea1fdcfb2~mv2.png" alt="Wireframe screen 1" class="active" />
+          <img src="https://static.wixstatic.com/media/c66d1c_41eee047b62f4516a0344f69a75cb49c~mv2.png" alt="Wireframe screen 2" />
+          <img src="https://static.wixstatic.com/media/c66d1c_f35f4fb40fb44389a11ae850f60242be~mv2.png" alt="Wireframe screen 3" />
+          <img src="https://static.wixstatic.com/media/c66d1c_dc66ffa33e74493a87318f288f02a94a~mv2.png" alt="Wireframe screen 4" />
+          <img src="https://static.wixstatic.com/media/c66d1c_1af6038203e0404db0a2618d56224a42~mv2.png" alt="Wireframe screen 5" />
+          <img src="https://static.wixstatic.com/media/c66d1c_487a365c46c545abab1f31eb5689a146~mv2.png" alt="Wireframe screen 6" />
+          <button class="gallery-nav prev" aria-label="Previous">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="gallery-nav next" aria-label="Next">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <span class="gallery-counter">1 / 6</span>
+        </div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb active"><img src="https://static.wixstatic.com/media/c66d1c_a13083025d6c49cc8b76110ea1fdcfb2~mv2.png" alt="1" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_41eee047b62f4516a0344f69a75cb49c~mv2.png" alt="2" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_f35f4fb40fb44389a11ae850f60242be~mv2.png" alt="3" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_dc66ffa33e74493a87318f288f02a94a~mv2.png" alt="4" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_1af6038203e0404db0a2618d56224a42~mv2.png" alt="5" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_487a365c46c545abab1f31eb5689a146~mv2.png" alt="6" /></div>
+        </div>
+      </div>
+
+      <!-- Prototype gif -->
+      <div class="gif-wrap fade-up">
+        <img src="https://static.wixstatic.com/media/c66d1c_b71f55cd8ba34f2198a30dfa9259a916~mv2.gif" alt="Prototype walkthrough animation" />
+      </div>
+      <p class="img-caption fade-up">Interactive prototype walkthrough</p>
+    </section>
+
+    <!-- USABILITY TESTING -->
+    <section class="cs-section" id="testing">
+      <p class="sec-tag fade-up">Step 07</p>
+      <h2 class="sec-heading fade-up">Usability Testing</h2>
+      <div class="sec-body fade-up">
+        <p>We validated our wireframes using Maze, running a moderated remote usability test with real users. Participants were asked 10 SUS (System Usability Scale) statements and completed key tasks through the prototype.</p>
+      </div>
+
+      <div class="stats-grid fade-up">
+        <div class="stat-card">
+          <span class="stat-number">95.28</span>
+          <p class="stat-label">Average SUS score — Excellent</p>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">33.4s</span>
+          <p class="stat-label">Average time spent on the homepage</p>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number">100%</span>
+          <p class="stat-label">Users completed the task at the Checkout page</p>
+        </div>
+      </div>
+
+      <!-- Usability Testing gallery -->
+      <div class="gallery-wrap fade-up" id="utGallery">
+        <div class="gallery-main">
+          <img src="https://static.wixstatic.com/media/c66d1c_4e554eebed314c8db89b00e67281e14a~mv2.png" alt="Key findings — Homepage &amp; Filters" class="active" />
+          <img src="https://static.wixstatic.com/media/c66d1c_a49ed34c5242481e9d167d3d6c50eb97~mv2.png" alt="Key findings — Shopping Bag &amp; Checkout" />
+          <img src="https://static.wixstatic.com/media/c66d1c_c55da92ffacf46eb8ad512545972b3b9~mv2.png" alt="Usability test result — Homepage" />
+          <img src="https://static.wixstatic.com/media/c66d1c_e32d93b13eb04b959a86a00922042815~mv2.png" alt="Usability test result — Checkout" />
+          <img src="https://static.wixstatic.com/media/c66d1c_a8e027fd88f0487b9e93f5c19a7876a9~mv2.png" alt="Usability test result — Sign Up" />
+          <button class="gallery-nav prev" aria-label="Previous">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button class="gallery-nav next" aria-label="Next">
+            <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <span class="gallery-counter">1 / 5</span>
+        </div>
+        <div class="gallery-thumbs">
+          <div class="gallery-thumb active"><img src="https://static.wixstatic.com/media/c66d1c_4e554eebed314c8db89b00e67281e14a~mv2.png" alt="1" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_a49ed34c5242481e9d167d3d6c50eb97~mv2.png" alt="2" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_c55da92ffacf46eb8ad512545972b3b9~mv2.png" alt="3" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_e32d93b13eb04b959a86a00922042815~mv2.png" alt="4" /></div>
+          <div class="gallery-thumb"><img src="https://static.wixstatic.com/media/c66d1c_a8e027fd88f0487b9e93f5c19a7876a9~mv2.png" alt="5" /></div>
+        </div>
+      </div>
+
+      <!-- Client quote -->
+      <div class="quote-block fade-up">
+        <p>We were particularly satisfied with the way the information and suggestions were presented to us. It was well thought out, structured, helpful and actionable. The team also kept in mind the limitations we shared and were able to simplify their suggestions to us which made it easy for us to understand and discuss with our programmers.</p>
+        <span class="quote-attr">— Clara, Product & Brand Owner, Her Velvet Vase</span>
+      </div>
+    </section>
+
+    <!-- REFLECTION -->
+    <section class="cs-section" id="reflection">
+      <p class="sec-tag fade-up">Looking Back</p>
+      <h2 class="sec-heading fade-up">Reflection</h2>
+      <div class="reflection-card fade-up">
+        <p>We initially skipped creating personas and jumped straight into empathy mapping and a customer journey — which left some decisions without a clear user anchor. We course-corrected by implementing personas once we realised how much they helped the brand prioritise features and trade-offs.</p>
+        <p>If time had permitted, we would have loved to run usability testing with real users on the final prototype to validate our wireframes and make further iterations. The Maze testing gave us strong confidence, but first-hand observation would have added another layer of insight.</p>
+        <p>Overall, this project reinforced how impactful a structured research process is — even within a short 4-week sprint — and how quickly small friction points compound into cart abandonment at scale.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  // ── Sidebar active link on scroll ──
+  (function() {
+    const sections = document.querySelectorAll('.cs-section');
+    const links = document.querySelectorAll('.sidebar-nav a');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          links.forEach(l => l.classList.remove('active'));
+          const active = document.querySelector(`.sidebar-nav a[href="#${entry.target.id}"]`);
+          if (active) active.classList.add('active');
+        }
+      });
+    }, { rootMargin: '-30% 0px -60% 0px' });
+    sections.forEach(s => observer.observe(s));
+  })();
+
+  // ── Fade up on scroll ──
+  (function() {
+    const els = document.querySelectorAll('.fade-up');
+    const io = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          e.target.style.transitionDelay = (i % 4) * 60 + 'ms';
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    els.forEach(el => io.observe(el));
+  })();
+
+  // ── Star cursor ──
+  (function() {
+    const dot = document.getElementById('cursor-dot');
+    if (!dot) return;
+    document.addEventListener('mousemove', e => {
+      dot.style.left = e.clientX + 'px';
+      dot.style.top  = e.clientY + 'px';
+    });
+  })();
+
+  // ── Wireframe gallery ──
+  (function() {
+    const gallery = document.getElementById('wfGallery');
+    if (!gallery) return;
+    const mainImgs = gallery.querySelectorAll('.gallery-main img');
+    const thumbs   = gallery.querySelectorAll('.gallery-thumb');
+    const counter  = gallery.querySelector('.gallery-counter');
+    const total    = mainImgs.length;
+    let current    = 0;
+
+    function goTo(n) {
+      mainImgs[current].classList.remove('active');
+      thumbs[current].classList.remove('active');
+      current = (n + total) % total;
+      mainImgs[current].classList.add('active');
+      thumbs[current].classList.add('active');
+      counter.textContent = (current + 1) + ' / ' + total;
+      thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
+    gallery.querySelector('.gallery-nav.prev').addEventListener('click', () => goTo(current - 1));
+    gallery.querySelector('.gallery-nav.next').addEventListener('click', () => goTo(current + 1));
+    thumbs.forEach((t, i) => t.addEventListener('click', () => goTo(i)));
+
+    // Keyboard arrows — only when wf gallery in view
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  goTo(current - 1);
+      if (e.key === 'ArrowRight') goTo(current + 1);
+    });
+  })();
+
+  // ── Usability Testing gallery ──
+  (function() {
+    const gallery = document.getElementById('utGallery');
+    if (!gallery) return;
+    const mainImgs = gallery.querySelectorAll('.gallery-main img');
+    const thumbs   = gallery.querySelectorAll('.gallery-thumb');
+    const counter  = gallery.querySelector('.gallery-counter');
+    const total    = mainImgs.length;
+    let current    = 0;
+
+    function goTo(n) {
+      mainImgs[current].classList.remove('active');
+      thumbs[current].classList.remove('active');
+      current = (n + total) % total;
+      mainImgs[current].classList.add('active');
+      thumbs[current].classList.add('active');
+      counter.textContent = (current + 1) + ' / ' + total;
+      thumbs[current].scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+    }
+
+    gallery.querySelector('.gallery-nav.prev').addEventListener('click', () => goTo(current - 1));
+    gallery.querySelector('.gallery-nav.next').addEventListener('click', () => goTo(current + 1));
+    thumbs.forEach((t, i) => t.addEventListener('click', () => goTo(i)));
+  })();
+</script>
+</body>
+</html>
