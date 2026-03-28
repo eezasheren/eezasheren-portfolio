@@ -260,22 +260,19 @@
       70%       { transform: translate(100px, 50px) scale(0.88) rotate(25deg); }
     }
 
-    /* ── Custom dot cursor ── */
-    * { cursor: none !important; }
+    /* ── Custom star cursor ── */
     #cursor-dot {
       position: fixed;
-      width: 7px; height: 7px;
-      background: var(--black);
-      border-radius: 50%;
+      width: 18px; height: 18px;
+      background: var(--lime);
+      clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
       pointer-events: none;
       z-index: 9999;
-      transform: translate(-50%, -50%);
+      animation: starSpin 3s linear infinite;
     }
-    #cursor-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 9997;
+    @keyframes starSpin {
+      from { transform: translate(6px, -20px) rotate(0deg); }
+      to   { transform: translate(6px, -20px) rotate(360deg); }
     }
 
     .hero-inner {
@@ -1294,7 +1291,6 @@
 </head>
 <body>
   <div id="cursor-dot"></div>
-  <canvas id="cursor-canvas"></canvas>
 
   <!-- NAV -->
   <nav>
@@ -1875,87 +1871,14 @@
       });
     })();
 
-    // ── Custom dot cursor with particle network trail ──
+    // ── Star cursor follow ──
     (function() {
-      const dot    = document.getElementById('cursor-dot');
-      const canvas = document.getElementById('cursor-canvas');
-      if (!dot || !canvas) return;
-
-      const ctx = canvas.getContext('2d');
-      let W, H;
-
-      function resize() {
-        W = canvas.width  = window.innerWidth;
-        H = canvas.height = window.innerHeight;
-      }
-      resize();
-      window.addEventListener('resize', resize);
-
-      let mx = -500, my = -500;
-      document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
-      // Particles
-      const MAX = 40;
-      const CONNECT_DIST = 100;
-      const LIFETIME = 90; // frames
-      let particles = [];
-
-      function spawnParticle() {
-        if (particles.length >= MAX) return;
-        particles.push({
-          x: mx, y: my,
-          age: 0,
-          life: LIFETIME + Math.random() * 30
-        });
-      }
-
-      let spawnTick = 0;
-      function loop() {
-        ctx.clearRect(0, 0, W, H);
-
-        // spawn every 3 frames
-        if (++spawnTick % 3 === 0 && mx > -400) spawnParticle();
-
-        // age out dead particles
-        particles = particles.filter(p => p.age < p.life);
-        particles.forEach(p => p.age++);
-
-        // draw connections
-        for (let i = 0; i < particles.length; i++) {
-          for (let j = i + 1; j < particles.length; j++) {
-            const dx = particles[i].x - particles[j].x;
-            const dy = particles[i].y - particles[j].y;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            if (dist < CONNECT_DIST) {
-              const aI = 1 - particles[i].age / particles[i].life;
-              const aJ = 1 - particles[j].age / particles[j].life;
-              const alpha = (1 - dist / CONNECT_DIST) * Math.min(aI, aJ) * 0.4;
-              ctx.beginPath();
-              ctx.moveTo(particles[i].x, particles[i].y);
-              ctx.lineTo(particles[j].x, particles[j].y);
-              ctx.strokeStyle = `rgba(255,255,255,${alpha})`;
-              ctx.lineWidth = 0.8;
-              ctx.stroke();
-            }
-          }
-        }
-
-        // draw dots
-        particles.forEach(p => {
-          const a = (1 - p.age / p.life) * 0.7;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(255,255,255,${a})`;
-          ctx.fill();
-        });
-
-        // move cursor dot
-        dot.style.left = mx + 'px';
-        dot.style.top  = my + 'px';
-
-        requestAnimationFrame(loop);
-      }
-      loop();
+      const dot = document.getElementById('cursor-dot');
+      if (!dot) return;
+      document.addEventListener('mousemove', e => {
+        dot.style.left = e.clientX + 'px';
+        dot.style.top  = e.clientY + 'px';
+      });
     })();
 
     // ── Hero typewriter animation ──
@@ -1993,8 +1916,9 @@
           i++;
           setTimeout(type, speed);
         } else {
-          // resume pill float after typing done
+          // resume pill float and clear reserved height
           if (pill) pill.style.animationPlayState = 'running';
+          el.style.minHeight = '';
         }
       }, delay);
     })();
