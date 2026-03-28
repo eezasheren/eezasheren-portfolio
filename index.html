@@ -1287,7 +1287,53 @@
     padding: 4px 10px; margin-bottom: 10px; width: fit-content;
   }
 
+
+    /* ── Hero grid + spotlight ── */
+    .hero-grid-overlay {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(140,140,150,0.10) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(140,140,150,0.10) 1px, transparent 1px);
+      background-size: 80px 80px;
+      border-radius: inherit;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hero-grid-color {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(197,241,53,0.9) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(31,75,255,0.7) 1px, transparent 1px);
+      background-size: 80px 80px;
+      border-radius: inherit;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      -webkit-mask-image: radial-gradient(circle 140px at 50% 50%, black 0%, transparent 100%);
+      mask-image: radial-gradient(circle 140px at 50% 50%, black 0%, transparent 100%);
+      transition: opacity 0.2s ease;
+    }
+
+    /* ── 3D Gooey blob ── */
+    .hero-gooey-wrap {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 430px;
+      height: 430px;
+      z-index: 3;
+      pointer-events: none;
+    }
+    .hero-gooey-wrap canvas { display: block; }
+    @media (max-width: 900px) {
+      .hero-gooey-wrap { display: none; }
+    }
+
   </style>
+  <script src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
 </head>
 <body>
   <div id="cursor-dot"></div>
@@ -1330,6 +1376,9 @@
     <div class="hero-box" id="heroBox">
       <!-- grain texture -->
       <div class="hero-grain"></div>
+      <!-- grid + spotlight -->
+      <div class="hero-grid-overlay"></div>
+      <div class="hero-grid-color" id="heroSpotlight"></div>
       <!-- gradient blobs -->
       <div class="hero-blob hero-blob-1"></div>
       <div class="hero-blob hero-blob-2"></div>
@@ -1337,7 +1386,8 @@
       <div class="hero-blob hero-blob-4"></div>
       <div class="hero-blob hero-blob-5"></div>
       <div class="hero-blob hero-blob-6"></div>
-      <!-- glass lens -->
+      <!-- gooey blob -->
+      <div class="hero-gooey-wrap" id="heroBlobContainer"></div>
       <div class="hero-inner">
         <!-- Intro pill -->
         <div class="hero-intro-pill">
@@ -1823,15 +1873,29 @@
       let cx = 0, cy = 0, tx = 0, ty = 0;
       function lerp(a, b, t) { return a + (b - a) * t; }
 
+      const spotlight = document.getElementById('heroSpotlight');
       box.addEventListener('mousemove', e => {
         const r = box.getBoundingClientRect();
         const nx = (e.clientX - r.left) / r.width  - 0.5;
         const ny = (e.clientY - r.top)  / r.height - 0.5;
-        tx = ny * -7;   // rotateX: tilt forward/back
-        ty = nx *  9;   // rotateY: tilt left/right
+        tx = ny * -7;
+        ty = nx *  9;
+        if (window._setBlobMouse) window._setBlobMouse(nx * 1.2, -ny * 1.2);
+        if (spotlight) {
+          const px = ((e.clientX - r.left) / r.width)  * 100;
+          const py = ((e.clientY - r.top)  / r.height) * 100;
+          spotlight.style.opacity = '1';
+          const mask = `radial-gradient(circle 140px at ${px}% ${py}%, black 0%, transparent 100%)`;
+          spotlight.style.webkitMaskImage = mask;
+          spotlight.style.maskImage = mask;
+        }
       });
 
-      box.addEventListener('mouseleave', () => { tx = 0; ty = 0; });
+      box.addEventListener('mouseleave', () => {
+        tx = 0; ty = 0;
+        if (window._setBlobMouse) window._setBlobMouse(0, 0);
+        if (spotlight) spotlight.style.opacity = '0';
+      });
 
       (function animate() {
         cx = lerp(cx, tx, 0.1);
@@ -2045,6 +2109,97 @@
 
     loadBlogPosts();
 
+  </script>
+
+  <!-- ── 3D Blob ── -->
+  <script>
+  (function() {
+    const container = document.getElementById('heroBlobContainer');
+    if (!container || typeof THREE === 'undefined') return;
+
+    const W = 430, H = 430;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(38, W / H, 0.1, 100);
+    camera.position.z = 6;
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    // Sphere with high segment count for smooth morphing
+    const geo = new THREE.SphereGeometry(1.6, 160, 160);
+    const originalPos = new Float32Array(geo.attributes.position.array);
+
+    const mat = new THREE.MeshPhongMaterial({
+      color:     new THREE.Color(0xdde1e8),
+      emissive:  new THREE.Color(0xb0b8c8),
+      emissiveIntensity: 0.12,
+      specular:  new THREE.Color(0xffffff),
+      shininess: 130,
+      transparent: true,
+      opacity: 0.72,
+    });
+
+    const mesh = new THREE.Mesh(geo, mat);
+    scene.add(mesh);
+
+    // Lighting rig
+    scene.add(new THREE.AmbientLight(0xd0d8e8, 1.4));
+
+    const key = new THREE.DirectionalLight(0xffffff, 2.0);
+    key.position.set(3, 5, 5);
+    scene.add(key);
+
+    const fill = new THREE.PointLight(0xe0e8f8, 1.2, 20);
+    fill.position.set(-4, 1, 3);
+    scene.add(fill);
+
+    const rim = new THREE.DirectionalLight(0xc8d4e8, 0.5);
+    rim.position.set(-3, -3, -4);
+    scene.add(rim);
+
+    // Mouse parallax targets
+    let targetX = 0, targetY = 0, curX = 0, curY = 0;
+    window._setBlobMouse = (x, y) => { targetX = x; targetY = y; };
+
+    // Noise-based morph
+    let t = 0;
+    function morph() {
+      const pos = geo.attributes.position.array;
+      for (let i = 0; i < pos.length; i += 3) {
+        const ox = originalPos[i], oy = originalPos[i+1], oz = originalPos[i+2];
+        const n = (
+          Math.sin(ox * 2.1 + t * 0.9) * Math.cos(oy * 1.8 + t * 0.7) +
+          Math.sin(oy * 2.3 + t * 0.8) * Math.cos(oz * 1.6 + t * 1.0) +
+          Math.sin(oz * 1.9 + t * 0.75) * Math.cos(ox * 2.0 + t * 0.85)
+        ) / 3;
+        const s = 1 + n * 0.18;
+        pos[i]   = ox * s;
+        pos[i+1] = oy * s;
+        pos[i+2] = oz * s;
+      }
+      geo.attributes.position.needsUpdate = true;
+      geo.computeVertexNormals();
+    }
+
+    (function animate() {
+      requestAnimationFrame(animate);
+      t += 0.006;
+      morph();
+      mesh.rotation.y += 0.004;
+      mesh.rotation.x = 0.15;
+
+      // Smooth mouse parallax
+      curX += (targetX - curX) * 0.05;
+      curY += (targetY - curY) * 0.05;
+      mesh.position.x = curX * 0.2;
+      mesh.position.y = curY * 0.35;
+
+      renderer.render(scene, camera);
+    })();
+  })();
   </script>
 
 </body>
