@@ -1320,21 +1320,8 @@
       transition: opacity 0.2s ease;
     }
 
-    /* ── 3D Gooey blob ── */
-    .hero-gooey-wrap {
-      position: absolute;
-      right: 5%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 430px;
-      height: 430px;
-      z-index: 3;
-      pointer-events: none;
-    }
-    .hero-gooey-wrap canvas { display: block; }
-    @media (max-width: 900px) {
-      .hero-gooey-wrap { display: none; }
-    }
+    /* ── 3D Gooey blob — temporarily hidden ── */
+    .hero-gooey-wrap { display: none; }
 
   </style>
 </head>
@@ -2143,14 +2130,12 @@
 
   </script>
 
-  <!-- Three.js: end of body = page renders first, then this loads -->
-  <script src="https://unpkg.com/three@0.157.0/build/three.min.js"></script>
-
-  <!-- ── 3D Blob ── -->
+  <!-- ── 3D Blob — temporarily disabled ── -->
   <script>
   (function() {
     const container = document.getElementById('heroBlobContainer');
-    if (!container || typeof THREE === 'undefined') return;
+    if (!container) return;
+    return; // blob disabled
 
     const W = 430, H = 430;
     const scene = new THREE.Scene();
