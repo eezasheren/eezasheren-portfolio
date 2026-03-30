@@ -2159,8 +2159,8 @@
     renderer.setClearColor(0x000000, 0);
     container.appendChild(renderer.domElement);
 
-    // Sphere with high segment count for smooth morphing
-    const geo = new THREE.SphereGeometry(1.6, 160, 160);
+    // Sphere — 80 segments looks identical but is 75% fewer vertices to process per frame
+    const geo = new THREE.SphereGeometry(1.6, 80, 80);
     const originalPos = new Float32Array(geo.attributes.position.array);
 
     const mat = new THREE.MeshPhongMaterial({
@@ -2215,21 +2215,42 @@
       geo.computeVertexNormals();
     }
 
-    (function animate() {
-      requestAnimationFrame(animate);
+    let rafId = null;
+    let blobVisible = true;
+    let tabVisible = !document.hidden;
+
+    function shouldRun() { return blobVisible && tabVisible; }
+
+    function animate() {
+      if (!shouldRun()) { rafId = null; return; }
+      rafId = requestAnimationFrame(animate);
       t += 0.006;
       morph();
       mesh.rotation.y += 0.004;
       mesh.rotation.x = 0.15;
-
-      // Smooth mouse parallax
       curX += (targetX - curX) * 0.05;
       curY += (targetY - curY) * 0.05;
       mesh.position.x = curX * 0.2;
       mesh.position.y = curY * 0.35;
-
       renderer.render(scene, camera);
-    })();
+    }
+
+    function tryStart() { if (shouldRun() && !rafId) animate(); }
+
+    // Pause when tab is hidden (e.g. user switches tabs)
+    document.addEventListener('visibilitychange', () => {
+      tabVisible = !document.hidden;
+      tryStart();
+    });
+
+    // Pause when blob is scrolled off screen
+    const blobObserver = new IntersectionObserver(entries => {
+      blobVisible = entries[0].isIntersecting;
+      tryStart();
+    }, { threshold: 0 });
+    blobObserver.observe(container);
+
+    animate();
   })();
   </script>
 
