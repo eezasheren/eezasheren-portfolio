@@ -13,20 +13,23 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --page-bg: #edeae4;
+      --page-bg: #F1F0DE;
       --card-bg: #f4f4f4;
-      --black:   #1a1d21;
+      --black:   #212121;
       --gray-1:  #6b7280;
       --gray-2:  #9ca3af;
       --gray-3:  #e5e7eb;
       --white:   #ffffff;
-      --blue:    #1f4bff;
-      --orange:  #ff7442;
-      --lime:    #c5f135;
-      --lime-dark: #1a1d21;
+      --blue:    #065B5C;
+      --orange:  #E95341;
+      --lime:    #D5DA81;
+      --lime-dark: #065B5C;
+      --teal:    #065B5C;
+      --coral:   #E95341;
+      --lavender:#B2B0FC;
       --nav-h:   80px;
       --radius:  20px;
-      --font-heading: 'Lexend', sans-serif;
+      --font-heading: 'Bricolage Grotesque', sans-serif;
     }
 
     html { scroll-behavior: smooth; }
@@ -181,50 +184,50 @@
     }
     .hero-blob-1 {
       width: 680px; height: 560px;
-      background: radial-gradient(ellipse at 40% 40%, #c8e86a 0%, #9dc42a 40%, #6ba010 75%, transparent 100%);
+      background: radial-gradient(ellipse at 40% 40%, #e8e9a8 0%, #D5DA81 40%, #b8be55 75%, transparent 100%);
       filter: blur(60px);
       top: -200px; left: -140px;
-      opacity: 0.5;
+      opacity: 0.55;
       animation: blobDrift1 3s ease-in-out infinite;
     }
     .hero-blob-2 {
       width: 520px; height: 460px;
-      background: radial-gradient(ellipse at 60% 55%, #60a5fa 0%, #2563eb 40%, #1e40af 75%, transparent 100%);
+      background: radial-gradient(ellipse at 60% 55%, #B2B0FC 0%, #8080c0 40%, #065B5C 75%, transparent 100%);
       filter: blur(60px);
       bottom: -140px; right: -110px;
-      opacity: 0.32;
+      opacity: 0.35;
       animation: blobDrift2 3.5s ease-in-out infinite;
     }
     .hero-blob-3 {
       width: 420px; height: 360px;
-      background: radial-gradient(ellipse at 50% 50%, #e2f87a 0%, #c5f135 50%, transparent 100%);
+      background: radial-gradient(ellipse at 50% 50%, #eaead0 0%, #D5DA81 50%, transparent 100%);
       filter: blur(50px);
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      opacity: 0.22;
+      opacity: 0.25;
       animation: blobDrift3 2.5s ease-in-out infinite;
     }
     .hero-blob-4 {
       width: 360px; height: 320px;
-      background: radial-gradient(ellipse at 45% 45%, #93c5fd 0%, #3b82f6 45%, #1d4ed8 80%, transparent 100%);
+      background: radial-gradient(ellipse at 45% 45%, #B2B0FC 0%, #9090c8 45%, #065B5C 80%, transparent 100%);
       filter: blur(55px);
       top: 15%; right: -80px;
-      opacity: 0.25;
+      opacity: 0.28;
       animation: blobDrift4 4s ease-in-out infinite;
     }
     /* Teal accent blob */
     .hero-blob-5 {
       width: 300px; height: 260px;
-      background: radial-gradient(ellipse at 50% 50%, #5eead4 0%, #0d9488 60%, transparent 100%);
+      background: radial-gradient(ellipse at 50% 50%, #0a8a8b 0%, #065B5C 60%, transparent 100%);
       filter: blur(50px);
       bottom: 10%; left: 15%;
-      opacity: 0.2;
+      opacity: 0.22;
       animation: blobDrift5 3s ease-in-out infinite;
     }
-    /* Warm yellow accent */
+    /* Coral accent */
     .hero-blob-6 {
       width: 260px; height: 220px;
-      background: radial-gradient(ellipse at 50% 50%, #fde68a 0%, #f59e0b 60%, transparent 100%);
+      background: radial-gradient(ellipse at 50% 50%, #f0806e 0%, #E95341 60%, transparent 100%);
       filter: blur(45px);
       top: 10%; left: 40%;
       opacity: 0.18;
@@ -314,7 +317,7 @@
       inset: 0;
       border-radius: 100px;
       padding: 1.5px;
-      background: linear-gradient(135deg, #a3e635, #60a5fa, #c084fc, #a3e635);
+      background: linear-gradient(135deg, #D5DA81, #B2B0FC, #065B5C, #D5DA81);
       background-size: 300% 300%;
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: destination-out;
@@ -348,14 +351,16 @@
     }
 
     /* ─── SECTION BOXES ─── */
-    .section-wrap {
-      padding: 12px 40px 12px;
+    /* section-wrap removed — padding now on section directly */
+    section:not(#hero) {
+      padding: 24px 20px;
+      perspective: 1200px;
     }
 
     .section-box {
       background: #ffffff;
       border-radius: 28px;
-      padding: 40px 64px 64px;
+      padding: 40px 48px 56px;
       box-shadow: 0 4px 40px rgba(0,0,0,0.05);
       max-width: 1320px;
       margin: 0 auto;
@@ -391,7 +396,7 @@
     .hero-name {
       font-family: 'Bricolage Grotesque', sans-serif;
       font-size: clamp(52px, 5.2vw, 76px);
-      font-weight: 700;
+      font-weight: 500;
       letter-spacing: -1.5px;
       line-height: 1.08;
       color: var(--black);
@@ -523,9 +528,9 @@
     /* ─── SKILLS TICKER ─── */
     .ticker-wrap {
       width: 100%;
-      background: var(--lime);
+      background: var(--lavender);
       overflow: hidden;
-      padding: 18px 0;
+      padding: 18px 0 22px;
       position: relative;
     }
 
@@ -546,19 +551,20 @@
     .ticker-item {
       display: inline-flex;
       align-items: center;
-      gap: 24px;
-      padding: 0 40px;
-      font-size: 16px;
+      gap: 32px;
+      padding: 0 48px;
+      font-size: 15px;
       font-weight: 700;
-      color: var(--black);
+      color: #3730A3;
       white-space: nowrap;
-      letter-spacing: 0.2px;
+      letter-spacing: 0.6px;
     }
 
     .ticker-item::after {
       content: '✦';
-      font-size: 12px;
-      opacity: 0.5;
+      font-size: 11px;
+      color: #5B4FCF;
+      opacity: 0.7;
     }
 
     /* ─── WORK SECTION ─── */
@@ -571,7 +577,7 @@
 
     .work-header h2 {
       font-size: clamp(34px, 4.5vw, 56px);
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -1.5px;
       line-height: 1.1;
       margin-bottom: 16px;
@@ -611,6 +617,201 @@
       gap: 20px;
     }
 
+    /* ─── NEW PROJECT CARDS V2 ─── */
+    .proj-grid-v2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 32px;
+      align-items: start; /* prevents adjacent card stretching */
+    }
+
+    /* Card shell */
+    .pc {
+      background: #f5f4ef;
+      border-radius: 22px;
+      padding: 16px 16px 22px;
+      text-decoration: none;
+      color: var(--black);
+      display: block;
+      position: relative;
+      transition: box-shadow 0.3s ease, transform 0.25s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      cursor: none; /* hide default cursor on card — custom pill takes over */
+      z-index: 1;
+    }
+    .pc:hover {
+      box-shadow: 0 14px 44px rgba(0,0,0,0.12);
+      transform: translateY(-4px);
+      z-index: 10;
+    }
+
+    /* Punch-hole — light, subtle, no hover colour change */
+    .pc-hole {
+      position: absolute;
+      top: 18px; left: 18px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.13);
+      background: rgba(255,255,255,0.55);
+    }
+
+    /* Card number */
+    .pc-num {
+      position: absolute;
+      top: 20px; right: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: rgba(0,0,0,0.25);
+      font-family: 'Inter', monospace;
+    }
+
+    /* Nested image */
+    .pc-img {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      height: 260px;
+      margin-top: 44px;
+    }
+    .pc-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s ease;
+      display: block;
+    }
+    .pc:hover .pc-img img { transform: scale(1.04); }
+
+    /* Subtle image dim on hover — no button */
+    .pc-img-dim {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      border-radius: 14px;
+      transition: background 0.3s ease;
+    }
+    .pc:hover .pc-img-dim { background: rgba(0,0,0,0.15); }
+
+    /* Cursor pill — replaces cursor entirely when over a card */
+    .pc-cursor-pill {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.7);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .pc-cursor-pill.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .pc-cursor-pill-inner {
+      background: var(--lavender);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* Body below image */
+    .pc-body { padding: 18px 6px 4px; }
+
+    /* Brand (header) + tags row */
+    .pc-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .pc-brand {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--black);
+      flex: 1;
+    }
+    .pc-tags {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .pc-tag {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      background: rgba(178,176,252,0.25); /* lavender tint */
+      color: #6060a8;
+      padding: 5px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* Project subtitle */
+    .pc-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-1);
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+
+    /* Expandable section — floats over grid, doesn't push adjacent card */
+    .pc-expand {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease 0.05s;
+    }
+    .pc:hover .pc-expand {
+      max-height: 220px;
+      opacity: 1;
+    }
+    .pc-divider {
+      border: none;
+      border-top: 1px dashed rgba(0,0,0,0.13);
+      margin: 14px 0 12px;
+    }
+    .pc-desc {
+      font-size: 13px;
+      color: var(--gray-1);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+    .pc-meta-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 7px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .pc-meta-label {
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gray-2);
+      width: 92px;
+      flex-shrink: 0;
+      font-size: 10px;
+      padding-top: 1px;
+    }
+    .pc-meta-val {
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    @media (max-width: 700px) { .proj-grid-v2 { grid-template-columns: 1fr; } }
+
     /* Project card — title top, image bottom */
     .proj-card {
       background: var(--card-bg);
@@ -647,7 +848,7 @@
 
     .proj-title {
       font-size: clamp(20px, 2.2vw, 27px);
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: -0.5px;
       line-height: 1.3;
       margin-bottom: 14px;
@@ -748,8 +949,8 @@
 
     .proj-card.wide.dark .proj-company { color: rgba(255,255,255,0.35); }
     .proj-card.wide.dark .proj-title { color: var(--white); }
-    .proj-card.wide.dark .proj-meta { background: rgba(22,163,74,0.18); color: #4ade80; }
-    .proj-card.wide.dark .proj-meta::before { background: #4ade80; }
+    .proj-card.wide.dark .proj-meta { background: rgba(6,91,92,0.18); color: #0a9a9b; }
+    .proj-card.wide.dark .proj-meta::before { background: #0a9a9b; }
     .proj-card.wide.dark .pill-blue,
     .proj-card.wide.dark .pill-orange,
     .proj-card.wide.dark .pill-green,
@@ -759,18 +960,14 @@
     #about { padding: 0; }
 
     .about-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 64px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 72px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     }
 
     .about-left h2 {
       font-size: clamp(30px, 3.5vw, 46px);
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -1.2px;
       line-height: 1.2;
       margin-bottom: 24px;
@@ -783,134 +980,219 @@
       margin-bottom: 16px;
     }
 
-    .values-list { list-style: none; border-top: 1px solid var(--gray-3); }
-
-    .value-item {
+    /* ─── ABOUT RIGHT — icon values ─── */
+    .icon-values-list { list-style: none; border-top: 1px solid var(--gray-3); }
+    .icon-value-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
       padding: 20px 0;
       border-bottom: 1px solid var(--gray-3);
     }
-
-    .val-num { font-size: 12px; font-weight: 700; color: var(--gray-2); letter-spacing: 1px; margin-bottom: 5px; }
-    .val-title { font-size: 17px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 5px; }
-    .val-desc { font-size: 15px; line-height: 1.65; color: var(--gray-1); }
-
-    /* ─── METHOD ─── */
-    #method { padding: 0; }
-
-    .method-card-wrap {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    }
-
-    .method-top {
-      padding: 48px 48px 40px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: end;
-      border-bottom: 1px solid var(--gray-3);
-    }
-
-    .method-top h2 {
-      font-size: clamp(30px, 4vw, 50px);
-      font-weight: 800;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-    }
-
-    .method-top p { font-size: 17px; line-height: 1.7; color: var(--gray-1); }
-
-    .method-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    .m-card {
-      padding: 32px;
-      border-right: 1px solid var(--gray-3);
-      transition: background 0.2s;
-    }
-
-    .m-card:last-child { border-right: none; }
-    .m-card:hover { background: #f5f3ee; }
-
-    .m-icon {
+    .icon-value-icon {
+      flex-shrink: 0;
       width: 36px; height: 36px;
       border-radius: 9px;
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 16px;
+      margin-top: 2px;
     }
+    .icon-value-item:nth-child(1) .icon-value-icon { background: var(--teal); }
+    .icon-value-item:nth-child(2) .icon-value-icon { background: var(--coral); }
+    .icon-value-item:nth-child(3) .icon-value-icon { background: var(--lavender); }
+    .icon-value-item:nth-child(4) .icon-value-icon { background: var(--black); }
+    .icon-val-title { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 4px; }
+    .icon-val-desc { font-size: 14px; line-height: 1.65; color: var(--gray-1); }
 
-    .m-card:nth-child(1) .m-icon { background: var(--black); }
-    .m-card:nth-child(2) .m-icon { background: var(--blue); }
-    .m-card:nth-child(3) .m-icon { background: var(--orange); }
-    .m-card:nth-child(4) .m-icon { background: #7c3aed; }
-
-    .m-title { font-size: 16px; font-weight: 700; letter-spacing: -0.2px; margin-bottom: 8px; }
-    .m-desc { font-size: 15px; line-height: 1.65; color: var(--gray-1); }
-
-    /* ─── CONTACT ─── */
-    #contact { padding: 0; }
-
-    .contact-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      padding: 24px 36px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-    }
-
-    .contact-card h2 {
-      font-size: clamp(22px, 3.5vw, 38px);
-      font-weight: 800;
-      letter-spacing: -2px;
-      line-height: 1.0;
-      margin-bottom: 12px;
-    }
-
-    .contact-card h2 span { color: var(--blue); }
-
-    .contact-row {
+    /* ─── EXPERIENCE SECTION ─── */
+    .exp-section-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 28px;
-      padding-top: 14px;
-      border-top: 1px solid var(--gray-3);
+      grid-template-columns: 1fr 2fr;
+      gap: 48px;
+      align-items: start;
     }
-
-    .contact-row p { font-size: 15px; line-height: 1.75; color: var(--gray-1); margin-bottom: 8px; }
-
-    .email-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--black);
-      text-decoration: none;
-      border-bottom: 2px solid var(--black);
-      padding-bottom: 3px;
-      letter-spacing: -0.3px;
-      transition: color 0.2s, border-color 0.2s;
+    .exp-section-label h2 {
+      font-size: clamp(22px, 2.5vw, 32px);
+      font-weight: 600;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      margin-bottom: 8px;
     }
-
-    .email-link:hover { color: var(--blue); border-color: var(--blue); }
-
-    .footer-row {
+    .exp-section-label p { font-size: 14px; color: var(--gray-1); line-height: 1.6; }
+    .exp-items-list { border-top: 1px solid var(--gray-3); }
+    .exp-row {
+      border-bottom: 1px solid var(--gray-3);
+      overflow: hidden;
+    }
+    .exp-row-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-top: 14px;
-      flex-wrap: wrap;
+      padding: 14px 0;
+      cursor: pointer;
       gap: 16px;
+      user-select: none;
+    }
+    .exp-row-header:hover .exp-toggle-btn { background: var(--gray-3); }
+    .exp-row-meta { display: flex; align-items: baseline; gap: 14px; flex: 1; min-width: 0; }
+    .exp-row-date { font-size: 11px; font-weight: 600; color: var(--gray-2); letter-spacing: 0.5px; white-space: nowrap; flex-shrink: 0; }
+    .exp-row-role { font-size: 15px; font-weight: 700; letter-spacing: -0.1px; }
+    .exp-row-company { font-size: 13px; font-weight: 500; color: var(--teal); }
+    .exp-toggle-btn {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s, transform 0.3s;
+    }
+    .exp-row.open .exp-toggle-btn { transform: rotate(180deg); }
+    .exp-row-desc-wrap {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.25s ease;
+      opacity: 0;
+    }
+    .exp-row.open .exp-row-desc-wrap { max-height: 120px; opacity: 1; }
+    .exp-row-desc { font-size: 13.5px; line-height: 1.65; color: var(--gray-1); padding-bottom: 14px; }
+
+    /* ─── FOOTER ─── */
+    section#contact {
+      padding: 0;
+      position: relative;
+      background: #065B5C;
+      overflow: hidden;
+      cursor: none;
     }
 
-    .footer-copy { font-size: 13px; color: var(--gray-2); }
+    /* animated checkered dots */
+    section#contact::before {
+      content: '';
+      position: absolute;
+      inset: -40px;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px);
+      background-size: 18px 18px;
+      animation: footerDrift 14s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes footerDrift {
+      0%   { transform: translate(0px, 0px) scale(1); }
+      33%  { transform: translate(8px, -6px) scale(1.02); }
+      66%  { transform: translate(-6px, 10px) scale(0.98); }
+      100% { transform: translate(4px, -4px) scale(1.01); }
+    }
 
-    .footer-links { display: flex; gap: 20px; list-style: none; }
-    .footer-links a { font-size: 13px; color: var(--gray-2); text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--black); }
+    .footer-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 40px 64px 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .footer-left {}
+
+    .footer-tagline {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(20px, 2.5vw, 32px);
+      font-weight: 600;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .footer-email-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+      padding-bottom: 3px;
+      letter-spacing: 0.2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-email-link:hover { color: #fff; border-color: rgba(255,255,255,0.8); }
+
+    .footer-right {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .footer-link-col {}
+    .footer-link-col-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 10px;
+    }
+    .footer-link-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .footer-link-col a {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.4px;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .footer-link-col a:hover { color: #fff; }
+
+    .footer-bottom {
+      position: relative;
+      z-index: 1;
+      padding: 14px 64px 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 0.3px; }
+
+    /* click burst particles */
+    .footer-burst {
+      position: absolute;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10;
+      animation: burstOut 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+    }
+    @keyframes burstOut {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+
+    /* footer custom cursor dot */
+    #footer-cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.8);
+      pointer-events: none;
+      z-index: 99998;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.15s;
+    }
 
     /* ─── MOBILE MENU ─── */
     .mobile-menu {
@@ -955,94 +1237,97 @@
     }
 
     @media (max-width: 768px) {
-      #hero {
-        padding: calc(var(--nav-h) + 8px) 8px 8px;
-        min-height: unset;
-        height: auto;
-        align-items: flex-start;
-      }
-      .hero-box {
-        padding: 28px 16px 32px;
-        border-radius: 20px;
-        min-height: unset;
-        height: auto;
-        justify-content: flex-start;
-      }
-      .hero-name {
-        font-size: clamp(30px, 8vw, 44px);
-        letter-spacing: -1px;
-        margin-bottom: 16px;
-        word-break: keep-all;
-        hyphens: none;
-        overflow-wrap: normal;
-      }
-      .hero-sub { font-size: 15px; margin-bottom: 20px; line-height: 1.6; }
-      .hero-intro-pill { margin-bottom: 20px; font-size: 12px; }
-      .hero-btns { flex-direction: column; gap: 10px; }
-      .btn-hero-primary, .btn-hero-secondary {
-        width: 100%;
-        justify-content: center;
-        padding: 16px 20px;
-        font-size: 15px;
-      }
-      .hero-blob-1 { width: 280px; height: 240px; top: -60px; left: -50px; }
-      .hero-blob-2 { width: 220px; height: 190px; bottom: -50px; right: -30px; }
-      .hero-blob-3 { width: 180px; height: 160px; }
-      .hero-blob-4, .hero-blob-5, .hero-blob-6 { display: none; }
-      .glass-lens { display: none; }
-      .hero-deco-swirl, .hero-deco-star { display: none; }
-      .scroll-indicator { display: none; }
+      /* ── Nav ── */
       nav { padding: 0 16px; }
       .nav-center { display: none; }
       .nav-right .btn-outline { display: none; }
       .hamburger { display: flex; }
 
-      .wrap { padding: 0 8px; }
-      .section-wrap { padding: 8px 8px; }
-      .section-box { padding: 24px 16px 28px; border-radius: 20px; overflow: hidden; }
-      .work-header p { max-width: 100%; }
-      .work-header { margin-bottom: 32px; }
-
-      .projects-grid { grid-template-columns: 1fr; gap: 16px; margin: 0 -40px -28px; }
-      .proj-card { border-radius: 16px; }
-      .proj-card:last-child { border-radius: 16px 16px 20px 20px; }
-      .proj-card.wide { grid-column: span 1; flex-direction: column; }
-      .proj-card.wide .proj-img { min-height: 260px; }
-      .proj-img { min-height: 220px; }
-      .proj-meta { position: static; margin: 20px 0 16px 20px; align-self: flex-start; }
-      .proj-card.wide .proj-meta { left: unset; }
-      .proj-text { padding: 20px 20px 24px; display: flex; flex-direction: column; }
-      .proj-card.wide .proj-text { padding: 20px 20px 24px; }
-      .proj-title { font-size: 20px; }
-
-      /* About — flatten inner card */
-      .about-card {
-        grid-template-columns: 1fr;
-        gap: 28px;
-        padding: 0;
-        background: transparent;
-        box-shadow: none;
-        border-radius: 0;
+      /* ── Hero ── */
+      #hero {
+        padding: calc(var(--nav-h) + 10px) 12px 12px;
+        min-height: unset;
+        height: auto;
+        align-items: flex-start;
       }
-
-      /* Method — flatten inner card */
-      .method-card-wrap {
-        background: transparent;
-        box-shadow: none;
-        border-radius: 0;
+      .hero-box {
+        padding: 32px 28px 36px;
+        border-radius: 22px;
+        min-height: unset;
+        height: auto;
+        justify-content: flex-start;
       }
-      .method-top { grid-template-columns: 1fr; padding: 0 0 24px; border-bottom: 1px solid var(--gray-3); margin-bottom: 4px; }
-      .method-grid { grid-template-columns: 1fr; }
-      .m-card { border-right: none; border-bottom: 1px solid var(--gray-3); padding: 20px 0; }
-      .m-card:last-child { border-bottom: none; }
+      .hero-intro-pill { margin-bottom: 20px; font-size: 12px; }
+      .hero-name {
+        font-size: clamp(28px, 7.5vw, 40px);
+        letter-spacing: -1px;
+        margin-bottom: 16px;
+      }
+      .hero-sub { font-size: 14px; line-height: 1.65; margin-bottom: 20px; }
+      .hero-btns { flex-direction: column; gap: 10px; width: 100%; }
+      .btn-hero-primary, .btn-hero-secondary {
+        width: 100%; justify-content: center;
+        padding: 15px 20px; font-size: 15px;
+      }
+      .hero-blob-1 { width: 260px; height: 220px; top: -60px; left: -40px; }
+      .hero-blob-2 { width: 200px; height: 180px; bottom: -40px; right: -30px; }
+      .hero-blob-3 { width: 160px; height: 140px; }
+      .hero-blob-4, .hero-blob-5, .hero-blob-6 { display: none; }
+      .hero-deco-swirl, .hero-deco-star { display: none; }
+      .scroll-indicator { display: none; }
 
+      /* ── Sections ── */
+      section:not(#hero) { padding: 6px 12px; }
+      .section-box { padding: 24px 20px 32px; border-radius: 20px; overflow: hidden; }
+      .section-tag { font-size: 9px; }
+
+      /* ── Work / Project cards ── */
+      .work-header { margin-bottom: 24px; }
+      .work-header h2 { font-size: 28px; }
+      .work-header p { font-size: 14px; max-width: 100%; }
+      .proj-grid-v2 { grid-template-columns: 1fr; gap: 14px; }
+      .pc { padding: 14px 14px 18px; border-radius: 18px; }
+      .pc-img { height: 200px; margin-top: 36px; }
+      .pc-brand { font-size: 18px; }
+      .pc-subtitle { font-size: 13px; }
+      .pc-tag { font-size: 8px; }
+
+      /* ── About ── */
+      .about-card { grid-template-columns: 1fr; gap: 24px; }
+      .about-left h2 { font-size: 24px; letter-spacing: -0.5px; }
+      .about-left p { font-size: 14px; }
+      .icon-value-item { padding: 14px 0; gap: 12px; }
+      .icon-value-icon { width: 30px; height: 30px; border-radius: 8px; }
+      .icon-val-title { font-size: 14px; }
+      .icon-val-desc { font-size: 13px; }
+
+      /* ── Experience ── */
+      .exp-section-grid { grid-template-columns: 1fr; gap: 16px; }
+      .exp-section-label h2 { font-size: 22px; }
+      .exp-row-meta { flex-direction: column; gap: 2px; }
+      .exp-row-role { font-size: 14px; }
+      .exp-row-company { font-size: 12px; }
+      .exp-row-date { font-size: 10px; }
+
+      /* ── Blog ── */
+      .blog-scroll-outer { margin: 0 -20px; padding: 4px 20px 16px; }
+      .blog-card { width: 255px; }
+
+      /* ── Testimonials ── */
+      .testi-card { padding: 20px; min-width: 280px; }
+      .testi-quote { font-size: 14px; }
+
+      /* ── Footer ── */
+      .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 36px 24px 20px; }
+      .footer-tagline { font-size: 22px; letter-spacing: -0.5px; }
+      .footer-email-link { font-size: 13px; }
+      .footer-right { gap: 28px; }
+      .footer-bottom { padding: 14px 24px 24px; flex-direction: column; align-items: flex-start; gap: 4px; }
+
+      /* ── Awards ── */
       .awards-top { grid-template-columns: 1fr; padding: 32px 24px; }
       .awards-grid { grid-template-columns: 1fr; }
       .award-item { border-right: none !important; }
-
-      .contact-card { padding: 32px 24px; }
-      .contact-card h2 { font-size: 40px; letter-spacing: -2px; }
-      .contact-row { grid-template-columns: 1fr; gap: 32px; }
     }
 
     /* ─── ANIMATIONS ─── */
@@ -1102,7 +1387,7 @@
       inset: 0;
       border-radius: var(--radius);
       border: 2px solid transparent;
-      background: linear-gradient(135deg, var(--lime), #a3e635, var(--lime)) border-box;
+      background: linear-gradient(135deg, var(--lime), #c8ce6a, var(--lime)) border-box;
       -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: destination-out;
       mask-composite: exclude;
@@ -1121,7 +1406,7 @@
     }
     .testimonials-header h2 {
       font-size: clamp(28px, 4vw, 48px);
-      font-weight: 800;
+      font-weight: 700;
       letter-spacing: -1.2px;
       line-height: 1.2;
     }
@@ -1202,51 +1487,37 @@
     }
     .section-box-anim.visible { opacity: 1; transform: translateY(0) rotateX(0deg) scale(1); }
 
-    /* Perspective wrapper for 3D sections */
-    .section-wrap { perspective: 1200px; }
 
 
   /* ─── BLOG ─── */
-  #blog { padding: 0; }
-
-  .blog-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    padding: 0 64px 32px;
-    flex-wrap: wrap;
-    gap: 16px;
+  .blog-scroll-outer {
+    overflow-x: auto;
+    overflow-y: visible;
+    margin: 0 -64px;
+    padding: 4px 64px 20px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
   }
-  .blog-header h2 {
-    font-size: clamp(24px, 3vw, 40px);
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.15;
-  }
-
-  .blog-slider-outer {
-    overflow: hidden;
-    padding: 8px 0 52px;
-  }
-  .blog-track {
+  .blog-scroll-outer::-webkit-scrollbar { display: none; }
+  .blog-scroll-outer:active { cursor: grabbing; }
+  .blog-grid {
     display: flex;
     gap: 20px;
     width: max-content;
-    padding: 0 64px;
-    animation: blogScroll 45s linear infinite;
+    margin-bottom: 0;
   }
-  .blog-track:hover { animation-play-state: paused; }
-  @keyframes blogScroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
+  .blog-footer { text-align: center; margin-top: 28px; }
 
   .blog-card {
-    width: 320px;
+    width: 300px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
     background: var(--card-bg);
     border-radius: 20px;
     overflow: hidden;
-    flex-shrink: 0;
     text-decoration: none;
     color: var(--black);
     transition: transform 0.25s, box-shadow 0.25s;
@@ -1338,7 +1609,7 @@
       <ul class="nav-pill">
         <li><a href="#work">Work</a></li>
         <li><a href="about.html">About</a></li>
-        <li><a href="#method">Method</a></li>
+        <li><a href="#method">Experience</a></li>
         <li><a href="#blog">Blog</a></li>
       </ul>
     </div>
@@ -1356,7 +1627,7 @@
     <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">✕</button>
     <a href="#work" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Work</a>
     <a href="#about" onclick="document.querySelector('.mobile-menu').classList.remove('open')">About</a>
-    <a href="#method" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Method</a>
+    <a href="#method" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Experience</a>
     <a href="#blog" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Awards</a>
     <a href="#contact" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Contact</a>
   </div>
@@ -1422,141 +1693,188 @@
       <span class="ticker-item">Interaction Design</span>
       <span class="ticker-item">Wireframing</span>
       <span class="ticker-item">Prototyping</span>
-      <span class="ticker-item">User Testing</span>
+      <span class="ticker-item">Usability Testing</span>
       <span class="ticker-item">Service Design</span>
       <span class="ticker-item">Product Strategy</span>
       <span class="ticker-item">Design Systems</span>
       <span class="ticker-item">Information Architecture</span>
+      <span class="ticker-item">Journey Mapping</span>
+      <span class="ticker-item">Stakeholder Management</span>
+      <span class="ticker-item">Visual Design</span>
+      <span class="ticker-item">Figma</span>
+      <span class="ticker-item">FigJam</span>
+      <span class="ticker-item">Branding</span>
+      <span class="ticker-item">Workshop Facilitation</span>
+      <span class="ticker-item">Accessibility</span>
+      <span class="ticker-item">Competitive Analysis</span>
+      <span class="ticker-item">UX Writing</span>
       <!-- Set 2 (duplicate for seamless loop) -->
       <span class="ticker-item">UX Research</span>
       <span class="ticker-item">Systems Thinking</span>
       <span class="ticker-item">Interaction Design</span>
       <span class="ticker-item">Wireframing</span>
       <span class="ticker-item">Prototyping</span>
-      <span class="ticker-item">User Testing</span>
+      <span class="ticker-item">Usability Testing</span>
       <span class="ticker-item">Service Design</span>
       <span class="ticker-item">Product Strategy</span>
       <span class="ticker-item">Design Systems</span>
       <span class="ticker-item">Information Architecture</span>
+      <span class="ticker-item">Journey Mapping</span>
+      <span class="ticker-item">Stakeholder Management</span>
+      <span class="ticker-item">Visual Design</span>
+      <span class="ticker-item">Figma</span>
+      <span class="ticker-item">FigJam</span>
+      <span class="ticker-item">Branding</span>
+      <span class="ticker-item">Workshop Facilitation</span>
+      <span class="ticker-item">Accessibility</span>
+      <span class="ticker-item">Competitive Analysis</span>
+      <span class="ticker-item">UX Writing</span>
     </div>
   </div>
 
   <!-- ═══ WORK ═══ -->
   <section id="work">
-    <div class="section-wrap">
-      <div class="section-box section-box-anim" style="padding:40px 64px 64px;">
+      <div class="section-box section-box-anim">
       <div class="work-header fade-up">
         <span class="section-tag">Selected Work</span>
-        <h2>Projects that ship and scale.</h2>
-        <p>UX work focused on improving complex digital products — where research, constraints, and iteration shape meaningful outcomes.</p>
+        <h2>Curated Work</h2>
+        <p>Selected UX work across enterprise, fintech, and digital products.</p>
       </div>
 
-      <div class="projects-grid">
+      <div class="proj-grid-v2">
 
-        <!-- UOB — Wide dark card -->
-        <a href="uob.html" class="proj-card wide dark fade-up" style="transition-delay:0.05s">
-          <span class="proj-meta">Shipped</span>
-          <div class="proj-text">
-            <div>
-              <p class="proj-company">UOB Singapore</p>
-              <h3 class="proj-title">Evolving user experiences within corporate digital banking</h3>
-              <div class="proj-pills">
-                <span class="pill pill-blue">UX Design</span>
-                <span class="pill pill-blue">Banking</span>
-              </div>
-              <span class="nda-note" style="margin-top:14px;">
-                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                Content under NDA
-              </span>
-            </div>
+        <!-- UOB -->
+        <a href="uob.html" class="pc fade-up" style="transition-delay:0.05s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 01</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg" alt="UOB Singapore" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg"
-              alt="UOB Singapore corporate digital banking"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">UOB Singapore</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">UX Design</span>
+                <span class="pc-tag">Shipped</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">Evolving user experiences within corporate digital banking</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Redesigning internal tools and customer-facing flows for one of SEA's largest banks.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">UX Designer</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">In-house design team</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">2024 – Present</span></div>
+            </div>
           </div>
         </a>
 
         <!-- CuriousCore -->
-        <a href="curiouscore.html" class="proj-card fade-up" style="transition-delay:0.1s">
-          <span class="proj-meta">Shipped</span>
-          <div class="proj-text">
-            <p class="proj-company">CuriousCore</p>
-            <h3 class="proj-title">Increasing customer confidence and sales</h3>
-            <div class="proj-pills">
-              <span class="pill pill-orange">EdTech</span>
-              <span class="pill pill-orange">Conversion</span>
-            </div>
+        <a href="curiouscore.html" class="pc fade-up" style="transition-delay:0.1s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 02</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_9eb2eb4975694a7a9154dc9f83a79a78~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/OS971A1.jpg" alt="CuriousCore" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_9eb2eb4975694a7a9154dc9f83a79a78~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/OS971A1.jpg"
-              alt="CuriousCore customer confidence"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">CuriousCore</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">EdTech</span>
+                <span class="pc-tag">Shipped</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">Increasing customer confidence and sales</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Improving the user journey to drive enrolment and trust on a continuous learning platform.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">UX Designer</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">4 UX Designers</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">8 Weeks</span></div>
+            </div>
           </div>
         </a>
 
         <!-- Nutrition Clinic -->
-        <a href="nutritionClinic.html" class="proj-card fade-up" style="transition-delay:0.15s">
-          <span class="proj-meta">Shipped</span>
-          <div class="proj-text">
-            <p class="proj-company">The Nutrition Clinic</p>
-            <h3 class="proj-title">Creating a product to improve Singaporeans' sleep</h3>
-            <div class="proj-pills">
-              <span class="pill pill-green">HealthTech</span>
-              <span class="pill pill-green">Product Design</span>
-            </div>
+        <a href="nutritionClinic.html" class="pc fade-up" style="transition-delay:0.15s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 03</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_2bcf3e5eb9de487bbf4f1e97f30a1d14~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/cover.png" alt="The Nutrition Clinic" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_2bcf3e5eb9de487bbf4f1e97f30a1d14~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/cover.png"
-              alt="Nutrition Clinic sleep product"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">The Nutrition Clinic</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">HealthTech</span>
+                <span class="pc-tag">Shipped</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">Creating a product to improve Singaporeans' sleep</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Designing a sleep improvement app from research through to a shipped product.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">Product Designer</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">4 UX Designers</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">4 Weeks</span></div>
+            </div>
           </div>
         </a>
 
         <!-- AirAsia -->
-        <a href="airasia.html" class="proj-card fade-up" style="transition-delay:0.2s">
-          <span class="proj-meta">Shipped</span>
-          <div class="proj-text">
-            <p class="proj-company">AirAsia</p>
-            <h3 class="proj-title">Optimising the check-in flow for passengers</h3>
-            <div class="proj-pills">
-              <span class="pill pill-purple">Travel</span>
-              <span class="pill pill-purple">UX Research</span>
-            </div>
+        <a href="airasia.html" class="pc fade-up" style="transition-delay:0.2s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 04</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_80bc44bf073f444a8606515a559786cf~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/thumbnail.png" alt="AirAsia" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_80bc44bf073f444a8606515a559786cf~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/thumbnail.png"
-              alt="AirAsia check-in flow"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">AirAsia</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">Travel</span>
+                <span class="pc-tag">Shipped</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">Optimising the check-in flow for passengers</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Streamlining the mobile check-in experience for millions of passengers across Southeast Asia.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">UX Researcher</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">4 UX Designers</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">6 Weeks</span></div>
+            </div>
           </div>
         </a>
 
         <!-- Her Velvet Vase -->
-        <a href="her-velvet-vase.html" class="proj-card fade-up" style="transition-delay:0.25s">
-          <span class="proj-meta">Research</span>
-          <div class="proj-text">
-            <p class="proj-company">Her Velvet Vase</p>
-            <h3 class="proj-title">From browse to buy — fixing the checkout experience</h3>
-            <div class="proj-pills">
-              <span class="pill pill-blue">E-Commerce</span>
-              <span class="pill pill-blue">UX Research</span>
-              <span class="pill pill-blue">Wireframing</span>
-            </div>
+        <a href="her-velvet-vase.html" class="pc fade-up" style="transition-delay:0.25s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 05</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_3512807ccd6e440cbffb6ea2686da0a9~mv2.png" alt="Her Velvet Vase" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_3512807ccd6e440cbffb6ea2686da0a9~mv2.png"
-              alt="Her Velvet Vase cart abandonment research"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">Her Velvet Vase</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">E-Commerce</span>
+                <span class="pc-tag">Research</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">From browse to buy — fixing the checkout experience</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Diagnosing cart abandonment and wireframing a better checkout for a fashion e-commerce brand.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">UX Researcher</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">4 UX Designers</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">4 Weeks</span></div>
+            </div>
           </div>
         </a>
 
@@ -1570,131 +1888,162 @@
       </div>
 
       </div><!-- end section-box -->
-    </div><!-- end section-wrap -->
   </section>
 
   <!-- ═══ ABOUT ═══ -->
   <section id="about">
-    <div class="section-wrap">
-      <div class="section-box section-box-anim" style="padding:40px 64px 64px;">
+      <div class="section-box section-box-anim" style="padding:40px 64px 56px;">
       <div class="fade-up" style="text-align:center;margin-bottom:12px;">
         <span class="section-tag">About Me</span>
       </div>
       <div class="about-card fade-up" style="transition-delay:0.05s">
         <div class="about-left">
           <h2>With 8+ years in design, I create smart and thoughtful digital products.</h2>
-          <p>I'm a Singapore-based UX designer working on complex digital products in the banking space. I partner with product, engineering, and business teams to turn requirements, constraints, and ideas into experiences that people can actually use.</p>
+          <p>I'm a Singaporean UX designer working on complex digital products in the banking space. I partner with product, engineering, and business teams to turn requirements, constraints, and ideas into experiences that people can actually use.</p>
           <p>With a background in branding and marketing, I bring a systems-level perspective to product design — connecting user needs, business goals, and delivery realities.</p>
-          <p>I use systems thinking and experimentation to define the right problems and shape purposeful, insight-driven solutions.</p>
-          <a href="about.html" style="display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:13px 26px;background:var(--black);color:#fff;border-radius:100px;font-size:15px;font-weight:600;text-decoration:none;transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='#c5f135';this.style.color='#1a1d21'" onmouseout="this.style.background='#1a1d21';this.style.color='#fff'">
-            More about me
-            <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10"/></svg>
-          </a>
         </div>
         <div class="about-right">
-          <ul class="values-list">
-            <li class="value-item">
-              <p class="val-num">01</p>
-              <p class="val-title">Start with the problem</p>
-              <p class="val-desc">I begin by understanding users, systems, and context before jumping into solutions. Research and usability principles guide my decisions — not assumptions.</p>
+          <ul class="icon-values-list">
+            <li class="icon-value-item">
+              <div class="icon-value-icon">
+                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+              </div>
+              <div>
+                <p class="icon-val-title">Strategy</p>
+                <p class="icon-val-desc">Framing the right problems before exploring solutions, balancing user needs, business goals, and technical realities.</p>
+              </div>
             </li>
-            <li class="value-item">
-              <p class="val-num">02</p>
-              <p class="val-title">Design for complexity</p>
-              <p class="val-desc">I work at a systems level, connecting flows, features, and constraints to create experiences that are clear, scalable, and consistent across products.</p>
+            <li class="icon-value-item">
+              <div class="icon-value-icon">
+                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+              </div>
+              <div>
+                <p class="icon-val-title">Systems Thinking</p>
+                <p class="icon-val-desc">Designing scalable flows and patterns that bring clarity and consistency to complex products.</p>
+              </div>
             </li>
-            <li class="value-item">
-              <p class="val-num">03</p>
-              <p class="val-title">Work through collaboration</p>
-              <p class="val-desc">I value curiosity over judgement and communicate design rationale clearly, building trust with product, engineering, and business teams.</p>
+            <li class="icon-value-item">
+              <div class="icon-value-icon">
+                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              </div>
+              <div>
+                <p class="icon-val-title">Collaboration</p>
+                <p class="icon-val-desc">Building strong partnerships across teams through curiosity, communication, and shared problem-solving.</p>
+              </div>
             </li>
-            <li class="value-item">
-              <p class="val-num">04</p>
-              <p class="val-title">Keep learning</p>
-              <p class="val-desc">I'm currently deepening my background in psychology to strengthen how I understand behaviour and design with greater empathy.</p>
+            <li class="icon-value-item">
+              <div class="icon-value-icon">
+                <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+              </div>
+              <div>
+                <p class="icon-val-title">Growth Mindset</p>
+                <p class="icon-val-desc">Continuously learning and evolving my approach to behaviour, usability, and product thinking.</p>
+              </div>
             </li>
           </ul>
         </div>
       </div>
+      <div style="margin-top:36px;">
+        <a href="about.html" style="display:inline-flex;align-items:center;gap:8px;padding:13px 26px;background:var(--black);color:#fff;border-radius:100px;font-size:15px;font-weight:600;text-decoration:none;transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='#D5DA81';this.style.color='#212121'" onmouseout="this.style.background='#212121';this.style.color='#fff'">
+          More about me
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
+      </div>
       </div><!-- end section-box -->
-    </div><!-- end section-wrap -->
   </section>
 
-  <!-- ═══ METHOD ═══ -->
+  <!-- ═══ EXPERIENCE ═══ -->
   <section id="method">
-    <div class="section-wrap">
-      <div class="section-box section-box-anim" style="padding:40px 64px 64px;">
-      <div class="fade-up" style="text-align:center;margin-bottom:12px;">
-        <span class="section-tag">How I Work</span>
+      <div class="section-box section-box-anim" style="padding:40px 64px 56px;">
+      <div class="fade-up" style="text-align:center;margin-bottom:28px;">
+        <span class="section-tag">Experience</span>
       </div>
-      <div class="method-card-wrap fade-up" style="transition-delay:0.05s">
-        <div class="method-top">
-          <h2>Four disciplines.<br/>One purpose.</h2>
-          <p>The way I approach every design challenge — from discovery to delivery — built around clarity, empathy, and execution.</p>
+      <div class="exp-section-grid fade-up" style="transition-delay:0.05s">
+        <div class="exp-section-label">
+          <h2>Where I've worked.</h2>
+          <p>Roles across enterprise banking, EdTech, and digital product design.</p>
         </div>
-        <div class="method-grid">
-          <div class="m-card">
-            <div class="m-icon">
-              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6M9 16h6M9 8h6M5 3h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2z"/></svg>
+        <div class="exp-items-list">
+
+          <div class="exp-row" onclick="this.classList.toggle('open')">
+            <div class="exp-row-header">
+              <div class="exp-row-meta">
+                <span class="exp-row-date">Nov 2023 — Present</span>
+                <div>
+                  <p class="exp-row-role">UI / UX Designer &nbsp;<span class="exp-row-company">UOB Bank</span></p>
+                </div>
+              </div>
+              <div class="exp-toggle-btn">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </div>
             </div>
-            <p class="m-title">Experience Design</p>
-            <p class="m-desc">Turning complex workflows into clear, usable journeys from end to end — balancing user behaviour, business goals, and technical constraints.</p>
-          </div>
-          <div class="m-card">
-            <div class="m-icon">
-              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+            <div class="exp-row-desc-wrap">
+              <p class="exp-row-desc">Designing for UOB Infinity, a digital banking platform for Corporate Cash Management, Financial Supply Chain Management and Trade needs across 10 markets. Partnering with product and engineering to improve usability and drive measurable increases in client engagement.</p>
             </div>
-            <p class="m-title">Product Thinking</p>
-            <p class="m-desc">Connecting user insight, business goals, and execution end to end — ensuring design decisions move the right metrics.</p>
           </div>
-          <div class="m-card">
-            <div class="m-icon">
-              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+
+          <div class="exp-row" onclick="this.classList.toggle('open')">
+            <div class="exp-row-header">
+              <div class="exp-row-meta">
+                <span class="exp-row-date">Feb — Sep 2023</span>
+                <div>
+                  <p class="exp-row-role">UX Product Designer / Art Director &nbsp;<span class="exp-row-company">CuriousCore</span></p>
+                </div>
+              </div>
+              <div class="exp-toggle-btn">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </div>
             </div>
-            <p class="m-title">Strategy</p>
-            <p class="m-desc">Framing the right problems before exploring solutions — helping teams align on what to build and why before diving into how.</p>
-          </div>
-          <div class="m-card">
-            <div class="m-icon">
-              <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
+            <div class="exp-row-desc-wrap">
+              <p class="exp-row-desc">Led end-to-end product design for CuriousCore's digital platform, translating research insights and stakeholder requirements into scalable UX solutions. Improved B2B page usability, contributing to stronger B2B sales performance.</p>
             </div>
-            <p class="m-title">Systems Thinking</p>
-            <p class="m-desc">Creating cohesive patterns and journeys that support products as they grow — designing components and flows that scale.</p>
           </div>
+
+          <div class="exp-row" onclick="this.classList.toggle('open')">
+            <div class="exp-row-header">
+              <div class="exp-row-meta">
+                <span class="exp-row-date">Oct 2021 — Jan 2023</span>
+                <div>
+                  <p class="exp-row-role">UX Designer &nbsp;<span class="exp-row-company">CuriousCore</span></p>
+                </div>
+              </div>
+              <div class="exp-toggle-btn">
+                <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </div>
+            </div>
+            <div class="exp-row-desc-wrap">
+              <p class="exp-row-desc">Contributed to end-to-end UX design on multiple freelance projects, conducting user research, business analysis, interviews, and rapid prototyping. Delivered live projects for clients including AirAsia, The Nutrition Clinic, and Her Velvet Vase.</p>
+            </div>
+          </div>
+
         </div>
       </div>
       </div><!-- end section-box -->
-    </div><!-- end section-wrap -->
   </section>
 
-  <!-- ═══ TESTIMONIALS ═══ -->
   <!-- ═══ BLOG ═══ -->
   <section id="blog">
-    <div class="section-wrap">
-      <div class="section-box section-box-anim" style="padding:40px 0 0; overflow:hidden;">
-        <div class="fade-up" style="text-align:center;margin-bottom:12px;padding:0 64px;">
+      <div class="section-box section-box-anim">
+        <div class="fade-up" style="text-align:center;margin-bottom:28px;">
           <span class="section-tag">From the Blog</span>
         </div>
-        <div class="blog-header fade-up" style="transition-delay:0.05s">
-          <h2>Thoughts on design,<br/>research &amp; craft.</h2>
+        <div class="blog-scroll-outer fade-up" style="transition-delay:0.05s">
+          <div class="blog-grid" id="blog-track"></div>
+        </div>
+        <div class="blog-footer fade-up" style="transition-delay:0.1s">
           <a href="https://eezasheren.substack.com" target="_blank" rel="noopener" class="btn-sm btn-dark">
             Read all posts
             <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10"/></svg>
           </a>
         </div>
-        <div class="blog-slider-outer fade-up" style="transition-delay:0.1s">
-          <div class="blog-track" id="blog-track"></div>
-        </div>
       </div>
-    </div>
   </section>
 
+  <!-- ═══ TESTIMONIALS ═══ -->
   <section id="testimonials">
-    <div class="section-wrap">
-      <div class="section-box section-box-anim" style="padding:40px 64px 64px;">
+      <div class="section-box section-box-anim">
         <div class="testimonials-header fade-up" style="margin-bottom:28px;">
           <span class="section-tag">Testimonials</span>
-          <h2>These words remind me<br/>why I love what I do.</h2>
         </div>
         <div class="testi-slider-outer fade-up" style="transition-delay:0.1s">
           <div class="testi-track">
@@ -1822,34 +2171,40 @@
           </div>
         </div>
       </div>
-    </div>
   </section>
 
-  <!-- ═══ CONTACT ═══ -->
+  <!-- ═══ FOOTER ═══ -->
+  <div style="height:48px;"></div>
+  <div id="footer-cursor"></div>
   <section id="contact">
-    <div class="section-wrap" style="padding-bottom:40px;">
-      <div class="section-box" style="background:var(--black);">
-      <div class="contact-card fade-up">
-        <h2>Let's Work<br/><span>Together.</span></h2>
-        <div class="contact-row">
-          <p>Have a project in mind? I'd love to hear about it. Whether it's a complex product challenge or a new idea — let's talk.</p>
-          <div>
-            <a href="mailto:eezasheren@gmail.com" class="email-link">
-              eezasheren@gmail.com
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10"/></svg>
-            </a>
-          </div>
-        </div>
-        <div class="footer-row">
-          <p class="footer-copy">© 2026 Eezasheren. All rights reserved.</p>
-          <ul class="footer-links">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <p class="footer-tagline">Good design makes things work better.</p>
+      </div>
+      <div class="footer-right">
+        <div class="footer-link-col">
+          <p class="footer-link-col-label">Connect</p>
+          <ul>
             <li><a href="https://www.linkedin.com/in/eeza" target="_blank" rel="noopener">LinkedIn</a></li>
             <li><a href="mailto:eezasheren@gmail.com">Email</a></li>
+            <li><a href="Eeza-CV-2026-April.pdf" target="_blank" rel="noopener">Download CV</a></li>
+          </ul>
+        </div>
+        <div class="footer-link-col">
+          <p class="footer-link-col-label">Navigate</p>
+          <ul>
+            <li><a href="#work">Work</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#method">Experience</a></li>
+            <li><a href="#blog">Blog</a></li>
           </ul>
         </div>
       </div>
-      </div><!-- end section-box -->
-    </div><!-- end section-wrap -->
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Eeza Sheren. All rights reserved.</p>
+      <p class="footer-copy">Based in Singapore · Open to opportunities</p>
+    </div>
   </section>
 
   <script>
@@ -2059,15 +2414,9 @@
     }
 
     function injectBlogCards(items, track) {
-      [1, 2].forEach(() => {
-        items.forEach(({ title, date, excerpt, link, img, readMins }) => {
-          track.appendChild(createBlogCard(title, date, excerpt, link, img, readMins));
-        });
+      items.forEach(({ title, date, excerpt, link, img, readMins }) => {
+        track.appendChild(createBlogCard(title, date, excerpt, link, img, readMins));
       });
-      const totalWidth = items.length * (320 + 20);
-      const styleEl = document.createElement('style');
-      styleEl.textContent = `@keyframes blogScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-${totalWidth}px); } }`;
-      document.head.appendChild(styleEl);
     }
 
     function loadBlogPosts() {
@@ -2119,8 +2468,8 @@
           const fallbacks = [
             { title: 'Why Good UX in Banking Is Often Invisible', date: 'March 2026', excerpt: 'The best banking experiences are the ones you never notice. Here\'s why invisibility is the goal — and how to design for it…', link: 'https://eezasheren.substack.com', img: '', readMins: 4 },
             { title: 'Slowness as a Design Superpower', date: 'March 2026', excerpt: 'In a world obsessed with speed, slowing down your design process might be the most powerful thing you can do for your users…', link: 'https://eezasheren.substack.com', img: '', readMins: 3 },
-            { title: 'More on Substack', date: '', excerpt: 'Follow along on Substack for regular posts on design, research, and UX leadership.', link: 'https://eezasheren.substack.com', img: '', readMins: 2 },
-            { title: 'Design Thinking & Craft', date: '', excerpt: 'Explore articles on UX design, user research, and product thinking on Substack.', link: 'https://eezasheren.substack.com', img: '', readMins: 3 }
+            { title: 'More on Substack', date: 'April 2026', excerpt: 'Follow along on Substack for regular posts on design, research, and UX leadership.', link: 'https://eezasheren.substack.com', img: '', readMins: 2 },
+            { title: 'Design Thinking & Craft', date: 'April 2026', excerpt: 'Explore articles on UX design, user research, and product thinking on Substack.', link: 'https://eezasheren.substack.com', img: '', readMins: 3 }
           ];
           injectBlogCards(fallbacks, track);
         });
@@ -2240,6 +2589,104 @@
     blobObserver.observe(container);
 
     animate();
+  })();
+  </script>
+
+  <!-- Custom cursor pill — direct body child so position:fixed works correctly -->
+  <div class="pc-cursor-pill" id="pcCursorPill">
+    <div class="pc-cursor-pill-inner">View Case Study</div>
+  </div>
+
+  <!-- ── Card custom cursor pill ── -->
+  <script>
+  (function() {
+    const pill = document.getElementById('pcCursorPill');
+    const dot  = document.getElementById('cursor-dot');
+    if (!pill) return;
+
+    document.addEventListener('mousemove', function(e) {
+      // Always track exact cursor position (CSS translate(-50%,-50%) centres pill on this point)
+      pill.style.left = e.clientX + 'px';
+      pill.style.top  = e.clientY + 'px';
+
+      const card = e.target.closest('.pc');
+      if (card) {
+        pill.classList.add('visible');
+        if (dot) dot.style.opacity = '0';
+      } else {
+        pill.classList.remove('visible');
+        if (dot) dot.style.opacity = '1';
+      }
+    });
+  })();
+  </script>
+
+  <!-- ── Footer: burst on click + custom cursor ── -->
+  <script>
+  (function() {
+    const footer = document.getElementById('contact');
+    const cur    = document.getElementById('footer-cursor');
+    if (!footer || !cur) return;
+
+    const COLORS = ['#B2B0FC','#D5DA81','#E95341','#ffffff','#a8e6cf'];
+    const BURST_COUNT = 14;
+
+    // Custom cursor inside footer
+    footer.addEventListener('mousemove', e => {
+      cur.style.left = e.clientX + 'px';
+      cur.style.top  = e.clientY + 'px';
+    });
+    footer.addEventListener('mouseenter', () => { cur.style.opacity = '1'; });
+    footer.addEventListener('mouseleave', () => { cur.style.opacity = '0'; });
+
+    // Burst on click
+    footer.addEventListener('click', e => {
+      const rect = footer.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      for (let i = 0; i < BURST_COUNT; i++) {
+        const p = document.createElement('div');
+        p.className = 'footer-burst';
+        const angle  = (360 / BURST_COUNT) * i + Math.random() * 20 - 10;
+        const dist   = 40 + Math.random() * 60;
+        const rad    = (angle * Math.PI) / 180;
+        const tx     = Math.cos(rad) * dist;
+        const ty     = Math.sin(rad) * dist;
+        const size   = 5 + Math.random() * 7;
+        const color  = COLORS[Math.floor(Math.random() * COLORS.length)];
+        p.style.cssText = `
+          left:${x}px; top:${y}px;
+          width:${size}px; height:${size}px;
+          background:${color};
+          --tx:${tx}px; --ty:${ty}px;
+          animation-duration:${0.5 + Math.random() * 0.4}s;
+        `;
+        footer.appendChild(p);
+        p.addEventListener('animationend', () => p.remove());
+      }
+    });
+  })();
+  </script>
+
+  <!-- ── Blog drag-to-scroll ── -->
+  <script>
+  (function() {
+    const el = document.querySelector('.blog-scroll-outer');
+    if (!el) return;
+    let isDown = false, startX, scrollLeft;
+    el.addEventListener('mousedown', e => {
+      isDown = true;
+      startX = e.pageX - el.offsetLeft;
+      scrollLeft = el.scrollLeft;
+    });
+    document.addEventListener('mouseup', () => { isDown = false; });
+    el.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - el.offsetLeft;
+      el.scrollLeft = scrollLeft - (x - startX) * 1.2;
+    });
   })();
   </script>
 
