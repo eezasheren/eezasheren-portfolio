@@ -13,20 +13,23 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --page-bg: #edeae4;
+      --page-bg: #F1F0DE;
       --card-bg: #f4f4f4;
-      --black:   #1a1d21;
+      --black:   #212121;
       --gray-1:  #6b7280;
       --gray-2:  #9ca3af;
       --gray-3:  #e5e7eb;
       --white:   #ffffff;
-      --blue:    #1f4bff;
-      --orange:  #ff7442;
-      --lime:    #c5f135;
-      --lime-dark: #1a1d21;
+      --blue:    #065B5C;
+      --orange:  #E95341;
+      --lime:    #D5DA81;
+      --lime-dark: #065B5C;
+      --teal:    #065B5C;
+      --coral:   #E95341;
+      --lavender:#B1B1D9;
       --nav-h:   80px;
       --radius:  20px;
-      --font-heading: 'Lexend', sans-serif;
+      --font-heading: 'Bricolage Grotesque', sans-serif;
     }
 
     html { scroll-behavior: smooth; }
@@ -181,50 +184,50 @@
     }
     .hero-blob-1 {
       width: 680px; height: 560px;
-      background: radial-gradient(ellipse at 40% 40%, #c8e86a 0%, #9dc42a 40%, #6ba010 75%, transparent 100%);
+      background: radial-gradient(ellipse at 40% 40%, #e8e9a8 0%, #D5DA81 40%, #b8be55 75%, transparent 100%);
       filter: blur(60px);
       top: -200px; left: -140px;
-      opacity: 0.5;
+      opacity: 0.55;
       animation: blobDrift1 3s ease-in-out infinite;
     }
     .hero-blob-2 {
       width: 520px; height: 460px;
-      background: radial-gradient(ellipse at 60% 55%, #60a5fa 0%, #2563eb 40%, #1e40af 75%, transparent 100%);
+      background: radial-gradient(ellipse at 60% 55%, #B1B1D9 0%, #8080c0 40%, #065B5C 75%, transparent 100%);
       filter: blur(60px);
       bottom: -140px; right: -110px;
-      opacity: 0.32;
+      opacity: 0.35;
       animation: blobDrift2 3.5s ease-in-out infinite;
     }
     .hero-blob-3 {
       width: 420px; height: 360px;
-      background: radial-gradient(ellipse at 50% 50%, #e2f87a 0%, #c5f135 50%, transparent 100%);
+      background: radial-gradient(ellipse at 50% 50%, #eaead0 0%, #D5DA81 50%, transparent 100%);
       filter: blur(50px);
       top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      opacity: 0.22;
+      opacity: 0.25;
       animation: blobDrift3 2.5s ease-in-out infinite;
     }
     .hero-blob-4 {
       width: 360px; height: 320px;
-      background: radial-gradient(ellipse at 45% 45%, #93c5fd 0%, #3b82f6 45%, #1d4ed8 80%, transparent 100%);
+      background: radial-gradient(ellipse at 45% 45%, #B1B1D9 0%, #9090c8 45%, #065B5C 80%, transparent 100%);
       filter: blur(55px);
       top: 15%; right: -80px;
-      opacity: 0.25;
+      opacity: 0.28;
       animation: blobDrift4 4s ease-in-out infinite;
     }
     /* Teal accent blob */
     .hero-blob-5 {
       width: 300px; height: 260px;
-      background: radial-gradient(ellipse at 50% 50%, #5eead4 0%, #0d9488 60%, transparent 100%);
+      background: radial-gradient(ellipse at 50% 50%, #0a8a8b 0%, #065B5C 60%, transparent 100%);
       filter: blur(50px);
       bottom: 10%; left: 15%;
-      opacity: 0.2;
+      opacity: 0.22;
       animation: blobDrift5 3s ease-in-out infinite;
     }
-    /* Warm yellow accent */
+    /* Coral accent */
     .hero-blob-6 {
       width: 260px; height: 220px;
-      background: radial-gradient(ellipse at 50% 50%, #fde68a 0%, #f59e0b 60%, transparent 100%);
+      background: radial-gradient(ellipse at 50% 50%, #f0806e 0%, #E95341 60%, transparent 100%);
       filter: blur(45px);
       top: 10%; left: 40%;
       opacity: 0.18;
@@ -314,7 +317,7 @@
       inset: 0;
       border-radius: 100px;
       padding: 1.5px;
-      background: linear-gradient(135deg, #a3e635, #60a5fa, #c084fc, #a3e635);
+      background: linear-gradient(135deg, #D5DA81, #B1B1D9, #065B5C, #D5DA81);
       background-size: 300% 300%;
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: destination-out;
@@ -391,7 +394,7 @@
     .hero-name {
       font-family: 'Bricolage Grotesque', sans-serif;
       font-size: clamp(52px, 5.2vw, 76px);
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: -1.5px;
       line-height: 1.08;
       color: var(--black);
@@ -611,6 +614,201 @@
       gap: 20px;
     }
 
+    /* ─── NEW PROJECT CARDS V2 ─── */
+    .proj-grid-v2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      margin-top: 32px;
+      align-items: start; /* prevents adjacent card stretching */
+    }
+
+    /* Card shell */
+    .pc {
+      background: #f5f4ef;
+      border-radius: 22px;
+      padding: 16px 16px 22px;
+      text-decoration: none;
+      color: var(--black);
+      display: block;
+      position: relative;
+      transition: box-shadow 0.3s ease, transform 0.25s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      cursor: none; /* hide default cursor on card — custom pill takes over */
+      z-index: 1;
+    }
+    .pc:hover {
+      box-shadow: 0 14px 44px rgba(0,0,0,0.12);
+      transform: translateY(-4px);
+      z-index: 10;
+    }
+
+    /* Punch-hole — light, subtle, no hover colour change */
+    .pc-hole {
+      position: absolute;
+      top: 18px; left: 18px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.13);
+      background: rgba(255,255,255,0.55);
+    }
+
+    /* Card number */
+    .pc-num {
+      position: absolute;
+      top: 20px; right: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: rgba(0,0,0,0.25);
+      font-family: 'Inter', monospace;
+    }
+
+    /* Nested image */
+    .pc-img {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      height: 260px;
+      margin-top: 44px;
+    }
+    .pc-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s ease;
+      display: block;
+    }
+    .pc:hover .pc-img img { transform: scale(1.04); }
+
+    /* Subtle image dim on hover — no button */
+    .pc-img-dim {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      border-radius: 14px;
+      transition: background 0.3s ease;
+    }
+    .pc:hover .pc-img-dim { background: rgba(0,0,0,0.15); }
+
+    /* Cursor pill — replaces cursor entirely when over a card */
+    .pc-cursor-pill {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.7);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .pc-cursor-pill.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .pc-cursor-pill-inner {
+      background: var(--lavender);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* Body below image */
+    .pc-body { padding: 18px 6px 4px; }
+
+    /* Brand (header) + tags row */
+    .pc-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .pc-brand {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--black);
+      flex: 1;
+    }
+    .pc-tags {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .pc-tag {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      background: rgba(177,177,217,0.25); /* lavender tint */
+      color: #6060a8;
+      padding: 5px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* Project subtitle */
+    .pc-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-1);
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+
+    /* Expandable section — floats over grid, doesn't push adjacent card */
+    .pc-expand {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease 0.05s;
+    }
+    .pc:hover .pc-expand {
+      max-height: 220px;
+      opacity: 1;
+    }
+    .pc-divider {
+      border: none;
+      border-top: 1px dashed rgba(0,0,0,0.13);
+      margin: 14px 0 12px;
+    }
+    .pc-desc {
+      font-size: 13px;
+      color: var(--gray-1);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+    .pc-meta-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 7px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .pc-meta-label {
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gray-2);
+      width: 92px;
+      flex-shrink: 0;
+      font-size: 10px;
+      padding-top: 1px;
+    }
+    .pc-meta-val {
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    @media (max-width: 700px) { .proj-grid-v2 { grid-template-columns: 1fr; } }
+
     /* Project card — title top, image bottom */
     .proj-card {
       background: var(--card-bg);
@@ -748,8 +946,8 @@
 
     .proj-card.wide.dark .proj-company { color: rgba(255,255,255,0.35); }
     .proj-card.wide.dark .proj-title { color: var(--white); }
-    .proj-card.wide.dark .proj-meta { background: rgba(22,163,74,0.18); color: #4ade80; }
-    .proj-card.wide.dark .proj-meta::before { background: #4ade80; }
+    .proj-card.wide.dark .proj-meta { background: rgba(6,91,92,0.18); color: #0a9a9b; }
+    .proj-card.wide.dark .proj-meta::before { background: #0a9a9b; }
     .proj-card.wide.dark .pill-blue,
     .proj-card.wide.dark .pill-orange,
     .proj-card.wide.dark .pill-green,
@@ -1102,7 +1300,7 @@
       inset: 0;
       border-radius: var(--radius);
       border: 2px solid transparent;
-      background: linear-gradient(135deg, var(--lime), #a3e635, var(--lime)) border-box;
+      background: linear-gradient(135deg, var(--lime), #c8ce6a, var(--lime)) border-box;
       -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: destination-out;
       mask-composite: exclude;
@@ -1451,112 +1649,145 @@
         <p>UX work focused on improving complex digital products — where research, constraints, and iteration shape meaningful outcomes.</p>
       </div>
 
-      <div class="projects-grid">
+      <!-- Custom cursor pill — shared, moved by JS -->
+      <div class="pc-cursor-pill" id="pcCursorPill">
+        <div class="pc-cursor-pill-inner">View Case Study</div>
+      </div>
 
-        <!-- UOB — Wide dark card -->
-        <a href="uob.html" class="proj-card wide dark fade-up" style="transition-delay:0.05s">
-          <span class="proj-meta">Shipped</span>
-          <div class="proj-text">
-            <div>
-              <p class="proj-company">UOB Singapore</p>
-              <h3 class="proj-title">Evolving user experiences within corporate digital banking</h3>
-              <div class="proj-pills">
-                <span class="pill pill-blue">UX Design</span>
-                <span class="pill pill-blue">Banking</span>
-              </div>
-              <span class="nda-note" style="margin-top:14px;">
-                <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-                Content under NDA
-              </span>
-            </div>
+      <div class="proj-grid-v2">
+
+        <!-- UOB -->
+        <a href="uob.html" class="pc fade-up" style="transition-delay:0.05s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 01</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg" alt="UOB Singapore" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg"
-              alt="UOB Singapore corporate digital banking"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">UOB Singapore</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">UX Design</span>
+                <span class="pc-tag">Shipped</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">Evolving user experiences within corporate digital banking</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Redesigning internal tools and customer-facing flows for one of SEA's largest banks.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">UX Designer</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">In-house design team</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">2024 – Present</span></div>
+            </div>
           </div>
         </a>
 
         <!-- CuriousCore -->
-        <a href="curiouscore.html" class="proj-card fade-up" style="transition-delay:0.1s">
-          <span class="proj-meta">Shipped</span>
-          <div class="proj-text">
-            <p class="proj-company">CuriousCore</p>
-            <h3 class="proj-title">Increasing customer confidence and sales</h3>
-            <div class="proj-pills">
-              <span class="pill pill-orange">EdTech</span>
-              <span class="pill pill-orange">Conversion</span>
-            </div>
+        <a href="curiouscore.html" class="pc fade-up" style="transition-delay:0.1s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 02</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_9eb2eb4975694a7a9154dc9f83a79a78~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/OS971A1.jpg" alt="CuriousCore" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_9eb2eb4975694a7a9154dc9f83a79a78~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/OS971A1.jpg"
-              alt="CuriousCore customer confidence"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">CuriousCore</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">EdTech</span>
+                <span class="pc-tag">Shipped</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">Increasing customer confidence and sales</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Improving the user journey to drive enrolment and trust on a continuous learning platform.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">UX Designer</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">4 UX Designers</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">8 Weeks</span></div>
+            </div>
           </div>
         </a>
 
         <!-- Nutrition Clinic -->
-        <a href="nutritionClinic.html" class="proj-card fade-up" style="transition-delay:0.15s">
-          <span class="proj-meta">Shipped</span>
-          <div class="proj-text">
-            <p class="proj-company">The Nutrition Clinic</p>
-            <h3 class="proj-title">Creating a product to improve Singaporeans' sleep</h3>
-            <div class="proj-pills">
-              <span class="pill pill-green">HealthTech</span>
-              <span class="pill pill-green">Product Design</span>
-            </div>
+        <a href="nutritionClinic.html" class="pc fade-up" style="transition-delay:0.15s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 03</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_2bcf3e5eb9de487bbf4f1e97f30a1d14~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/cover.png" alt="The Nutrition Clinic" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_2bcf3e5eb9de487bbf4f1e97f30a1d14~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/cover.png"
-              alt="Nutrition Clinic sleep product"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">The Nutrition Clinic</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">HealthTech</span>
+                <span class="pc-tag">Shipped</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">Creating a product to improve Singaporeans' sleep</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Designing a sleep improvement app from research through to a shipped product.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">Product Designer</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">4 UX Designers</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">4 Weeks</span></div>
+            </div>
           </div>
         </a>
 
         <!-- AirAsia -->
-        <a href="airasia.html" class="proj-card fade-up" style="transition-delay:0.2s">
-          <span class="proj-meta">Shipped</span>
-          <div class="proj-text">
-            <p class="proj-company">AirAsia</p>
-            <h3 class="proj-title">Optimising the check-in flow for passengers</h3>
-            <div class="proj-pills">
-              <span class="pill pill-purple">Travel</span>
-              <span class="pill pill-purple">UX Research</span>
-            </div>
+        <a href="airasia.html" class="pc fade-up" style="transition-delay:0.2s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 04</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_80bc44bf073f444a8606515a559786cf~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/thumbnail.png" alt="AirAsia" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_80bc44bf073f444a8606515a559786cf~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/thumbnail.png"
-              alt="AirAsia check-in flow"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">AirAsia</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">Travel</span>
+                <span class="pc-tag">Shipped</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">Optimising the check-in flow for passengers</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Streamlining the mobile check-in experience for millions of passengers across Southeast Asia.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">UX Researcher</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">4 UX Designers</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">6 Weeks</span></div>
+            </div>
           </div>
         </a>
 
         <!-- Her Velvet Vase -->
-        <a href="her-velvet-vase.html" class="proj-card fade-up" style="transition-delay:0.25s">
-          <span class="proj-meta">Research</span>
-          <div class="proj-text">
-            <p class="proj-company">Her Velvet Vase</p>
-            <h3 class="proj-title">From browse to buy — fixing the checkout experience</h3>
-            <div class="proj-pills">
-              <span class="pill pill-blue">E-Commerce</span>
-              <span class="pill pill-blue">UX Research</span>
-              <span class="pill pill-blue">Wireframing</span>
-            </div>
+        <a href="her-velvet-vase.html" class="pc fade-up" style="transition-delay:0.25s">
+          <div class="pc-hole"></div>
+          <span class="pc-num">NO. 05</span>
+          <div class="pc-img">
+            <img src="https://static.wixstatic.com/media/c66d1c_3512807ccd6e440cbffb6ea2686da0a9~mv2.png" alt="Her Velvet Vase" loading="lazy" />
+            <div class="pc-img-dim"></div>
           </div>
-          <div class="proj-img">
-            <img
-              src="https://static.wixstatic.com/media/c66d1c_3512807ccd6e440cbffb6ea2686da0a9~mv2.png"
-              alt="Her Velvet Vase cart abandonment research"
-              loading="lazy"
-            />
+          <div class="pc-body">
+            <div class="pc-title-row">
+              <h3 class="pc-brand">Her Velvet Vase</h3>
+              <div class="pc-tags">
+                <span class="pc-tag">E-Commerce</span>
+                <span class="pc-tag">Research</span>
+              </div>
+            </div>
+            <p class="pc-subtitle">From browse to buy — fixing the checkout experience</p>
+            <div class="pc-expand">
+              <hr class="pc-divider" />
+              <p class="pc-desc">Diagnosing cart abandonment and wireframing a better checkout for a fashion e-commerce brand.</p>
+              <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">UX Researcher</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Team</span><span class="pc-meta-val">4 UX Designers</span></div>
+              <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">4 Weeks</span></div>
+            </div>
           </div>
         </a>
 
@@ -1586,7 +1817,7 @@
           <p>I'm a Singapore-based UX designer working on complex digital products in the banking space. I partner with product, engineering, and business teams to turn requirements, constraints, and ideas into experiences that people can actually use.</p>
           <p>With a background in branding and marketing, I bring a systems-level perspective to product design — connecting user needs, business goals, and delivery realities.</p>
           <p>I use systems thinking and experimentation to define the right problems and shape purposeful, insight-driven solutions.</p>
-          <a href="about.html" style="display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:13px 26px;background:var(--black);color:#fff;border-radius:100px;font-size:15px;font-weight:600;text-decoration:none;transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='#c5f135';this.style.color='#1a1d21'" onmouseout="this.style.background='#1a1d21';this.style.color='#fff'">
+          <a href="about.html" style="display:inline-flex;align-items:center;gap:8px;margin-top:28px;padding:13px 26px;background:var(--black);color:#fff;border-radius:100px;font-size:15px;font-weight:600;text-decoration:none;transition:background 0.2s,color 0.2s;" onmouseover="this.style.background='#D5DA81';this.style.color='#212121'" onmouseout="this.style.background='#212121';this.style.color='#fff'">
             More about me
             <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10"/></svg>
           </a>
@@ -2240,6 +2471,30 @@
     blobObserver.observe(container);
 
     animate();
+  })();
+  </script>
+
+  <!-- ── Card custom cursor pill ── -->
+  <script>
+  (function() {
+    const pill = document.getElementById('pcCursorPill');
+    const dot  = document.getElementById('cursor-dot');
+    if (!pill) return;
+
+    document.addEventListener('mousemove', function(e) {
+      // Always track exact cursor position (CSS translate(-50%,-50%) centres pill on this point)
+      pill.style.left = e.clientX + 'px';
+      pill.style.top  = e.clientY + 'px';
+
+      const card = e.target.closest('.pc');
+      if (card) {
+        pill.classList.add('visible');
+        if (dot) dot.style.opacity = '0';
+      } else {
+        pill.classList.remove('visible');
+        if (dot) dot.style.opacity = '1';
+      }
+    });
   })();
   </script>
 
