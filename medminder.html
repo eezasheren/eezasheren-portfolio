@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedMinder — Eeza Sheren</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --dark-bg:    #0D0B1E;
+      --dark-card:  #1a1840;
+      --dark-card2: #16142c;
+      --purple-from: #4f46e5;
+      --purple-to:   #7c3aed;
+      --accent:      #6d5ef6;
+      --yellow:      #facc15;
+      --blue-pill:   #60a5fa;
+      --violet-pill: #a78bfa;
+      --text-main:   #e2e8f0;
+      --text-muted:  rgba(255,255,255,0.45);
+      --light-bg:    #f5f4ef;
+      --nav-h:       72px;
+      --black:       #1a1d21;
+      --gray-1:      #6b7280;
+      --gray-2:      #9ca3af;
+      --gray-3:      #e5e7eb;
+      --lime:        #c5f135;
+    }
+
+    html { scroll-behavior: smooth; }
+    h1, h2, h3, h4 { font-family: 'Bricolage Grotesque', sans-serif; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 17px;
+      color: var(--black);
+      background: var(--dark-bg);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      background: rgba(13,11,30,0.7);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      box-shadow: 0 1px 40px rgba(0,0,0,0.3);
+      z-index: 100;
+    }
+    .nav-logo { font-size: 17px; font-weight: 800; letter-spacing: -0.5px; color: #fff; text-decoration: none; }
+    .nav-center { position: absolute; left: 50%; transform: translateX(-50%); }
+    .nav-pill {
+      display: flex; align-items: center; gap: 2px;
+      background: rgba(255,255,255,0.07); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border-radius: 100px; padding: 6px 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.3);
+      list-style: none;
+    }
+    .nav-pill a {
+      font-size: 15px; font-weight: 500; color: rgba(255,255,255,0.6);
+      text-decoration: none; padding: 8px 20px; border-radius: 100px;
+      transition: background 0.2s, color 0.2s; white-space: nowrap;
+    }
+    .nav-pill a:hover { background: var(--lime); color: var(--black) !important; }
+    .nav-right { display: flex; gap: 12px; align-items: center; }
+    .btn-sm {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 11px 22px; border-radius: 100px;
+      font-size: 15px; font-weight: 600; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-dark { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.15); }
+    .btn-dark:hover { background: var(--lime); color: var(--black); border-color: transparent; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; border: none; background: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: #fff; border-radius: 2px; }
+
+    /* ─── MOBILE MENU ─── */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--dark-bg);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: #fff; text-decoration: none; }
+    .mobile-menu a:hover { color: var(--accent); }
+    .mobile-close {
+      position: absolute;
+      top: 20px; right: 24px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    /* ─── FADE-UP ANIMATION ─── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── HERO SECTION ─── */
+    .hero {
+      min-height: 100vh;
+      background: var(--dark-bg);
+      display: flex;
+      align-items: center;
+      padding: calc(var(--nav-h) + 60px) 80px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; right: -200px;
+      width: 700px; height: 700px;
+      background: radial-gradient(circle, rgba(79,70,229,0.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(124,58,237,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 80px;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-text { max-width: 600px; }
+    .hero-pill-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      background: rgba(255,255,255,0.06);
+      padding: 8px 16px;
+      border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .hero-pill-tag::before {
+      content: '';
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+    .hero-icon {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--purple-from), var(--purple-to));
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      margin-bottom: 28px;
+      box-shadow: 0 20px 40px rgba(79,70,229,0.4);
+    }
+    .hero-headline {
+      font-size: clamp(52px, 7vw, 88px);
+      font-weight: 800;
+      letter-spacing: -3px;
+      line-height: 0.95;
+      margin-bottom: 28px;
+    }
+    .hero-headline .med { color: #fff; }
+    .hero-headline .minder {
+      background: linear-gradient(135deg, #818cf8, #a78bfa, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 20px;
+      line-height: 1.7;
+      color: var(--text-muted);
+      margin-bottom: 36px;
+      font-weight: 400;
+    }
+    .hero-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 40px;
+    }
+    .hero-tag {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 6px 14px;
+      border-radius: 100px;
+    }
+    .hero-meta {
+      display: flex;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item { display: flex; flex-direction: column; gap: 4px; }
+    .hero-meta-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .hero-meta-value {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    /* ─── PHONE MOCKUP ─── */
+    .phone {
+      width: 260px;
+      height: 520px;
+      background: var(--dark-card);
+      border-radius: 44px;
+      border: 8px solid #2d2b4e;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.08);
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .phone-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px; height: 20px;
+      background: #0a0920;
+      border-radius: 10px;
+      z-index: 10;
+    }
+    .phone-status {
+      height: 36px;
+      background: inherit;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+      position: relative;
+      z-index: 5;
+    }
+    .phone-home {
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px; height: 4px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 2px;
+      z-index: 10;
+    }
+    .phone-screen {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    /* ─── HERO CYCLING PHONE ─── */
+    .hero-phone-wrap {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .hero-phone-wrap::before {
+      content: '';
+      position: absolute;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(109,94,246,0.25) 0%, transparent 70%);
+      border-radius: 50%;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .hero-phone .phone-screen { background: var(--dark-card); }
+
+    /* Screen animations */
+    .hero-screen {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      animation: screenCycle 7.5s ease-in-out infinite;
+    }
+    .hero-screen:nth-child(1) { animation-delay: 0s; }
+    .hero-screen:nth-child(2) { animation-delay: 2.5s; }
+    .hero-screen:nth-child(3) { animation-delay: 5s; }
+
+    @keyframes screenCycle {
+      0%   { opacity: 0; transform: translateY(10px); }
+      8%   { opacity: 1; transform: translateY(0); }
+      25%  { opacity: 1; transform: translateY(0); }
+      33%  { opacity: 0; transform: translateY(-10px); }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
+
+    /* Screen 1: Login */
+    .s-login {
+      background: #0a0920;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 18px;
+      gap: 0;
+    }
+    .s-login-icon {
+      width: 56px; height: 56px;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      margin-bottom: 12px;
+      box-shadow: 0 12px 24px rgba(79,70,229,0.5);
+    }
+    .s-login-name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+      margin-bottom: 3px;
+    }
+    .s-login-name span { background: linear-gradient(135deg, #818cf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .s-login-sub { font-size: 10px; color: rgba(255,255,255,0.45); margin-bottom: 16px; }
+    .s-login-features {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .s-login-feat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 8px;
+      color: rgba(255,255,255,0.45);
+      text-align: center;
+    }
+    .s-login-feat-icon {
+      width: 28px; height: 28px;
+      background: rgba(109,94,246,0.2);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+    }
+    .s-btn-primary {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .s-btn-ghost {
+      width: 100%;
+      padding: 9px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.6);
+      text-align: center;
+    }
+
+    /* Screen 2: Dashboard */
+    .s-dashboard {
+      background: #0D0B1E;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+    }
+    .s-dash-body { padding: 10px 14px; flex: 1; overflow: hidden; }
+    .s-dash-greeting { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 2px; }
+    .s-dash-sub { font-size: 9px; color: rgba(255,255,255,0.4); margin-bottom: 12px; }
+    .s-dash-label { font-size: 8px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 8px; }
+    .s-pill-card {
+      background: #1a1840;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .s-pill-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .s-pill-info { flex: 1; }
+    .s-pill-name { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.85); }
+    .s-pill-time { font-size: 8px; color: rgba(255,255,255,0.35); }
+    .s-pill-check {
+      width: 16px; height: 16px;
+      border-radius: 5px;
+      border: 1.5px solid rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      font-size: 9px;
+    }
+    .s-pill-check.checked { background: #4f46e5; border-color: #4f46e5; color: #fff; }
+    .s-pill-name.done { text-decoration: line-through; opacity: 0.4; }
+
+    /* Screen 3: Pills */
+    .s-pills {
+      background: #0D0B1E;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .s-pills-body { padding: 10px 14px; flex: 1; overflow: hidden; }
+    .s-pills-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .s-pills-title { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9); }
+    .s-pills-add {
+      font-size: 8px;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      padding: 5px 10px;
+      border-radius: 6px;
+    }
+    .s-pill-row {
+      background: #1a1840;
+      border-radius: 10px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .s-pill-row-info { flex: 1; }
+    .s-pill-row-name { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.85); }
+    .s-pill-row-freq { font-size: 8px; color: rgba(255,255,255,0.35); }
+
+    /* ─── BOTTOM NAV ─── */
+    .s-bottom-nav {
+      height: 52px;
+      background: #110f28;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 6px 10px;
+    }
+    .s-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      font-size: 7px;
+      color: rgba(255,255,255,0.3);
+    }
+    .s-nav-item.active { color: #6d5ef6; }
+    .s-nav-icon { font-size: 14px; }
+
+    /* ─── STATIC PHONE VARIANTS ─── */
+    .phone-static { position: relative; }
+    .phone-static .phone-inner {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ─── SECTION BANDS ─── */
+    .band-light {
+      background: var(--light-bg);
+      padding: 100px 80px;
+    }
+    .band-dark {
+      background: var(--dark-bg);
+      padding: 100px 80px;
+    }
+    .band-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* Feature layout: phone + text */
+    .feature-layout {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .feature-layout.reverse {
+      grid-template-columns: 1fr auto;
+    }
+    .feature-layout.reverse .feature-phone { order: 2; }
+    .feature-layout.reverse .feature-text { order: 1; }
+
+    .feature-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .feature-heading {
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .feature-heading-light { color: var(--black); }
+    .feature-heading-dark { color: var(--text-main); }
+    .feature-body-light { font-size: 18px; line-height: 1.8; color: var(--gray-1); margin-bottom: 32px; }
+    .feature-body-dark { font-size: 18px; line-height: 1.8; color: var(--text-muted); margin-bottom: 32px; }
+
+    .feature-bullets { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .feature-bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+    .feature-bullets-light li { color: var(--gray-1); }
+    .feature-bullets-dark li { color: rgba(255,255,255,0.6); }
+    .bullet-icon {
+      width: 30px; height: 30px;
+      background: rgba(109,94,246,0.15);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      border: 1px solid rgba(109,94,246,0.2);
+    }
+
+    /* ─── PROBLEM SECTION ─── */
+    .problem-stat {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      color: var(--black);
+      margin-bottom: 16px;
+    }
+    .problem-stat span {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .problem-stat-sub { font-size: 18px; color: var(--gray-1); margin-bottom: 48px; }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .pain-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .pain-icon { font-size: 28px; margin-bottom: 14px; }
+    .pain-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+    .pain-card p { font-size: 15px; line-height: 1.7; color: var(--gray-1); }
+    .hmw-card {
+      background: #1a1840;
+      border-radius: 20px;
+      padding: 40px 44px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hmw-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(109,94,246,0.3), transparent);
+      pointer-events: none;
+    }
+    .hmw-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 16px;
+    }
+    .hmw-text {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-weight: 600;
+      line-height: 1.5;
+      color: #fff;
+    }
+    .hmw-text em {
+      font-style: normal;
+      background: linear-gradient(135deg, #818cf8, #c4b5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ─── MY ROLE ─── */
+    .role-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(255,255,255,0.07);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .role-item {
+      background: #1a1840;
+      padding: 40px 36px;
+    }
+    .role-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .role-value {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    /* ─── DESIGN DECISIONS ─── */
+    .decision-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .decision-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 36px 28px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      border: 1px solid rgba(0,0,0,0.06);
+      position: relative;
+      overflow: hidden;
+    }
+    .decision-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #4f46e5, #7c3aed);
+    }
+    .decision-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 48px;
+      font-weight: 800;
+      color: rgba(79,70,229,0.1);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .decision-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--black);
+      margin-bottom: 10px;
+    }
+    .decision-card p { font-size: 15px; line-height: 1.7; color: var(--gray-1); }
+
+    /* ─── TECH STACK ─── */
+    .tech-section-heading {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(28px, 3vw, 38px);
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+    .tech-sub { color: var(--text-muted); font-size: 17px; margin-bottom: 48px; }
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .tech-tag {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(109,94,246,0.15);
+      border: 1px solid rgba(109,94,246,0.3);
+      padding: 12px 24px;
+      border-radius: 100px;
+      transition: all 0.2s;
+    }
+    .tech-tag:hover {
+      background: rgba(109,94,246,0.3);
+      border-color: rgba(109,94,246,0.6);
+      transform: translateY(-2px);
+    }
+
+    /* ─── REFLECTION ─── */
+    .sec-heading-light {
+      font-size: clamp(28px, 3.5vw, 44px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      color: var(--black);
+      margin-bottom: 8px;
+    }
+    .sec-heading-sub { font-size: 17px; color: var(--gray-1); margin-bottom: 48px; }
+    .reflection-list {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .reflection-item {
+      display: flex;
+      gap: 24px;
+      align-items: flex-start;
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px 28px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .reflection-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 40px;
+      font-weight: 800;
+      color: rgba(79,70,229,0.15);
+      line-height: 1;
+      flex-shrink: 0;
+      width: 40px;
+    }
+    .reflection-item h3 { font-size: 18px; font-weight: 700; color: var(--black); margin-bottom: 8px; }
+    .reflection-item p { font-size: 16px; line-height: 1.7; color: var(--gray-1); }
+
+    /* ─── FEATURE4: Two phones ─── */
+    .two-phones {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .two-phones-text {
+      max-width: 520px;
+      margin-bottom: 56px;
+    }
+
+    /* ─── CASE FOOTER NAV ─── */
+    .case-footer-nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 56px 80px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .case-footer-link {
+      font-size: 15px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    .case-footer-link:hover { color: #fff; }
+
+    /* ─── MAIN FOOTER ─── */
+    section#contact {
+      padding: 0;
+      position: relative;
+      background: #065B5C;
+      overflow: hidden;
+      cursor: none;
+      margin-top: 48px;
+    }
+    section#contact::before {
+      content: '';
+      position: absolute;
+      inset: -40px;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px);
+      background-size: 18px 18px;
+      animation: footerDrift 14s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+    }
+    @keyframes footerDrift {
+      0%   { transform: translate(0px, 0px) scale(1); }
+      33%  { transform: translate(8px, -6px) scale(1.02); }
+      66%  { transform: translate(-6px, 10px) scale(0.98); }
+      100% { transform: translate(4px, -4px) scale(1.01); }
+    }
+    .footer-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 40px 64px 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 64px;
+      align-items: center;
+    }
+    .footer-tagline {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(20px, 2.5vw, 32px);
+      font-weight: 600;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    .footer-right { display: flex; gap: 40px; align-items: flex-start; }
+    .footer-link-col-label {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 10px;
+    }
+    .footer-link-col ul { list-style: none; display: flex; flex-direction: column; gap: 7px; padding: 0; margin: 0; }
+    .footer-link-col a {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.4px;
+      color: rgba(255,255,255,0.65);
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .footer-link-col a:hover { color: #fff; }
+    .footer-bottom {
+      position: relative;
+      z-index: 1;
+      padding: 14px 64px 24px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 0.3px; }
+    .footer-burst {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 10;
+      animation: burstOut 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
+    }
+    @keyframes burstOut {
+      0%   { opacity: 1; transform: translate(0,0) scale(1); }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
+    }
+    #footer-cursor {
+      position: fixed;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.8);
+      pointer-events: none;
+      z-index: 99998;
+      opacity: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.15s;
+    }
+
+    /* ─── STAR CURSOR ─── */
+    #cursor-dot {
+      position: fixed;
+      width: 18px; height: 18px;
+      background: var(--lime);
+      clip-path: polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%);
+      pointer-events: none;
+      z-index: 9999;
+      animation: starSpin 3s linear infinite;
+    }
+    @keyframes starSpin {
+      from { transform: translate(6px, -20px) rotate(0deg); }
+      to   { transform: translate(6px, -20px) rotate(360deg); }
+    }
+
+    /* ─── SECTION LABEL ─── */
+    .sec-tag-dark {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+    .sec-tag-dark::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: var(--accent);
+    }
+    .sec-tag-light {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #4f46e5;
+      margin-bottom: 20px;
+    }
+    .sec-tag-light::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1px;
+      background: #4f46e5;
+    }
+
+    /* ─── INVENTORY SCREEN ─── */
+    .s-inventory {
+      background: #0D0B1E;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .s-inventory-body { padding: 10px 14px; flex: 1; overflow: hidden; }
+    .s-inventory-title { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9); margin-bottom: 12px; }
+    .s-stock-card {
+      background: #1a1840;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+    }
+    .s-stock-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .s-stock-name { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.85); flex: 1; }
+    .s-stock-count { font-size: 9px; color: rgba(255,255,255,0.4); }
+    .s-stock-bar-bg { height: 4px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+    .s-stock-bar { height: 100%; border-radius: 2px; }
+
+    /* ─── STREAKS SCREEN ─── */
+    .s-streaks {
+      background: #0D0B1E;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .s-streaks-body { padding: 10px 14px; flex: 1; overflow: hidden; }
+    .s-streaks-title { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9); margin-bottom: 6px; }
+    .s-streaks-sub { font-size: 9px; color: rgba(255,255,255,0.35); margin-bottom: 12px; }
+    .s-streak-big {
+      background: linear-gradient(135deg, rgba(79,70,229,0.3), rgba(124,58,237,0.2));
+      border: 1px solid rgba(109,94,246,0.3);
+      border-radius: 12px;
+      padding: 16px 14px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .s-streak-num {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 36px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+    }
+    .s-streak-label { font-size: 8px; color: rgba(255,255,255,0.45); margin-top: 4px; }
+    .s-week-dots {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 8px;
+    }
+    .s-week-dot {
+      width: 22px; height: 22px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px;
+      font-weight: 700;
+    }
+    .s-week-dot.done { background: #4f46e5; color: #fff; }
+    .s-week-dot.miss { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); }
+    .s-week-dot.today { background: #facc15; color: #0D0B1E; }
+
+    /* ─── SCHEDULE SCREEN ─── */
+    .s-schedule {
+      background: #0D0B1E;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .s-schedule-body { padding: 10px 14px; flex: 1; overflow: hidden; }
+    .s-schedule-title { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.9); margin-bottom: 12px; }
+    .s-sched-time-block { margin-bottom: 10px; }
+    .s-sched-time { font-size: 8px; font-weight: 700; color: rgba(255,255,255,0.3); margin-bottom: 5px; }
+    .s-sched-card {
+      background: rgba(79,70,229,0.15);
+      border-left: 2px solid #6d5ef6;
+      border-radius: 6px;
+      padding: 8px 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .s-sched-name { font-size: 9px; font-weight: 600; color: rgba(255,255,255,0.8); }
+    .s-sched-dose { font-size: 8px; color: rgba(255,255,255,0.35); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      .hero { padding: calc(var(--nav-h) + 40px) 32px 60px; }
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-phone-wrap { display: flex; justify-content: center; }
+      .band-light, .band-dark { padding: 72px 32px; }
+      .feature-layout, .feature-layout.reverse {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .feature-layout.reverse .feature-phone { order: 1; }
+      .feature-layout.reverse .feature-text { order: 2; }
+      .feature-phone { display: flex; justify-content: center; }
+      .pain-grid { grid-template-columns: 1fr; }
+      .decision-grid { grid-template-columns: 1fr; }
+      .role-grid { grid-template-columns: 1fr; }
+      .case-footer-nav { padding: 40px 32px 0; flex-direction: column; gap: 20px; align-items: flex-start; }
+      .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 36px 24px 20px; }
+      .footer-bottom { padding: 14px 24px 24px; flex-direction: column; align-items: flex-start; gap: 4px; }
+    }
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .hamburger { display: flex; }
+      .nav-pill { display: none; }
+      .phone { transform: scale(0.85); transform-origin: center; }
+      .two-phones { gap: 12px; }
+    }
+
+  /* ─── INTERACTIVE PHONE ANIMATIONS ─── */
+  .interactive-phone { cursor: pointer; transition: transform 0.15s ease; }
+  .interactive-phone:hover { transform: translateY(-4px); }
+  .interactive-phone:active { transform: scale(0.98); }
+
+  /* Tap hint label */
+  .tap-hint {
+    display: flex; align-items: center; justify-content: center;
+    gap: 6px; margin-top: 14px;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
+    color: rgba(255,255,255,0.35); animation: hintPulse 2s ease-in-out infinite;
+  }
+  .tap-hint-dark { color: rgba(0,0,0,0.25); }
+  @keyframes hintPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+  /* Ripple */
+  .phone { position: relative; }
+  .phone-ripple {
+    position: absolute; border-radius: 50%; pointer-events: none;
+    background: rgba(109,94,246,0.35);
+    width: 60px; height: 60px; margin: -30px 0 0 -30px;
+    animation: ripplePop 0.55s ease-out forwards;
+  }
+  @keyframes ripplePop { from{transform:scale(0);opacity:1} to{transform:scale(4);opacity:0} }
+
+  /* Toast overlay (inside phone) */
+  .phone-toast {
+    position: absolute; top: 52px; left: 10px; right: 10px; z-index: 20;
+    background: rgba(79,70,229,0.95); backdrop-filter: blur(8px);
+    color: #fff; border-radius: 12px; padding: 10px 14px;
+    font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 8px;
+    opacity: 0; transform: translateY(-8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+  }
+  .phone-toast.show { opacity: 1; transform: translateY(0); }
+
+  /* Notification banner (Schedule phone) */
+  .phone-notif {
+    position: absolute; top: 44px; left: 10px; right: 10px; z-index: 20;
+    background: rgba(20,18,45,0.97); border: 1px solid rgba(109,94,246,0.4);
+    color: #fff; border-radius: 14px; padding: 10px 12px;
+    font-size: 10px; font-weight: 600;
+    display: flex; flex-direction: column; gap: 2px;
+    opacity: 0; transform: translateY(-16px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .phone-notif .notif-app { font-size: 9px; color: rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.8px; margin-bottom:2px; }
+  .phone-notif.show { opacity: 1; transform: translateY(0); }
+
+  /* Check animation */
+  .s-pill-check { width:20px;height:20px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:all 0.3s ease;flex-shrink:0; }
+  .s-pill-check.checked { background:#6d5ef6;border-color:#6d5ef6;color:#fff; }
+  .s-pill-check.just-checked { animation: checkBounce 0.4s ease; }
+  @keyframes checkBounce { 0%{transform:scale(1)} 50%{transform:scale(1.3)} 100%{transform:scale(1)} }
+
+  /* Strikethrough done name */
+  .s-pill-name.done { text-decoration: line-through; opacity: 0.45; }
+
+  /* New pill slide in */
+  .s-pill-card-new {
+    opacity: 0; transform: translateY(16px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+  }
+  .s-pill-card-new.visible { opacity: 1; transform: translateY(0); }
+
+  /* Streak number pop */
+  .streak-pop { animation: streakPop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+  @keyframes streakPop { 0%{transform:scale(1)} 50%{transform:scale(1.4)} 100%{transform:scale(1)} }
+
+  /* Week dot fill */
+  .s-week-dot { transition: background 0.3s ease, color 0.3s ease; }
+
+  /* Stock bar animate */
+  .s-stock-bar { transition: width 0.8s ease; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="index.html" class="nav-logo">
+      <img src="logo.png" alt="Eezasheren" style="height:32px;width:auto;display:block;" onerror="this.style.display='none';this.nextSibling.style.display='block';" />
+      <span style="display:none;font-family:'Bricolage Grotesque',sans-serif;font-size:17px;font-weight:800;color:#fff;">ES</span>
+    </a>
+    <div class="nav-center">
+      <ul class="nav-pill">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="index.html#method">Method</a></li>
+        <li><a href="index.html#blog">Blog</a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <a href="mailto:eezasheren@gmail.com" class="btn-sm btn-dark">Let's talk</a>
+      <button class="hamburger" onclick="document.querySelector('.mobile-menu').classList.add('open')" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu">
+    <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">✕</button>
+    <a href="index.html#work" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Work</a>
+    <a href="about.html" onclick="document.querySelector('.mobile-menu').classList.remove('open')">About</a>
+    <a href="index.html#method" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Experience</a>
+    <a href="index.html#contact" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Contact</a>
+  </div>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="hero">
+    <div class="hero-inner">
+
+      <!-- LEFT: Text -->
+      <div class="hero-text">
+        <div class="hero-pill-tag fade-up">Personal Project · 2024</div>
+        <div class="hero-icon fade-up" style="transition-delay:0.1s">💊</div>
+        <h1 class="hero-headline fade-up" style="transition-delay:0.15s">
+          <span class="med">Med</span><span class="minder">Minder</span>
+        </h1>
+        <p class="hero-sub fade-up" style="transition-delay:0.2s">
+          Designing a medication tracker that feels calm,<br />personal, and actually useful.
+        </p>
+        <div class="hero-tags fade-up" style="transition-delay:0.25s">
+          <span class="hero-tag">React</span>
+          <span class="hero-tag">Vite</span>
+          <span class="hero-tag">Tailwind CSS</span>
+          <span class="hero-tag">localStorage</span>
+          <span class="hero-tag">lucide-react</span>
+        </div>
+        <div class="hero-meta fade-up" style="transition-delay:0.3s">
+          <div class="hero-meta-item">
+            <span class="hero-meta-label">Role</span>
+            <span class="hero-meta-value">UX Designer + Developer</span>
+          </div>
+          <div class="hero-meta-item">
+            <span class="hero-meta-label">Timeline</span>
+            <span class="hero-meta-value">3 weeks</span>
+          </div>
+          <div class="hero-meta-item">
+            <span class="hero-meta-label">Platform</span>
+            <span class="hero-meta-value">Web App</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Animated phone mockup -->
+      <div class="hero-phone-wrap fade-up" style="transition-delay:0.35s">
+        <div class="phone hero-phone">
+          <div class="phone-notch"></div>
+          <div class="phone-home"></div>
+          <div class="phone-screen">
+
+            <!-- SCREEN 1: Login -->
+            <div class="hero-screen">
+              <div class="phone-status" style="background:#0a0920;">
+                <span>9:41</span><span>●●●</span>
+              </div>
+              <div class="s-login">
+                <div class="s-login-icon">💊</div>
+                <div class="s-login-name">Med<span>Minder</span></div>
+                <div class="s-login-sub">Your personal health companion</div>
+                <div class="s-login-features">
+                  <div class="s-login-feat">
+                    <div class="s-login-feat-icon">💊</div>
+                    <span>Track<br/>Intake</span>
+                  </div>
+                  <div class="s-login-feat">
+                    <div class="s-login-feat-icon">🔔</div>
+                    <span>Remind-<br/>ers</span>
+                  </div>
+                  <div class="s-login-feat">
+                    <div class="s-login-feat-icon">📦</div>
+                    <span>Stock<br/>Alerts</span>
+                  </div>
+                </div>
+                <div class="s-btn-primary">Log In</div>
+                <div class="s-btn-ghost">Create Account</div>
+              </div>
+            </div>
+
+            <!-- SCREEN 2: Dashboard -->
+            <div class="hero-screen">
+              <div class="phone-status" style="background:#0D0B1E;">
+                <span>9:41</span><span>●●●</span>
+              </div>
+              <div class="s-dashboard">
+                <div class="s-dash-body">
+                  <div class="s-dash-greeting">☀️ Good morning, Eeza</div>
+                  <div class="s-dash-sub">3 doses today · 1 completed</div>
+                  <div class="s-dash-label">TODAY'S SCHEDULE</div>
+                  <div class="s-pill-card">
+                    <div class="s-pill-dot" style="background:#facc15;"></div>
+                    <div class="s-pill-info">
+                      <div class="s-pill-name">Vitamin D</div>
+                      <div class="s-pill-time">8:00 AM · 1 tablet</div>
+                    </div>
+                    <div class="s-pill-check"></div>
+                  </div>
+                  <div class="s-pill-card">
+                    <div class="s-pill-dot" style="background:#60a5fa;"></div>
+                    <div class="s-pill-info">
+                      <div class="s-pill-name done">Omega 3</div>
+                      <div class="s-pill-time">8:00 AM · 2 capsules</div>
+                    </div>
+                    <div class="s-pill-check checked">✓</div>
+                  </div>
+                  <div class="s-pill-card">
+                    <div class="s-pill-dot" style="background:#a78bfa;"></div>
+                    <div class="s-pill-info">
+                      <div class="s-pill-name">Magnesium</div>
+                      <div class="s-pill-time">9:00 PM · 1 tablet</div>
+                    </div>
+                    <div class="s-pill-check"></div>
+                  </div>
+                </div>
+                <div class="s-bottom-nav">
+                  <div class="s-nav-item active">
+                    <span class="s-nav-icon">🏠</span>
+                    <span>Today</span>
+                  </div>
+                  <div class="s-nav-item">
+                    <span class="s-nav-icon">💊</span>
+                    <span>Pills</span>
+                  </div>
+                  <div class="s-nav-item">
+                    <span class="s-nav-icon">📅</span>
+                    <span>Schedule</span>
+                  </div>
+                  <div class="s-nav-item">
+                    <span class="s-nav-icon">📦</span>
+                    <span>Stock</span>
+                  </div>
+                  <div class="s-nav-item">
+                    <span class="s-nav-icon">🔥</span>
+                    <span>Streaks</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- SCREEN 3: Pills -->
+            <div class="hero-screen">
+              <div class="phone-status" style="background:#0D0B1E;">
+                <span>9:41</span><span>●●●</span>
+              </div>
+              <div class="s-pills">
+                <div class="s-pills-body">
+                  <div class="s-pills-header">
+                    <div class="s-pills-title">My Pills</div>
+                    <div class="s-pills-add">+ Add Pill</div>
+                  </div>
+                  <div class="s-pill-row">
+                    <div class="s-pill-dot" style="background:#facc15;"></div>
+                    <div class="s-pill-row-info">
+                      <div class="s-pill-row-name">Vitamin D</div>
+                      <div class="s-pill-row-freq">Once Daily · Morning</div>
+                    </div>
+                  </div>
+                  <div class="s-pill-row">
+                    <div class="s-pill-dot" style="background:#60a5fa;"></div>
+                    <div class="s-pill-row-info">
+                      <div class="s-pill-row-name">Omega 3</div>
+                      <div class="s-pill-row-freq">Once Daily · Morning</div>
+                    </div>
+                  </div>
+                  <div class="s-pill-row">
+                    <div class="s-pill-dot" style="background:#a78bfa;"></div>
+                    <div class="s-pill-row-info">
+                      <div class="s-pill-row-name">Magnesium</div>
+                      <div class="s-pill-row-freq">Once Daily · Evening</div>
+                    </div>
+                  </div>
+                  <div class="s-pill-row">
+                    <div class="s-pill-dot" style="background:#34d399;"></div>
+                    <div class="s-pill-row-info">
+                      <div class="s-pill-row-name">Iron</div>
+                      <div class="s-pill-row-freq">Twice Daily</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="s-bottom-nav">
+                  <div class="s-nav-item">
+                    <span class="s-nav-icon">🏠</span>
+                    <span>Today</span>
+                  </div>
+                  <div class="s-nav-item active">
+                    <span class="s-nav-icon">💊</span>
+                    <span>Pills</span>
+                  </div>
+                  <div class="s-nav-item">
+                    <span class="s-nav-icon">📅</span>
+                    <span>Schedule</span>
+                  </div>
+                  <div class="s-nav-item">
+                    <span class="s-nav-icon">📦</span>
+                    <span>Stock</span>
+                  </div>
+                  <div class="s-nav-item">
+                    <span class="s-nav-icon">🔥</span>
+                    <span>Streaks</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /phone-screen -->
+        </div><!-- /phone -->
+      </div>
+
+    </div><!-- /hero-inner -->
+  </section>
+
+  <!-- ═══ THE PROBLEM ═══ -->
+  <section class="band-light">
+    <div class="band-inner">
+      <p class="sec-tag-light fade-up">The Problem</p>
+      <div class="problem-stat fade-up" style="transition-delay:0.1s">
+        <span>48% of people</span><br />miss medication<br />doses regularly.
+      </div>
+      <p class="problem-stat-sub fade-up" style="transition-delay:0.15s">
+        And most apps make it worse — not better.
+      </p>
+      <div class="pain-grid fade-up" style="transition-delay:0.2s">
+        <div class="pain-card">
+          <div class="pain-icon">🏥</div>
+          <h3>Existing apps feel clinical and overwhelming</h3>
+          <p>Dense UI, medical jargon, and feature overload turn a simple daily habit into a chore. People stop using them within a week.</p>
+        </div>
+        <div class="pain-card">
+          <div class="pain-icon">🔔</div>
+          <h3>Reminders without context create anxiety, not action</h3>
+          <p>A generic push notification at 8am doesn't tell you what to take, how much, or whether you already took it. It just stresses you out.</p>
+        </div>
+      </div>
+      <div class="hmw-card fade-up" style="transition-delay:0.25s">
+        <p class="hmw-label">Design Challenge</p>
+        <p class="hmw-text">
+          "How might we design a medication tracker that feels like a <em>personal companion</em> — not a medical device?"
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ MY ROLE ═══ -->
+  <section class="band-dark">
+    <div class="band-inner">
+      <p class="sec-tag-dark fade-up">My Role</p>
+      <div class="role-grid fade-up" style="transition-delay:0.1s">
+        <div class="role-item">
+          <p class="role-label">Role</p>
+          <p class="role-value">UX Designer<br />+ Developer</p>
+        </div>
+        <div class="role-item">
+          <p class="role-label">Timeline</p>
+          <p class="role-value">3 Weeks</p>
+        </div>
+        <div class="role-item">
+          <p class="role-label">Tools</p>
+          <p class="role-value">React · Figma<br />Tailwind CSS</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURE 1: Dashboard ═══ -->
+  <section class="band-light">
+    <div class="band-inner">
+      <div class="feature-layout">
+        <!-- Phone: Dashboard -->
+        <div class="feature-phone fade-up">
+          <div class="phone interactive-phone" id="phone-dash" onclick="phoneDash(event,this)">
+            <div class="phone-toast" id="dash-toast">✓ &nbsp;Vitamin D logged!</div>
+            <div class="phone-notch"></div>
+            <div class="phone-home"></div>
+            <div class="phone-screen" style="background:#0D0B1E; display:flex; flex-direction:column;">
+              <div class="phone-status" style="background:#0D0B1E;">
+                <span>9:41</span><span>●●●</span>
+              </div>
+              <div class="s-dash-body" style="flex:1;">
+                <div class="s-dash-greeting">☀️ Good morning, Eeza</div>
+                <div class="s-dash-sub" id="dash-sub">3 doses today · 1 completed</div>
+                <div class="s-dash-label">TODAY'S SCHEDULE</div>
+                <div class="s-pill-card" id="dash-vitd-card">
+                  <div class="s-pill-dot" style="background:#facc15;"></div>
+                  <div class="s-pill-info">
+                    <div class="s-pill-name" id="dash-vitd-name">Vitamin D</div>
+                    <div class="s-pill-time">8:00 AM · 1 tablet</div>
+                  </div>
+                  <div class="s-pill-check" id="dash-vitd-check"></div>
+                </div>
+                <div class="s-pill-card">
+                  <div class="s-pill-dot" style="background:#60a5fa;"></div>
+                  <div class="s-pill-info">
+                    <div class="s-pill-name done">Omega 3</div>
+                    <div class="s-pill-time">8:00 AM · 2 capsules</div>
+                  </div>
+                  <div class="s-pill-check checked">✓</div>
+                </div>
+                <div class="s-pill-card">
+                  <div class="s-pill-dot" style="background:#a78bfa;"></div>
+                  <div class="s-pill-info">
+                    <div class="s-pill-name">Magnesium</div>
+                    <div class="s-pill-time">9:00 PM · 1 tablet</div>
+                  </div>
+                  <div class="s-pill-check"></div>
+                </div>
+              </div>
+              <div class="s-bottom-nav">
+                <div class="s-nav-item active"><span class="s-nav-icon">🏠</span><span>Today</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">💊</span><span>Pills</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">📅</span><span>Schedule</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">📦</span><span>Stock</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">🔥</span><span>Streaks</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+          <div class="tap-hint tap-hint-dark">👆 Tap to log a dose</div>
+        </div>
+
+        <!-- Text -->
+        <div class="feature-text fade-up" style="transition-delay:0.15s">
+          <p class="feature-tag">Feature 01</p>
+          <h2 class="feature-heading feature-heading-light">Everything you need.<br />Nothing you don't.</h2>
+          <p class="feature-body-light">
+            The dashboard was designed around a single moment — opening the app and knowing exactly what to do next. No clutter. Just your pills, your times, and a satisfying check.
+          </p>
+          <ul class="feature-bullets feature-bullets-light">
+            <li>
+              <div class="bullet-icon">⏰</div>
+              <div><strong>Time-sorted dose schedule</strong> — Morning to evening, in order. No hunting.</div>
+            </li>
+            <li>
+              <div class="bullet-icon">✓</div>
+              <div><strong>One-tap dose logging</strong> — Check it off. Strikethrough confirms it. Done.</div>
+            </li>
+            <li>
+              <div class="bullet-icon">🌅</div>
+              <div><strong>Personalised greeting</strong> — Small touch. Big difference in how the app feels.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURE 2: Pill Management ═══ -->
+  <section class="band-dark">
+    <div class="band-inner">
+      <div class="feature-layout reverse">
+        <!-- Text -->
+        <div class="feature-text fade-up">
+          <p class="feature-tag">Feature 02</p>
+          <h2 class="feature-heading feature-heading-dark">Add once.<br />Track forever.</h2>
+          <p class="feature-body-dark">
+            Each pill gets its own colour, schedule, and personality. The colour system makes it instantly recognisable at a glance — no reading required. Recognition over recall.
+          </p>
+          <ul class="feature-bullets feature-bullets-dark">
+            <li>
+              <div class="bullet-icon">🎨</div>
+              <div><strong>Colour-coded pills</strong> — Yellow, blue, violet, green. Each one unique and memorable.</div>
+            </li>
+            <li>
+              <div class="bullet-icon">🗓️</div>
+              <div><strong>Flexible scheduling</strong> — Once daily, twice daily, specific days. It adapts to your regimen.</div>
+            </li>
+            <li>
+              <div class="bullet-icon">✏️</div>
+              <div><strong>Edit any time</strong> — Dosage changed? New timing? Update in seconds.</div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Phone: Pills list -->
+        <div class="feature-phone fade-up" style="transition-delay:0.15s">
+          <div class="phone interactive-phone" id="phone-pills" onclick="phonePills(event,this)">
+            <div class="phone-toast" id="pills-toast">✨ &nbsp;Zinc added!</div>
+            <div class="phone-notch"></div>
+            <div class="phone-home"></div>
+            <div class="phone-screen" style="background:#0D0B1E; display:flex; flex-direction:column;">
+              <div class="phone-status" style="background:#0D0B1E;">
+                <span>9:41</span><span>●●●</span>
+              </div>
+              <div class="s-pills-body" style="flex:1;">
+                <div class="s-pills-header">
+                  <div class="s-pills-title">My Pills</div>
+                  <div class="s-pills-add">+ Add Pill</div>
+                </div>
+                <div class="s-pill-row">
+                  <div class="s-pill-dot" style="background:#facc15;"></div>
+                  <div class="s-pill-row-info">
+                    <div class="s-pill-row-name">Vitamin D</div>
+                    <div class="s-pill-row-freq">Once Daily · Morning</div>
+                  </div>
+                </div>
+                <div class="s-pill-row">
+                  <div class="s-pill-dot" style="background:#60a5fa;"></div>
+                  <div class="s-pill-row-info">
+                    <div class="s-pill-row-name">Omega 3</div>
+                    <div class="s-pill-row-freq">Once Daily · Morning</div>
+                  </div>
+                </div>
+                <div class="s-pill-row">
+                  <div class="s-pill-dot" style="background:#a78bfa;"></div>
+                  <div class="s-pill-row-info">
+                    <div class="s-pill-row-name">Magnesium</div>
+                    <div class="s-pill-row-freq">Once Daily · Evening</div>
+                  </div>
+                </div>
+                <div class="s-pill-row">
+                  <div class="s-pill-dot" style="background:#34d399;"></div>
+                  <div class="s-pill-row-info">
+                    <div class="s-pill-row-name">Iron</div>
+                    <div class="s-pill-row-freq">Twice Daily</div>
+                  </div>
+                </div>
+                <!-- New pill slot (animated in) -->
+                <div class="s-pill-row s-pill-card-new" id="pills-new-card">
+                  <div class="s-pill-dot" style="background:#22d3ee;"></div>
+                  <div class="s-pill-row-info">
+                    <div class="s-pill-row-name">Zinc</div>
+                    <div class="s-pill-row-freq">Once Daily · Morning</div>
+                  </div>
+                </div>
+              </div>
+              <div class="s-bottom-nav">
+                <div class="s-nav-item"><span class="s-nav-icon">🏠</span><span>Today</span></div>
+                <div class="s-nav-item active"><span class="s-nav-icon">💊</span><span>Pills</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">📅</span><span>Schedule</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">📦</span><span>Stock</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">🔥</span><span>Streaks</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="tap-hint">👆 Tap to add a pill</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURE 3: Schedule ═══ -->
+  <section class="band-light">
+    <div class="band-inner">
+      <div class="feature-layout">
+        <!-- Phone: Schedule -->
+        <div class="feature-phone fade-up">
+          <div class="phone interactive-phone" id="phone-sched" onclick="phoneSched(event,this)">
+            <div class="phone-notif" id="sched-notif">
+              <span class="notif-app">MedMinder · Now</span>
+              💊 &nbsp;Time to take Magnesium — 9:00 PM · 1 tablet
+            </div>
+            <div class="phone-notch"></div>
+            <div class="phone-home"></div>
+            <div class="phone-screen" style="background:#0D0B1E; display:flex; flex-direction:column;">
+              <div class="phone-status" style="background:#0D0B1E;">
+                <span>9:41</span><span>●●●</span>
+              </div>
+              <div class="s-schedule-body" style="flex:1;">
+                <div class="s-schedule-title">Schedule</div>
+                <div class="s-sched-time-block">
+                  <div class="s-sched-time">8:00 AM</div>
+                  <div class="s-sched-card" style="margin-bottom:4px;">
+                    <div class="s-pill-dot" style="background:#facc15; width:8px; height:8px;"></div>
+                    <div>
+                      <div class="s-sched-name">Vitamin D</div>
+                      <div class="s-sched-dose">1 tablet</div>
+                    </div>
+                  </div>
+                  <div class="s-sched-card">
+                    <div class="s-pill-dot" style="background:#60a5fa; width:8px; height:8px;"></div>
+                    <div>
+                      <div class="s-sched-name">Omega 3</div>
+                      <div class="s-sched-dose">2 capsules</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="s-sched-time-block">
+                  <div class="s-sched-time">1:00 PM</div>
+                  <div class="s-sched-card">
+                    <div class="s-pill-dot" style="background:#34d399; width:8px; height:8px;"></div>
+                    <div>
+                      <div class="s-sched-name">Iron</div>
+                      <div class="s-sched-dose">1 tablet</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="s-sched-time-block">
+                  <div class="s-sched-time">9:00 PM</div>
+                  <div class="s-sched-card">
+                    <div class="s-pill-dot" style="background:#a78bfa; width:8px; height:8px;"></div>
+                    <div>
+                      <div class="s-sched-name">Magnesium</div>
+                      <div class="s-sched-dose">1 tablet</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="s-bottom-nav">
+                <div class="s-nav-item"><span class="s-nav-icon">🏠</span><span>Today</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">💊</span><span>Pills</span></div>
+                <div class="s-nav-item active"><span class="s-nav-icon">📅</span><span>Schedule</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">📦</span><span>Stock</span></div>
+                <div class="s-nav-item"><span class="s-nav-icon">🔥</span><span>Streaks</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="tap-hint tap-hint-dark">👆 Tap to trigger a reminder</div>
+        </div>
+
+        <!-- Text -->
+        <div class="feature-text fade-up" style="transition-delay:0.15s">
+          <p class="feature-tag">Feature 03</p>
+          <h2 class="feature-heading feature-heading-light">Reminders that respect your time.</h2>
+          <p class="feature-body-light">
+            Push notifications arrive at exactly the right moment — not before, not after. The schedule view gives you a clear time-based layout so you're always one step ahead.
+          </p>
+          <ul class="feature-bullets feature-bullets-light">
+            <li>
+              <div class="bullet-icon">🕐</div>
+              <div><strong>Time-blocked view</strong> — Morning, afternoon, evening. Grouped by when, not by name.</div>
+            </li>
+            <li>
+              <div class="bullet-icon">📆</div>
+              <div><strong>Weekly awareness</strong> — See your whole week at a glance. Know what's coming before it arrives.</div>
+            </li>
+            <li>
+              <div class="bullet-icon">🔕</div>
+              <div><strong>Smart notifications</strong> — Triggered by browser APIs. No backend. No data collection.</div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FEATURE 4: Inventory & Streaks ═══ -->
+  <section class="band-dark">
+    <div class="band-inner">
+      <p class="sec-tag-dark fade-up">Feature 04</p>
+      <div class="two-phones-text fade-up" style="transition-delay:0.1s">
+        <h2 class="feature-heading feature-heading-dark">Know before you run out.<br />Stay on a roll.</h2>
+        <p class="feature-body-dark">
+          Stock tracking predicts when you'll run out based on your dose frequency. Streaks turn consistency into a game — because habits are built through repetition, not willpower.
+        </p>
+      </div>
+      <div class="two-phones fade-up" style="transition-delay:0.2s">
+
+        <!-- Inventory Phone -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="phone interactive-phone" id="phone-inv" onclick="phoneInv(event,this)">
+          <div class="phone-toast" id="inv-toast">⚠️ &nbsp;Omega 3 running low!</div>
+          <div class="phone-notch"></div>
+          <div class="phone-home"></div>
+          <div class="phone-screen" style="background:#0D0B1E; display:flex; flex-direction:column;">
+            <div class="phone-status" style="background:#0D0B1E;">
+              <span>9:41</span><span>●●●</span>
+            </div>
+            <div class="s-inventory-body" style="flex:1;">
+              <div class="s-inventory-title">Stock</div>
+              <div class="s-stock-card">
+                <div class="s-stock-row">
+                  <div class="s-pill-dot" style="background:#facc15; width:8px; height:8px;"></div>
+                  <span class="s-stock-name">Vitamin D</span>
+                  <span class="s-stock-count">42 tabs · 42 days</span>
+                </div>
+                <div class="s-stock-bar-bg"><div class="s-stock-bar" style="width:85%;background:#facc15;"></div></div>
+              </div>
+              <div class="s-stock-card">
+                <div class="s-stock-row">
+                  <div class="s-pill-dot" style="background:#60a5fa; width:8px; height:8px;"></div>
+                  <span class="s-stock-name">Omega 3</span>
+                  <span class="s-stock-count">12 caps · 6 days</span>
+                </div>
+                <div class="s-stock-bar-bg"><div class="s-stock-bar" id="inv-omega-bar" style="width:24%;background:#ef4444;"></div></div>
+              </div>
+              <div class="s-stock-card">
+                <div class="s-stock-row">
+                  <div class="s-pill-dot" style="background:#a78bfa; width:8px; height:8px;"></div>
+                  <span class="s-stock-name">Magnesium</span>
+                  <span class="s-stock-count">28 tabs · 28 days</span>
+                </div>
+                <div class="s-stock-bar-bg"><div class="s-stock-bar" style="width:56%;background:#a78bfa;"></div></div>
+              </div>
+              <div class="s-stock-card">
+                <div class="s-stock-row">
+                  <div class="s-pill-dot" style="background:#34d399; width:8px; height:8px;"></div>
+                  <span class="s-stock-name">Iron</span>
+                  <span class="s-stock-count">60 tabs · 30 days</span>
+                </div>
+                <div class="s-stock-bar-bg"><div class="s-stock-bar" style="width:60%;background:#34d399;"></div></div>
+              </div>
+            </div>
+            <div class="s-bottom-nav">
+              <div class="s-nav-item"><span class="s-nav-icon">🏠</span><span>Today</span></div>
+              <div class="s-nav-item"><span class="s-nav-icon">💊</span><span>Pills</span></div>
+              <div class="s-nav-item"><span class="s-nav-icon">📅</span><span>Schedule</span></div>
+              <div class="s-nav-item active"><span class="s-nav-icon">📦</span><span>Stock</span></div>
+              <div class="s-nav-item"><span class="s-nav-icon">🔥</span><span>Streaks</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tap-hint">👆 Tap to adjust stock</div>
+        </div>
+
+        <!-- Streaks Phone -->
+        <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="phone interactive-phone" id="phone-streak" onclick="phoneStreak(event,this)">
+          <div class="phone-toast" id="streak-toast">🔥 &nbsp;13-day streak — keep it up!</div>
+          <div class="phone-notch"></div>
+          <div class="phone-home"></div>
+          <div class="phone-screen" style="background:#0D0B1E; display:flex; flex-direction:column;">
+            <div class="phone-status" style="background:#0D0B1E;">
+              <span>9:41</span><span>●●●</span>
+            </div>
+            <div class="s-streaks-body" style="flex:1;">
+              <div class="s-streaks-title">Streaks 🔥</div>
+              <div class="s-streaks-sub">Keep your perfect record going</div>
+              <div class="s-streak-big">
+                <div class="s-streak-num" id="streak-num">12</div>
+                <div class="s-streak-label">DAY STREAK</div>
+                <div class="s-week-dots">
+                  <div class="s-week-dot done">M</div>
+                  <div class="s-week-dot done">T</div>
+                  <div class="s-week-dot done">W</div>
+                  <div class="s-week-dot done">T</div>
+                  <div class="s-week-dot done">F</div>
+                  <div class="s-week-dot today" id="streak-today">S</div>
+                  <div class="s-week-dot miss">S</div>
+                </div>
+              </div>
+              <div class="s-stock-card">
+                <div class="s-stock-row">
+                  <div class="s-pill-dot" style="background:#facc15; width:8px; height:8px;"></div>
+                  <span class="s-stock-name">Vitamin D</span>
+                  <span class="s-stock-count">🔥 12 days</span>
+                </div>
+              </div>
+              <div class="s-stock-card">
+                <div class="s-stock-row">
+                  <div class="s-pill-dot" style="background:#60a5fa; width:8px; height:8px;"></div>
+                  <span class="s-stock-name">Omega 3</span>
+                  <span class="s-stock-count">🔥 8 days</span>
+                </div>
+              </div>
+              <div class="s-stock-card">
+                <div class="s-stock-row">
+                  <div class="s-pill-dot" style="background:#a78bfa; width:8px; height:8px;"></div>
+                  <span class="s-stock-name">Magnesium</span>
+                  <span class="s-stock-count">🔥 12 days</span>
+                </div>
+              </div>
+            </div>
+            <div class="s-bottom-nav">
+              <div class="s-nav-item"><span class="s-nav-icon">🏠</span><span>Today</span></div>
+              <div class="s-nav-item"><span class="s-nav-icon">💊</span><span>Pills</span></div>
+              <div class="s-nav-item"><span class="s-nav-icon">📅</span><span>Schedule</span></div>
+              <div class="s-nav-item"><span class="s-nav-icon">📦</span><span>Stock</span></div>
+              <div class="s-nav-item active"><span class="s-nav-icon">🔥</span><span>Streaks</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="tap-hint">👆 Tap to log today's streak</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ DESIGN DECISIONS ═══ -->
+  <section class="band-light">
+    <div class="band-inner">
+      <p class="sec-tag-light fade-up">Design Decisions</p>
+      <h2 class="sec-heading-light fade-up" style="transition-delay:0.1s">Intentional by default.</h2>
+      <p class="sec-heading-sub fade-up" style="transition-delay:0.15s">Every choice has a reason. Here are the three that shaped everything.</p>
+      <div class="decision-grid fade-up" style="transition-delay:0.2s">
+        <div class="decision-card">
+          <div class="decision-num">01</div>
+          <h3>Dark mode first</h3>
+          <p>Most pills are taken morning and evening. A dark UI respects the context of use — it doesn't blast your eyes at 7am or disturb your sleep routine at night.</p>
+        </div>
+        <div class="decision-card">
+          <div class="decision-num">02</div>
+          <h3>Colour-coded pills</h3>
+          <p>Colour removes cognitive load. You shouldn't have to read the name of your pill — you should recognise it. Recognition beats recall, especially when you're half-awake.</p>
+        </div>
+        <div class="decision-card">
+          <div class="decision-num">03</div>
+          <h3>No backend</h3>
+          <p>Privacy by design. All data lives on your device. localStorage means zero accounts, zero data collection, zero risk of a data breach. Simple is safer.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TECH STACK ═══ -->
+  <section class="band-dark">
+    <div class="band-inner">
+      <p class="sec-tag-dark fade-up">Tech Stack</p>
+      <h2 class="tech-section-heading fade-up" style="transition-delay:0.1s">Built lean. Built right.</h2>
+      <p class="tech-sub fade-up" style="transition-delay:0.15s">Every tool was chosen deliberately — nothing added for the sake of it.</p>
+      <div class="tech-tags fade-up" style="transition-delay:0.2s">
+        <span class="tech-tag">React</span>
+        <span class="tech-tag">Vite</span>
+        <span class="tech-tag">Tailwind CSS</span>
+        <span class="tech-tag">React Router v6</span>
+        <span class="tech-tag">lucide-react</span>
+        <span class="tech-tag">localStorage</span>
+        <span class="tech-tag">Context API</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ REFLECTION ═══ -->
+  <section class="band-light">
+    <div class="band-inner">
+      <p class="sec-tag-light fade-up">Reflection</p>
+      <h2 class="sec-heading-light fade-up" style="transition-delay:0.1s">What I'd do differently.</h2>
+      <p class="sec-heading-sub fade-up" style="transition-delay:0.15s">Honest notes from the other side of shipping.</p>
+      <div class="reflection-list fade-up" style="transition-delay:0.2s">
+        <div class="reflection-item">
+          <div class="reflection-num">1</div>
+          <div>
+            <h3>Add data export from day one</h3>
+            <p>Users asked for backup and sync almost immediately. I'd treat data portability as a core feature, not an afterthought. A simple JSON export would have covered 90% of the need.</p>
+          </div>
+        </div>
+        <div class="reflection-item">
+          <div class="reflection-num">2</div>
+          <div>
+            <h3>Shorten the onboarding flow</h3>
+            <p>The first-run experience had five steps. Three is the sweet spot. People want to see their first pill on the dashboard before they trust the app — so get them there faster.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CASE FOOTER NAV ═══ -->
+  <div style="background: var(--dark-bg);">
+    <div class="case-footer-nav fade-up">
+      <a href="index.html" class="case-footer-link">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        All projects
+      </a>
+      <a href="mailto:eezasheren@gmail.com" class="case-footer-link">
+        Discuss this project
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7 17L17 7M7 7h10v10"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- ═══ FOOTER ═══ -->
+  <div id="footer-cursor"></div>
+  <section id="contact">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <p class="footer-tagline">Good design makes things work better.</p>
+      </div>
+      <div class="footer-right">
+        <div class="footer-link-col">
+          <p class="footer-link-col-label">Connect</p>
+          <ul>
+            <li><a href="https://www.linkedin.com/in/eeza" target="_blank" rel="noopener">LinkedIn</a></li>
+            <li><a href="mailto:eezasheren@gmail.com">Email</a></li>
+            <li><a href="Eeza-CV-2026-April.pdf" target="_blank" rel="noopener">Download CV</a></li>
+          </ul>
+        </div>
+        <div class="footer-link-col">
+          <p class="footer-link-col-label">Navigate</p>
+          <ul>
+            <li><a href="index.html#work">Work</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="index.html#method">Experience</a></li>
+            <li><a href="index.html#blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Eeza Sheren. All rights reserved.</p>
+      <p class="footer-copy">Based in Singapore · Open to opportunities</p>
+    </div>
+  </section>
+
+  <div id="cursor-dot"></div>
+
+  <script>
+    // ── Fade-up on scroll ──
+    (function() {
+      const els = document.querySelectorAll('.fade-up');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.12 });
+      els.forEach(el => io.observe(el));
+    })();
+  </script>
+
+  <script>
+    // ── Star cursor ──
+    (function() {
+      const dot = document.getElementById('cursor-dot');
+      if (!dot) return;
+      document.addEventListener('mousemove', e => {
+        dot.style.left = e.clientX + 'px';
+        dot.style.top  = e.clientY + 'px';
+      });
+    })();
+  </script>
+
+  <script>
+    // ── Footer: burst on click + custom cursor ──
+    (function() {
+      const footer = document.getElementById('contact');
+      const cur    = document.getElementById('footer-cursor');
+      if (!footer || !cur) return;
+      const COLORS = ['#B2B0FC','#D5DA81','#E95341','#ffffff','#a8e6cf'];
+      const BURST_COUNT = 14;
+      footer.addEventListener('mousemove', e => {
+        cur.style.left = e.clientX + 'px';
+        cur.style.top  = e.clientY + 'px';
+      });
+      footer.addEventListener('mouseenter', () => { cur.style.opacity = '1'; });
+      footer.addEventListener('mouseleave', () => { cur.style.opacity = '0'; });
+      footer.addEventListener('click', e => {
+        const rect = footer.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        for (let i = 0; i < BURST_COUNT; i++) {
+          const p = document.createElement('div');
+          p.className = 'footer-burst';
+          const angle = (360 / BURST_COUNT) * i + Math.random() * 20 - 10;
+          const dist  = 40 + Math.random() * 60;
+          const rad   = (angle * Math.PI) / 180;
+          const tx    = Math.cos(rad) * dist;
+          const ty    = Math.sin(rad) * dist;
+          const size  = 5 + Math.random() * 7;
+          const color = COLORS[Math.floor(Math.random() * COLORS.length)];
+          p.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${color};--tx:${tx}px;--ty:${ty}px;animation-duration:${0.5+Math.random()*0.4}s;`;
+          footer.appendChild(p);
+          p.addEventListener('animationend', () => p.remove());
+        }
+      });
+    })();
+  </script>
+
+  <script>
+    // ── Phone Interaction Helpers ──
+    function addRipple(e, phone) {
+      const rect = phone.getBoundingClientRect();
+      const r = document.createElement('div');
+      r.className = 'phone-ripple';
+      r.style.left = (e.clientX - rect.left) + 'px';
+      r.style.top  = (e.clientY - rect.top) + 'px';
+      phone.appendChild(r);
+      setTimeout(() => r.remove(), 600);
+    }
+
+    function showToast(id, duration = 2200) {
+      const t = document.getElementById(id);
+      if (!t) return;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), duration);
+    }
+
+    // ── Feature 1: Dashboard — log a dose ──
+    let dashLogged = false;
+    function phoneDash(e, phone) {
+      addRipple(e, phone);
+      if (dashLogged) return;
+      dashLogged = true;
+
+      const check = document.getElementById('dash-vitd-check');
+      const name  = document.getElementById('dash-vitd-name');
+      const sub   = document.getElementById('dash-sub');
+
+      // Animate check
+      setTimeout(() => {
+        check.textContent = '✓';
+        check.classList.add('checked', 'just-checked');
+        name.classList.add('done');
+        sub.textContent = '3 doses today · 2 completed';
+        showToast('dash-toast', 2000);
+      }, 120);
+
+      // Reset after 3.5s
+      setTimeout(() => {
+        check.textContent = '';
+        check.classList.remove('checked', 'just-checked');
+        name.classList.remove('done');
+        sub.textContent = '3 doses today · 1 completed';
+        dashLogged = false;
+      }, 3500);
+    }
+
+    // ── Feature 2: Pills — add a pill ──
+    let pillsAdded = false;
+    function phonePills(e, phone) {
+      addRipple(e, phone);
+      if (pillsAdded) return;
+      pillsAdded = true;
+
+      const card = document.getElementById('pills-new-card');
+      setTimeout(() => {
+        card.classList.add('visible');
+        showToast('pills-toast', 2000);
+      }, 120);
+
+      setTimeout(() => {
+        card.classList.remove('visible');
+        pillsAdded = false;
+      }, 3500);
+    }
+
+    // ── Feature 3: Schedule — notification banner ──
+    let schedFired = false;
+    function phoneSched(e, phone) {
+      addRipple(e, phone);
+      if (schedFired) return;
+      schedFired = true;
+
+      const notif = document.getElementById('sched-notif');
+      setTimeout(() => notif.classList.add('show'), 120);
+      setTimeout(() => {
+        notif.classList.remove('show');
+        schedFired = false;
+      }, 2800);
+    }
+
+    // ── Feature 4: Inventory — animate stock bar ──
+    let invDone = false;
+    function phoneInv(e, phone) {
+      addRipple(e, phone);
+      if (invDone) return;
+      invDone = true;
+
+      const bar = document.getElementById('inv-omega-bar');
+      const origWidth = bar.style.width;
+      showToast('inv-toast', 2000);
+      setTimeout(() => { bar.style.width = '10%'; }, 200);
+
+      setTimeout(() => {
+        bar.style.width = origWidth;
+        invDone = false;
+      }, 3500);
+    }
+
+    // ── Feature 4: Streaks — log today ──
+    let streakDone = false;
+    function phoneStreak(e, phone) {
+      addRipple(e, phone);
+      if (streakDone) return;
+      streakDone = true;
+
+      const num   = document.getElementById('streak-num');
+      const today = document.getElementById('streak-today');
+      showToast('streak-toast', 2200);
+
+      setTimeout(() => {
+        num.textContent = '13';
+        num.classList.add('streak-pop');
+        today.classList.remove('today');
+        today.classList.add('done');
+      }, 200);
+
+      setTimeout(() => {
+        num.textContent = '12';
+        num.classList.remove('streak-pop');
+        today.classList.add('today');
+        today.classList.remove('done');
+        streakDone = false;
+      }, 3800);
+    }
+  </script>
+
+</body>
+</html>
