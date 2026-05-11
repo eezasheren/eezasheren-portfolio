@@ -1092,30 +1092,8 @@
       .two-phones { gap: 12px; }
     }
 
-  /* ─── INTERACTIVE PHONE ANIMATIONS ─── */
-  .interactive-phone { cursor: pointer; transition: transform 0.15s ease; }
-  .interactive-phone:hover { transform: translateY(-4px); }
-  .interactive-phone:active { transform: scale(0.98); }
-
-  /* Tap hint label */
-  .tap-hint {
-    display: flex; align-items: center; justify-content: center;
-    gap: 6px; margin-top: 14px;
-    font-size: 11px; font-weight: 600; letter-spacing: 0.8px; text-transform: uppercase;
-    color: rgba(255,255,255,0.35); animation: hintPulse 2s ease-in-out infinite;
-  }
-  .tap-hint-dark { color: rgba(0,0,0,0.25); }
-  @keyframes hintPulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
-
-  /* Ripple */
+  /* ─── PHONE AUTO-ANIMATIONS ─── */
   .phone { position: relative; }
-  .phone-ripple {
-    position: absolute; border-radius: 50%; pointer-events: none;
-    background: rgba(109,94,246,0.35);
-    width: 60px; height: 60px; margin: -30px 0 0 -30px;
-    animation: ripplePop 0.55s ease-out forwards;
-  }
-  @keyframes ripplePop { from{transform:scale(0);opacity:1} to{transform:scale(4);opacity:0} }
 
   /* Toast overlay (inside phone) */
   .phone-toast {
@@ -1465,7 +1443,7 @@
       <div class="feature-layout">
         <!-- Phone: Dashboard -->
         <div class="feature-phone fade-up">
-          <div class="phone interactive-phone" id="phone-dash" onclick="phoneDash(event,this)">
+          <div class="phone" id="phone-dash">
             <div class="phone-toast" id="dash-toast">✓ &nbsp;Vitamin D logged!</div>
             <div class="phone-notch"></div>
             <div class="phone-home"></div>
@@ -1513,7 +1491,6 @@
           </div>
         </div>
 
-          <div class="tap-hint tap-hint-dark">👆 Tap to log a dose</div>
         </div>
 
         <!-- Text -->
@@ -1571,7 +1548,7 @@
 
         <!-- Phone: Pills list -->
         <div class="feature-phone fade-up" style="transition-delay:0.15s">
-          <div class="phone interactive-phone" id="phone-pills" onclick="phonePills(event,this)">
+          <div class="phone" id="phone-pills">
             <div class="phone-toast" id="pills-toast">✨ &nbsp;Zinc added!</div>
             <div class="phone-notch"></div>
             <div class="phone-home"></div>
@@ -1630,7 +1607,6 @@
               </div>
             </div>
           </div>
-          <div class="tap-hint">👆 Tap to add a pill</div>
         </div>
       </div>
     </div>
@@ -1642,7 +1618,7 @@
       <div class="feature-layout">
         <!-- Phone: Schedule -->
         <div class="feature-phone fade-up">
-          <div class="phone interactive-phone" id="phone-sched" onclick="phoneSched(event,this)">
+          <div class="phone" id="phone-sched">
             <div class="phone-notif" id="sched-notif">
               <span class="notif-app">MedMinder · Now</span>
               💊 &nbsp;Time to take Magnesium — 9:00 PM · 1 tablet
@@ -1702,7 +1678,6 @@
               </div>
             </div>
           </div>
-          <div class="tap-hint tap-hint-dark">👆 Tap to trigger a reminder</div>
         </div>
 
         <!-- Text -->
@@ -1745,7 +1720,7 @@
 
         <!-- Inventory Phone -->
         <div style="display:flex;flex-direction:column;align-items:center;">
-        <div class="phone interactive-phone" id="phone-inv" onclick="phoneInv(event,this)">
+        <div class="phone" id="phone-inv">
           <div class="phone-toast" id="inv-toast">⚠️ &nbsp;Omega 3 running low!</div>
           <div class="phone-notch"></div>
           <div class="phone-home"></div>
@@ -1797,12 +1772,11 @@
             </div>
           </div>
         </div>
-        <div class="tap-hint">👆 Tap to adjust stock</div>
         </div>
 
         <!-- Streaks Phone -->
         <div style="display:flex;flex-direction:column;align-items:center;">
-        <div class="phone interactive-phone" id="phone-streak" onclick="phoneStreak(event,this)">
+        <div class="phone" id="phone-streak">
           <div class="phone-toast" id="streak-toast">🔥 &nbsp;13-day streak — keep it up!</div>
           <div class="phone-notch"></div>
           <div class="phone-home"></div>
@@ -1857,7 +1831,6 @@
             </div>
           </div>
         </div>
-        <div class="tap-hint">👆 Tap to log today's streak</div>
         </div>
 
       </div>
@@ -2047,132 +2020,116 @@
   </script>
 
   <script>
-    // ── Phone Interaction Helpers ──
-    function addRipple(e, phone) {
-      const rect = phone.getBoundingClientRect();
-      const r = document.createElement('div');
-      r.className = 'phone-ripple';
-      r.style.left = (e.clientX - rect.left) + 'px';
-      r.style.top  = (e.clientY - rect.top) + 'px';
-      phone.appendChild(r);
-      setTimeout(() => r.remove(), 600);
-    }
+    // ── Auto-play phone demo animations (loop on scroll into view) ──
 
-    function showToast(id, duration = 2200) {
+    function showToast(id, duration) {
       const t = document.getElementById(id);
       if (!t) return;
       t.classList.add('show');
       setTimeout(() => t.classList.remove('show'), duration);
     }
 
-    // ── Feature 1: Dashboard — log a dose ──
-    let dashLogged = false;
-    function phoneDash(e, phone) {
-      addRipple(e, phone);
-      if (dashLogged) return;
-      dashLogged = true;
+    function autoLoop(phoneId, runFn, interval) {
+      const el = document.getElementById(phoneId);
+      if (!el) return;
+      let timer = null;
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            runFn(); // fire immediately on enter
+            timer = setInterval(runFn, interval);
+          } else {
+            clearInterval(timer);
+            timer = null;
+          }
+        });
+      }, { threshold: 0.15 });
+      io.observe(el);
+    }
 
+    // ── Feature 1: Dashboard — auto-log Vitamin D ──
+    function runDash() {
       const check = document.getElementById('dash-vitd-check');
       const name  = document.getElementById('dash-vitd-name');
       const sub   = document.getElementById('dash-sub');
+      if (!check) return;
 
-      // Animate check
+      // Step 1 (0.8s): check fills
       setTimeout(() => {
         check.textContent = '✓';
         check.classList.add('checked', 'just-checked');
         name.classList.add('done');
         sub.textContent = '3 doses today · 2 completed';
-        showToast('dash-toast', 2000);
-      }, 120);
+        showToast('dash-toast', 2200);
+      }, 800);
 
-      // Reset after 3.5s
+      // Step 2 (3.8s): reset
       setTimeout(() => {
         check.textContent = '';
         check.classList.remove('checked', 'just-checked');
         name.classList.remove('done');
         sub.textContent = '3 doses today · 1 completed';
-        dashLogged = false;
-      }, 3500);
+      }, 3800);
     }
+    autoLoop('phone-dash', runDash, 5500);
 
-    // ── Feature 2: Pills — add a pill ──
-    let pillsAdded = false;
-    function phonePills(e, phone) {
-      addRipple(e, phone);
-      if (pillsAdded) return;
-      pillsAdded = true;
-
+    // ── Feature 2: Pills — auto-add Zinc ──
+    function runPills() {
       const card = document.getElementById('pills-new-card');
+      if (!card) return;
+
       setTimeout(() => {
         card.classList.add('visible');
         showToast('pills-toast', 2000);
-      }, 120);
+      }, 700);
 
-      setTimeout(() => {
-        card.classList.remove('visible');
-        pillsAdded = false;
-      }, 3500);
+      setTimeout(() => card.classList.remove('visible'), 3800);
     }
+    autoLoop('phone-pills', runPills, 5500);
 
-    // ── Feature 3: Schedule — notification banner ──
-    let schedFired = false;
-    function phoneSched(e, phone) {
-      addRipple(e, phone);
-      if (schedFired) return;
-      schedFired = true;
-
+    // ── Feature 3: Schedule — auto notification drop ──
+    function runSched() {
       const notif = document.getElementById('sched-notif');
-      setTimeout(() => notif.classList.add('show'), 120);
-      setTimeout(() => {
-        notif.classList.remove('show');
-        schedFired = false;
-      }, 2800);
+      if (!notif) return;
+
+      setTimeout(() => notif.classList.add('show'), 700);
+      setTimeout(() => notif.classList.remove('show'), 3500);
     }
+    autoLoop('phone-sched', runSched, 5200);
 
-    // ── Feature 4: Inventory — animate stock bar ──
-    let invDone = false;
-    function phoneInv(e, phone) {
-      addRipple(e, phone);
-      if (invDone) return;
-      invDone = true;
-
+    // ── Feature 4a: Inventory — auto-drain Omega 3 bar ──
+    function runInv() {
       const bar = document.getElementById('inv-omega-bar');
-      const origWidth = bar.style.width;
-      showToast('inv-toast', 2000);
-      setTimeout(() => { bar.style.width = '10%'; }, 200);
+      if (!bar) return;
 
-      setTimeout(() => {
-        bar.style.width = origWidth;
-        invDone = false;
-      }, 3500);
+      showToast('inv-toast', 2200);
+      setTimeout(() => { bar.style.width = '8%'; }, 500);
+      setTimeout(() => { bar.style.width = '24%'; }, 4000);
     }
+    autoLoop('phone-inv', runInv, 5800);
 
-    // ── Feature 4: Streaks — log today ──
-    let streakDone = false;
-    function phoneStreak(e, phone) {
-      addRipple(e, phone);
-      if (streakDone) return;
-      streakDone = true;
-
+    // ── Feature 4b: Streaks — auto-increment streak ──
+    function runStreak() {
       const num   = document.getElementById('streak-num');
       const today = document.getElementById('streak-today');
-      showToast('streak-toast', 2200);
+      if (!num) return;
 
+      showToast('streak-toast', 2200);
       setTimeout(() => {
         num.textContent = '13';
         num.classList.add('streak-pop');
         today.classList.remove('today');
         today.classList.add('done');
-      }, 200);
+      }, 700);
 
       setTimeout(() => {
         num.textContent = '12';
         num.classList.remove('streak-pop');
         today.classList.add('today');
         today.classList.remove('done');
-        streakDone = false;
-      }, 3800);
+      }, 4000);
     }
+    autoLoop('phone-streak', runStreak, 5800);
   </script>
 
 </body>
