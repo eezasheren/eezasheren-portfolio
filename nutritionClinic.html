@@ -691,7 +691,38 @@
       transform: translate(-50%, -50%);
       transition: opacity 0.15s;
     }
+    /* Mobile menu overlay */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: var(--white);
+      z-index: 200;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a { font-size: 28px; font-weight: 800; letter-spacing: -1px; color: var(--black); text-decoration: none; }
+    .mobile-menu a:hover { color: var(--blue); }
+    .mobile-close {
+      position: absolute;
+      top: 20px; right: 24px;
+      background: none;
+      border: none;
+      font-size: 22px;
+      cursor: pointer;
+      color: var(--black);
+    }
     @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .hamburger { display: flex; }
+      .nav-pill { display: none; }
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main-content { padding: 32px 20px 80px; max-width: 100%; }
+      .result-stats-grid { grid-template-columns: 1fr; }
       .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 36px 24px 20px; }
       .footer-tagline { font-size: 22px; }
       .footer-bottom { padding: 14px 24px 24px; flex-direction: column; align-items: flex-start; gap: 4px; }
@@ -720,6 +751,15 @@
       </button>
     </div>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu">
+    <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">✕</button>
+    <a href="index.html#work" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Work</a>
+    <a href="about.html" onclick="document.querySelector('.mobile-menu').classList.remove('open')">About</a>
+    <a href="index.html#method" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Experience</a>
+    <a href="index.html#contact" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Contact</a>
+  </div>
 
   <!-- PAGE LAYOUT -->
   <div class="page-layout">
