@@ -89,7 +89,6 @@
       display: grid;
       grid-template-columns: var(--sidebar) 1fr;
       min-height: 100vh;
-      padding-top: var(--nav-h);
       max-width: 1440px;
       margin: 0 auto;
     }
@@ -744,6 +743,326 @@
       .footer-tagline { font-size: 22px; }
       .footer-bottom { padding: 14px 24px 24px; flex-direction: column; align-items: flex-start; gap: 4px; }
     }
+
+    /* ─── MOBILE MENU ─── */
+    .mobile-menu {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(255,255,255,0.97); backdrop-filter: blur(24px);
+      flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-size: 28px; font-weight: 700; font-family: 'Bricolage Grotesque', sans-serif;
+      color: var(--black); text-decoration: none; padding: 10px 24px;
+    }
+    .mobile-menu a:hover { color: var(--uob-red); }
+    .mobile-close {
+      position: absolute; top: 24px; right: 24px;
+      font-size: 22px; background: none; border: none; cursor: pointer; color: var(--gray-1);
+    }
+
+    /* ─── UOB HERO BAND ─── */
+    .uob-hero-band {
+      background: #07090f;
+      padding: 80px 56px 100px;
+      margin-top: var(--nav-h);
+      overflow: hidden;
+      position: relative;
+    }
+    .uob-hero-band::before {
+      content: ''; position: absolute; top: -30%; left: -8%;
+      width: 650px; height: 650px;
+      background: radial-gradient(circle, rgba(220,20,25,0.14) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .uob-hero-band::after {
+      content: ''; position: absolute; bottom: -15%; right: 8%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(31,75,255,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .uob-hero-inner {
+      max-width: 1240px; margin: 0 auto;
+      display: grid; grid-template-columns: 300px 1fr;
+      gap: 64px; align-items: center;
+    }
+    .uob-hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(220,20,25,0.12); border: 1px solid rgba(220,20,25,0.28);
+      border-radius: 100px; padding: 6px 14px;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
+      color: #fca5a5; margin-bottom: 20px;
+    }
+    .uob-hero-eyebrow::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%; background: #f87171;
+      animation: uobPulse 2s ease-in-out infinite;
+    }
+    @keyframes uobPulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .uob-hero-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(28px,3.2vw,44px); font-weight: 800;
+      color: #fff; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px;
+    }
+    .uob-hero-title em { font-style: normal; color: #f87171; }
+    .uob-hero-sub {
+      font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.42); margin-bottom: 28px;
+    }
+    .uob-hero-stats { display: flex; flex-direction: column; gap: 10px; }
+    .uob-hero-stat {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12px; color: rgba(255,255,255,0.5);
+    }
+    .uob-hero-stat::before {
+      content: '✓'; width: 18px; height: 18px; border-radius: 50%;
+      background: rgba(220,20,25,0.18); color: #f87171;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; flex-shrink: 0;
+    }
+
+    /* ─── MOCKUPS WRAP ─── */
+    .uob-mockups-wrap {
+      position: relative; display: flex; align-items: flex-end;
+      justify-content: center;
+    }
+
+    /* ─── LAPTOP ─── */
+    .uob-laptop-wrap { width: 100%; max-width: 580px; position: relative; }
+    .uob-laptop-shell {
+      background: #1c2333; border-radius: 10px 10px 0 0;
+      border: 2px solid #2d3b52; overflow: hidden;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04);
+      position: relative;
+    }
+    .uob-laptop-chrome {
+      height: 26px; background: #1e2840;
+      display: flex; align-items: center; padding: 0 10px; gap: 8px;
+      border-bottom: 1px solid #1a2235;
+    }
+    .uob-chrome-dots { display: flex; gap: 5px; }
+    .uob-chrome-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .uob-chrome-dot:nth-child(1){background:#ff5f57;}
+    .uob-chrome-dot:nth-child(2){background:#febc2e;}
+    .uob-chrome-dot:nth-child(3){background:#28c840;}
+    .uob-chrome-url {
+      flex: 1; height: 14px; background: #141d30; border-radius: 3px;
+      display: flex; align-items: center; padding: 0 8px;
+      font-size: 8px; color: rgba(255,255,255,0.28);
+    }
+    .uob-chrome-lock { margin-right: 4px; font-size: 7px; }
+
+    /* UOB App */
+    .uob-app { display: flex; flex-direction: column; height: 320px; background: #f0f2f5; position: relative; overflow: hidden; }
+    .uob-app-topbar {
+      height: 40px; background: #dc1419; flex-shrink: 0;
+      display: flex; align-items: center; padding: 0 14px; justify-content: space-between;
+    }
+    .uob-topbar-logo { font-size: 13px; font-weight: 800; color: #fff; letter-spacing: 0.5px; font-family: 'Bricolage Grotesque',sans-serif; }
+    .uob-topbar-right { display: flex; align-items: center; gap: 8px; }
+    .uob-topbar-user { font-size: 8px; color: rgba(255,255,255,0.7); text-align: right; line-height: 1.4; }
+    .uob-topbar-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      background: rgba(255,255,255,0.22); display: flex; align-items: center;
+      justify-content: center; font-size: 9px; color: #fff; font-weight: 700;
+    }
+    .uob-app-body { display: flex; flex: 1; overflow: hidden; }
+    .uob-app-sidebar {
+      width: 110px; background: #1a2235; flex-shrink: 0;
+      padding: 10px 0; display: flex; flex-direction: column; gap: 1px;
+    }
+    .uob-nav-item {
+      padding: 7px 12px; font-size: 9px; color: rgba(255,255,255,0.45);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .uob-nav-item.active {
+      background: rgba(220,20,25,0.15); color: #fca5a5;
+      border-right: 2px solid #dc1419;
+    }
+    .uob-nav-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.6; flex-shrink: 0; }
+    .uob-app-content {
+      flex: 1; background: #f0f2f5; padding: 10px;
+      overflow: hidden; display: flex; flex-direction: column; gap: 8px;
+    }
+    .uob-content-header { font-size: 10px; font-weight: 700; color: #1a1d21; }
+    .uob-content-sub { font-size: 7.5px; color: #9ca3af; }
+    .uob-acc-cards { display: flex; gap: 7px; }
+    .uob-acc-card {
+      flex: 1; background: #fff; border-radius: 6px; padding: 8px 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .uob-acc-label { font-size: 7px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .uob-acc-balance { font-size: 13px; font-weight: 700; color: #1a1d21; filter: blur(5px); user-select: none; letter-spacing: -0.3px; }
+    .uob-acc-number { font-size: 7px; color: #9ca3af; margin-top: 2px; }
+    .uob-tx-section { background: #fff; border-radius: 6px; padding: 8px; flex: 1; overflow: hidden; }
+    .uob-tx-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding-bottom: 5px; border-bottom: 1px solid #f0f2f5; }
+    .uob-tx-title { font-size: 8px; font-weight: 700; color: #1a1d21; }
+    .uob-tx-viewall { font-size: 7px; color: #dc1419; font-weight: 600; }
+    .uob-tx-row {
+      display: flex; align-items: center; padding: 5px 4px; gap: 7px;
+      border-bottom: 1px solid #f9fafb; border-radius: 4px;
+      transition: background 0.3s ease;
+    }
+    .uob-tx-row:last-child { border-bottom: none; }
+    .uob-tx-row.tx-highlight { background: rgba(220,20,25,0.06); }
+    .uob-tx-icon {
+      width: 20px; height: 20px; border-radius: 5px; background: #f0f2f5;
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 8px;
+    }
+    .uob-tx-info { flex: 1; }
+    .uob-tx-name { font-size: 8px; font-weight: 600; color: #1a1d21; }
+    .uob-tx-date { font-size: 7px; color: #9ca3af; }
+    .uob-tx-amount { font-size: 9px; font-weight: 700; filter: blur(4px); user-select: none; }
+    .uob-tx-amount.debit { color: #dc1419; }
+    .uob-tx-amount.credit { color: #16a34a; }
+
+    /* Laptop notification overlay */
+    .uob-lap-notif {
+      position: absolute; top: 64px; right: 8px; width: 175px;
+      background: #fff; border-radius: 8px; padding: 10px 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.22); border-left: 3px solid #16a34a;
+      z-index: 10; opacity: 0; transform: translateX(18px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+    }
+    .uob-lap-notif.show { opacity: 1; transform: translateX(0); }
+    .uob-lap-notif-title { font-size: 9px; font-weight: 700; color: #16a34a; margin-bottom: 3px; }
+    .uob-lap-notif-body { font-size: 8px; color: #374151; line-height: 1.5; }
+    .uob-lap-notif-amount { filter: blur(4px); user-select: none; display: inline; }
+
+    /* Laptop base */
+    .uob-laptop-base {
+      background: linear-gradient(180deg, #1c2333 0%, #141d2e 100%);
+      height: 14px; border-radius: 0 0 4px 4px;
+      border: 2px solid #2d3b52; border-top: none; position: relative;
+    }
+    .uob-laptop-foot {
+      position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+      width: 55%; height: 8px;
+      background: linear-gradient(180deg, #1c2333, #141d2e);
+      border-radius: 0 0 8px 8px; border: 2px solid #2d3b52; border-top: none;
+    }
+
+    /* ─── PHONE (floating) ─── */
+    .uob-phone-wrap { position: absolute; right: -28px; bottom: 24px; z-index: 5; }
+    .uob-phone {
+      width: 132px; background: #1c2333; border-radius: 22px;
+      border: 3px solid #2e3d54; overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04);
+      position: relative; padding-top: 20px; padding-bottom: 12px;
+    }
+    .uob-phone-notch {
+      position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
+      width: 38px; height: 10px; background: #141d2e; border-radius: 5px; z-index: 5;
+    }
+    .uob-phone-screen { background: #fff; height: 252px; overflow: hidden; position: relative; }
+    .uob-phone-home { width: 34px; height: 3px; background: rgba(255,255,255,0.22); border-radius: 3px; margin: 6px auto 0; }
+
+    /* Phone login screen */
+    .uob-login-screen {
+      position: absolute; inset: 0; background: #fff;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 18px 12px 12px; transition: opacity 0.4s ease;
+    }
+    .uob-login-logo {
+      width: 42px; height: 16px; background: #dc1419; border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 800; color: #fff; letter-spacing: 1px; margin-bottom: 4px;
+    }
+    .uob-login-title { font-size: 9px; font-weight: 700; color: #1a1d21; margin-bottom: 1px; }
+    .uob-login-sub { font-size: 7px; color: #9ca3af; margin-bottom: 14px; }
+    .uob-login-field {
+      width: 100%; background: #f5f7fa; border: 1px solid #e5e7eb;
+      border-radius: 5px; padding: 5px 7px; margin-bottom: 5px;
+    }
+    .uob-login-field-label { font-size: 6px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+    .uob-login-field-val { font-size: 8px; color: #1a1d21; font-weight: 500; }
+    .uob-login-field-val.pwd { letter-spacing: 2px; }
+    .uob-login-btn {
+      width: 100%; height: 26px; background: #dc1419; border-radius: 5px; margin-top: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: #fff; position: relative; overflow: hidden;
+    }
+    .uob-btn-label { transition: opacity 0.25s ease; }
+    .uob-login-loading {
+      position: absolute; inset: 0; background: #dc1419;
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      opacity: 0; transition: opacity 0.25s ease;
+    }
+    .uob-login-loading.show { opacity: 1; }
+    .uob-loading-dot {
+      width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.7);
+      animation: uobDotBounce 0.6s ease infinite;
+    }
+    .uob-loading-dot:nth-child(2){animation-delay:0.12s;}
+    .uob-loading-dot:nth-child(3){animation-delay:0.24s;}
+    @keyframes uobDotBounce { 0%,100%{transform:translateY(0);opacity:0.4} 50%{transform:translateY(-3px);opacity:1} }
+
+    /* Phone dashboard screen */
+    .uob-dash-screen {
+      position: absolute; inset: 0; background: #f0f2f5;
+      opacity: 0; transition: opacity 0.4s ease;
+      padding: 7px; display: flex; flex-direction: column; gap: 5px;
+    }
+    .uob-dash-screen.show { opacity: 1; }
+    .uob-dash-topbar {
+      height: 32px; background: #dc1419; border-radius: 5px;
+      display: flex; align-items: center; padding: 0 8px; justify-content: space-between;
+    }
+    .uob-dash-greeting-sm { font-size: 7px; color: rgba(255,255,255,0.8); }
+    .uob-dash-logo-sm { font-size: 10px; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+    .uob-dash-bal-card {
+      background: #fff; border-radius: 5px; padding: 7px 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .uob-dash-bal-label { font-size: 6px; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+    .uob-dash-bal-val { font-size: 15px; font-weight: 800; color: #1a1d21; filter: blur(5px); user-select: none; letter-spacing: -0.5px; }
+    .uob-dash-quick { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; }
+    .uob-dash-action {
+      background: #fff; border-radius: 5px; padding: 6px 3px;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+    }
+    .uob-dash-action-icon { font-size: 12px; }
+    .uob-dash-action-label { font-size: 6px; color: #374151; font-weight: 500; text-align: center; }
+    .uob-dash-tx-mini { background: #fff; border-radius: 5px; padding: 6px 7px; flex: 1; }
+    .uob-dash-tx-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 3px 0; border-bottom: 1px solid #f9fafb;
+    }
+    .uob-dash-tx-row:last-child { border-bottom: none; }
+    .uob-dash-tx-name { font-size: 7px; color: #374151; font-weight: 500; }
+    .uob-dash-tx-amt { font-size: 7px; font-weight: 700; filter: blur(3.5px); color: #dc1419; }
+
+    /* ─── SCREEN IMAGE + BLUR ZONES ─── */
+    .uob-screen-img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top left;
+      display: block;
+    }
+    .uob-blur-zone {
+      position: absolute;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      background: rgba(255,255,255,0.08);
+      border-radius: 3px;
+      pointer-events: none;
+      z-index: 3;
+    }
+    .uob-phone-img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: object-position 2.5s ease;
+    }
+
+    /* Mobile responsive for UOB hero */
+    @media (max-width: 900px) {
+      .uob-hero-inner { grid-template-columns: 1fr; gap: 40px; }
+      .uob-hero-band { padding: 48px 24px 60px; }
+      .uob-mockups-wrap { justify-content: center; max-width: 500px; margin: 0 auto; }
+      .uob-phone-wrap { right: -16px; bottom: 16px; }
+    }
+    @media (max-width: 480px) {
+      .uob-laptop-wrap { max-width: 320px; }
+      .uob-phone-wrap { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -768,6 +1087,99 @@
       </button>
     </div>
   </nav>
+
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu">
+    <button class="mobile-close" onclick="document.querySelector('.mobile-menu').classList.remove('open')">✕</button>
+    <a href="index.html#work" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Work</a>
+    <a href="about.html" onclick="document.querySelector('.mobile-menu').classList.remove('open')">About</a>
+    <a href="index.html#method" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Experience</a>
+    <a href="index.html#contact" onclick="document.querySelector('.mobile-menu').classList.remove('open')">Contact</a>
+  </div>
+
+  <!-- UOB HERO BAND -->
+  <section class="uob-hero-band">
+    <div class="uob-hero-inner">
+
+      <!-- Text -->
+      <div>
+        <div class="uob-hero-eyebrow">UOB Infinity</div>
+        <h2 class="uob-hero-title">Corporate <em>Banking</em>,<br>Redesigned.</h2>
+        <p class="uob-hero-sub">Embedded within UOB's agile delivery team, evolving corporate digital banking experiences for enterprises across Southeast Asia.</p>
+        <div class="uob-hero-stats">
+          <span class="uob-hero-stat">Cross-border payment workflows</span>
+          <span class="uob-hero-stat">Virtual account hierarchy design</span>
+          <span class="uob-hero-stat">Fraud risk monitoring dashboard</span>
+          <span class="uob-hero-stat">Rapid-delivery product sprints</span>
+        </div>
+      </div>
+
+      <!-- Mockups -->
+      <div class="uob-mockups-wrap">
+
+        <!-- LAPTOP -->
+        <div class="uob-laptop-wrap" id="uob-laptop">
+          <div class="uob-laptop-shell">
+
+            <!-- Browser chrome -->
+            <div class="uob-laptop-chrome">
+              <div class="uob-chrome-dots">
+                <div class="uob-chrome-dot"></div>
+                <div class="uob-chrome-dot"></div>
+                <div class="uob-chrome-dot"></div>
+              </div>
+              <div class="uob-chrome-url"><span class="uob-chrome-lock">🔒</span> infinity.uob.com.sg/dashboard</div>
+            </div>
+
+            <!-- UOB App — real screenshot inside laptop frame -->
+            <div class="uob-app" style="position:relative;overflow:hidden;">
+              <img class="uob-screen-img"
+                src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_1400,h_700,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg"
+                alt="UOB Infinity Dashboard" />
+
+              <!-- Blur zones over sensitive balance / amount areas -->
+              <div class="uob-blur-zone" style="top:18%;left:15%;width:26%;height:17%;"></div>
+              <div class="uob-blur-zone" style="top:18%;left:47%;width:26%;height:17%;"></div>
+              <div class="uob-blur-zone" style="top:52%;left:15%;width:18%;height:11%;"></div>
+              <div class="uob-blur-zone" style="top:65%;left:15%;width:18%;height:11%;"></div>
+              <div class="uob-blur-zone" style="top:78%;left:15%;width:18%;height:11%;"></div>
+              <div class="uob-blur-zone" style="top:52%;right:2%;width:20%;height:11%;"></div>
+              <div class="uob-blur-zone" style="top:65%;right:2%;width:20%;height:11%;"></div>
+              <div class="uob-blur-zone" style="top:78%;right:2%;width:20%;height:11%;"></div>
+
+              <!-- Payment approved notification overlay -->
+              <div class="uob-lap-notif" id="uob-lap-notif">
+                <div class="uob-lap-notif-title">✓ Payment Approved</div>
+                <div class="uob-lap-notif-body">Transfer to PT Mitra Global<br>SGD <span class="uob-lap-notif-amount">52,000.00</span> · Ref: TXN-8823</div>
+              </div>
+            </div>
+          </div>
+          <!-- Laptop base -->
+          <div class="uob-laptop-base"><div class="uob-laptop-foot"></div></div>
+        </div>
+
+        <!-- PHONE (floating) -->
+        <div class="uob-phone-wrap">
+          <div class="uob-phone" id="uob-phone">
+            <div class="uob-phone-notch"></div>
+            <div class="uob-phone-screen" style="position:relative;overflow:hidden;">
+              <!-- Same UOB Infinity image, panning to show different areas -->
+              <img id="uob-phone-img" class="uob-phone-img"
+                src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_1400,h_700,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg"
+                alt="UOB Infinity"
+                style="object-position: 20% top;" />
+              <!-- Blur zones for phone -->
+              <div class="uob-blur-zone" style="top:20%;left:5%;width:85%;height:20%;"></div>
+              <div class="uob-blur-zone" style="top:50%;right:3%;width:40%;height:12%;"></div>
+              <div class="uob-blur-zone" style="top:65%;right:3%;width:40%;height:12%;"></div>
+            </div>
+            <div class="uob-phone-home"></div>
+          </div>
+        </div>
+
+      </div><!-- /mockups-wrap -->
+    </div><!-- /hero-inner -->
+  </section>
 
   <div class="page-layout">
 
@@ -835,14 +1247,6 @@
         </div>
       </div>
 
-      <!-- HERO IMAGE -->
-      <div class="hero-img-wrap fade-up" style="transition-delay:0.1s">
-        <img loading="lazy"
-          src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_1400,h_700,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg"
-          alt="UOB Infinity corporate banking platform"
-        />
-      </div>
-      <p class="img-caption fade-up" style="transition-delay:0.15s">UOB Infinity — Corporate Digital Banking Platform</p>
 
       <!-- OVERVIEW -->
       <section id="overview" class="cs-section fade-up">
@@ -1063,6 +1467,61 @@
       <p class="footer-copy">Based in Singapore · Open to opportunities</p>
     </div>
   </section>
+
+  <!-- UOB HERO ANIMATIONS -->
+  <script>
+  (function() {
+    // ── Laptop animation: payment notification slides in ──
+    function runLaptopAnim() {
+      var notif = document.getElementById('uob-lap-notif');
+      if (!notif) return;
+      notif.classList.remove('show');
+      setTimeout(function(){ notif.classList.add('show');    }, 900);
+      setTimeout(function(){ notif.classList.remove('show'); }, 3800);
+    }
+
+    // ── Phone animation: pan across the dashboard image ──
+    function runPhoneAnim() {
+      var img = document.getElementById('uob-phone-img');
+      if (!img) return;
+      // Reset to left
+      img.style.transition = 'none';
+      img.style.objectPosition = '20% top';
+      // Pan right
+      setTimeout(function(){
+        img.style.transition = 'object-position 2.8s ease-in-out';
+        img.style.objectPosition = '85% top';
+      }, 600);
+      // Pan back left
+      setTimeout(function(){
+        img.style.transition = 'object-position 2.8s ease-in-out';
+        img.style.objectPosition = '20% top';
+      }, 3800);
+    }
+
+    // ── IntersectionObserver auto-loop ──
+    function autoLoop(elId, fn, intervalMs) {
+      var el = document.getElementById(elId);
+      if (!el) return;
+      var timer = null;
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            fn();
+            timer = setInterval(fn, intervalMs);
+          } else {
+            clearInterval(timer);
+            timer = null;
+          }
+        });
+      }, { threshold: 0.15 });
+      io.observe(el);
+    }
+
+    autoLoop('uob-laptop', runLaptopAnim, 5000);
+    autoLoop('uob-phone',  runPhoneAnim,  7200);
+  })();
+  </script>
 
   <div id="cursor-dot"></div>
   <script>
