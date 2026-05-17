@@ -1373,13 +1373,12 @@
     @media (max-width: 360px) {
       .status-badge {
         align-items: center;
-        padding: 10px 14px;
-        gap: 12px;
-        line-height: 1.4;
+        padding: 9px 12px;
+        gap: 8px;
+        font-size: 11.5px;
+        white-space: nowrap;
       }
-      .status-dot {
-        flex-shrink: 0;
-      }
+      .status-dot { flex-shrink: 0; }
     }
 
     /* ─── ANIMATIONS ─── */
@@ -1714,7 +1713,7 @@
 
         <div class="status-badge" style="margin-bottom:0;">
           <span class="status-dot"></span>
-          Currently at UOB Singapore · Singaporean
+          <span class="status-text">Currently at UOB Singapore · Singaporean</span>
         </div>
 
       </div>
