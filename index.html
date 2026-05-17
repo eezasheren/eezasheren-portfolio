@@ -1370,6 +1370,18 @@
       .award-item { border-right: none !important; }
     }
 
+    @media (max-width: 360px) {
+      .status-badge {
+        align-items: flex-start;
+        padding: 10px 14px;
+        line-height: 1.4;
+      }
+      .status-dot {
+        flex-shrink: 0;
+        margin-top: 3px;
+      }
+    }
+
     /* ─── ANIMATIONS ─── */
     .fade-up {
       opacity: 0;
@@ -1702,7 +1714,7 @@
 
         <div class="status-badge" style="margin-bottom:0;">
           <span class="status-dot"></span>
-          Currently at UOB Singapore · Based in Singapore
+          Currently at UOB Singapore · Singaporean
         </div>
 
       </div>
