@@ -7,9 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://static.wixstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Cormorant+Garant:ital,wght@1,400;1,600;1,700&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; min-width: 0; }
 
     :root {
       --page-bg: #ffffff;
@@ -27,7 +27,7 @@
       --sidebar: 220px;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: clip; }
 
     h1, h2, h3, h4 { font-family: 'Bricolage Grotesque', sans-serif; }
 
@@ -37,7 +37,7 @@
       color: var(--black);
       background: var(--page-bg);
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
+      overflow-x: clip; /* clip doesn't create a scroll container — keeps position:sticky working */
     }
 
     /* ─── NAV ─── */
@@ -98,7 +98,7 @@
       position: sticky;
       top: var(--nav-h);
       height: calc(100vh - var(--nav-h));
-      padding: 80px 24px 32px 32px;
+      padding: 48px 24px 32px 32px;
       display: flex;
       flex-direction: column;
       overflow-y: auto;
@@ -344,7 +344,7 @@
     .sec-tag {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       font-size: 11px;
       font-weight: 700;
       letter-spacing: 1.5px;
@@ -352,19 +352,20 @@
       color: var(--gray-2);
       margin-bottom: 24px;
     }
-
-    .sec-tag::before {
-      content: '';
-      display: block;
-      width: 20px;
-      height: 1px;
-      background: var(--gray-2);
+    .sec-tag::before { display: none; }
+    .sec-tag-icon {
+      width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--white); border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      flex-shrink: 0;
     }
+    .sec-tag-icon svg { display: block; }
 
     /* Section heading */
     .sec-heading {
       font-size: clamp(24px, 3vw, 34px);
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: -0.8px;
       line-height: 1.2;
       margin-bottom: 16px;
@@ -551,6 +552,179 @@
       margin: 48px 0;
     }
 
+    /* ─── HOW I WORK (auto-cycling tabs) ─── */
+    .hiw-tabs {
+      display: flex; gap: 8px; margin-top: 32px; flex-wrap: wrap;
+    }
+    .hiw-tab {
+      position: relative; flex: 1; min-width: 0;
+      padding: 14px 16px 14px; border-radius: 14px;
+      background: var(--white); border: 1.5px solid var(--gray-3);
+      cursor: pointer; overflow: hidden; text-align: left;
+      transition: border-color 0.25s; display: flex; flex-direction: column; gap: 3px;
+    }
+    .hiw-tab:hover { border-color: #aaa; }
+    .hiw-tab.active { border-color: var(--black); }
+    .hiw-tab-num {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      color: var(--gray-2); text-transform: uppercase;
+    }
+    .hiw-tab-label {
+      font-size: 12.5px; font-weight: 600; color: var(--black);
+      line-height: 1.3; letter-spacing: -0.2px;
+    }
+    .hiw-tab-bar {
+      position: absolute; bottom: 0; left: 0; height: 3px;
+      width: 0%; background: var(--black);
+    }
+    .hiw-tab.active .hiw-tab-bar {
+      animation: hiwFill 3s linear forwards;
+    }
+    @keyframes hiwFill { from { width: 0%; } to { width: 100%; } }
+
+    /* Content panels — stacked in same grid cell */
+    .hiw-content { display: grid; margin-top: 8px; }
+    .hiw-panel {
+      grid-area: 1 / 1;
+      background: var(--white); border-radius: 20px; padding: 40px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      opacity: 0; transform: translateY(14px);
+      transition: opacity 0.45s cubic-bezier(0.16,1,0.3,1), transform 0.45s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+    }
+    .hiw-panel.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .hiw-icon {
+      width: 52px; height: 52px; border-radius: 16px; background: var(--black);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 24px;
+    }
+    .hiw-panel[data-panel="1"] .hiw-icon { background: var(--blue); }
+    .hiw-panel[data-panel="2"] .hiw-icon { background: #7c3aed; }
+    .hiw-panel[data-panel="3"] .hiw-icon { background: var(--orange); }
+    .hiw-number {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      color: var(--gray-2); margin-bottom: 10px; text-transform: uppercase;
+    }
+    .hiw-title {
+      font-size: 22px; font-weight: 600; color: var(--black);
+      letter-spacing: -0.5px; margin-bottom: 14px; line-height: 1.2;
+    }
+    .hiw-body { font-size: 15px; line-height: 1.8; color: var(--gray-1); max-width: 580px; }
+
+    /* ─── SCROLL INITIATIVES ─── */
+    .initiatives-scroll-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: start;
+      margin-top: 40px;
+    }
+    .initiatives-sticky-left {
+      position: sticky;
+      top: calc(var(--nav-h) + 48px);
+    }
+    .initiatives-img-wrap {
+      position: relative;
+      width: 100%;
+      height: 360px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--white);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    }
+    .init-img {
+      position: absolute; inset: 0;
+      opacity: 0;
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 12px; color: var(--gray-2);
+      font-size: 13px; font-weight: 500;
+      border: 1.5px dashed var(--gray-3);
+      border-radius: 20px;
+    }
+    .init-img.active { opacity: 1; }
+    .init-img svg { opacity: 0.35; }
+
+    /* Project image — real img tag */
+    .init-img img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top left;
+      border-radius: 20px;
+    }
+
+    /* Dot nav */
+    .init-dots {
+      display: flex; gap: 7px; margin-top: 18px;
+      align-items: center;
+    }
+    .init-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gray-3);
+      transition: background 0.3s ease, transform 0.3s ease;
+      cursor: default;
+    }
+    .init-dot.active { background: var(--black); transform: scale(1.4); }
+
+    /* Right scroll panels */
+    .initiatives-panels { display: flex; flex-direction: column; }
+    .init-panel {
+      min-height: 72vh;
+      padding: 52px 0;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .init-panel:not(:last-child) { border-bottom: 1px solid var(--gray-3); }
+
+    .init-panel-content {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .init-panel.in-view .init-panel-content { opacity: 1; transform: translateY(0); }
+
+    .init-counter {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gray-2); margin-bottom: 12px;
+    }
+    .init-heading {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 24px; font-weight: 600; letter-spacing: -0.4px;
+      color: var(--black); margin-bottom: 6px; line-height: 1.25;
+    }
+    .init-sub-label {
+      font-size: 13px; color: var(--gray-2); font-weight: 500;
+      margin-bottom: 32px;
+    }
+    .init-row { margin-bottom: 22px; }
+    .init-row:last-child { margin-bottom: 0; }
+    .init-row-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gray-2); margin-bottom: 6px;
+    }
+    .init-row-body { font-size: 15px; line-height: 1.75; color: var(--gray-1); }
+
+    /* ─── MOBILE INITIATIVE CARDS (hidden on desktop) ─── */
+    .init-mobile-cards {
+      display: none; /* shown only in mobile media query */
+    }
+
+    /* ─── CONTRIBUTIONS LIST ─── */
+    .contributions-list { margin-top: 32px; }
+    .contribution-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      padding: 18px 0; border-bottom: 1px solid var(--gray-3);
+    }
+    .contribution-item:last-child { border-bottom: none; }
+    .contribution-check {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--black); display: flex;
+      align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .contribution-item-text {
+      font-size: 15px; line-height: 1.65;
+      color: var(--black); font-weight: 500;
+    }
+
     /* ─── FOOTER NAV ─── */
     .case-footer {
       margin-top: 80px;
@@ -608,12 +782,19 @@
     /* ─── ANIMATIONS ─── */
     .fade-up {
       opacity: 0;
-      transform: translateY(16px);
+      transform: translateY(28px);
       will-change: opacity, transform;
-      transition: opacity 0.5s ease, transform 0.5s ease;
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
-
     .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: 0.08s; }
+    .delay-2 { transition-delay: 0.16s; }
+    .delay-3 { transition-delay: 0.24s; }
+    .delay-4 { transition-delay: 0.32s; }
+    .delay-5 { transition-delay: 0.40s; }
+    .delay-6 { transition-delay: 0.48s; }
+    .delay-7 { transition-delay: 0.56s; }
 
     /* ── Star cursor ── */
     #cursor-dot {
@@ -762,96 +943,292 @@
     }
 
     /* ─── UOB HERO BAND ─── */
-    .uob-hero-band {
-      background: #07090f;
-      padding: 80px 56px 100px;
-      margin-top: var(--nav-h);
+    /* ─── NEW HERO ─── */
+    /* ─── HERO — blue gradient with texture ─── */
+    .uob-hero-new {
+      position: relative;
+      padding: calc(var(--nav-h) + 88px) 56px 0;
+      background:
+        radial-gradient(circle, rgba(255,255,255,0.055) 1px, transparent 1px),
+        linear-gradient(148deg, #0a1744 0%, #0f2a86 38%, #1848b8 62%, #0d1f70 100%);
+      background-size: 28px 28px, 100% 100%;
       overflow: hidden;
+      text-align: center;
+    }
+    /* Grain texture overlay — layered on top of dot grid */
+    .uob-hero-new::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.68' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.11;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ─── HOVER CIRCLES ─── */
+    .hero-circle {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    @keyframes heroCirclePop {
+      from { opacity: 0; transform: scale(0); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes heroCircleFloat {
+      0%, 100% { transform: scale(1) translateY(0px); }
+      50%       { transform: scale(1) translateY(var(--fy, -10px)); }
+    }
+
+    /* ─── CLICK BURST ─── */
+    .hero-burst-ring {
+      position: absolute;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255,255,255,0.55);
+      pointer-events: none;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+      animation: heroBurstRing 0.55s ease-out forwards;
+    }
+    @keyframes heroBurstRing {
+      from { width: 0px; height: 0px; opacity: 0.8; }
+      to   { width: 90px; height: 90px; opacity: 0; }
+    }
+    .hero-burst-dot {
+      position: absolute;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.75);
+      pointer-events: none;
+      z-index: 10;
+      transform: translate(-50%, -50%);
+      animation: heroBurstDot 0.6s ease-out forwards;
+    }
+    @keyframes heroBurstDot {
+      from { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      to   { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0); opacity: 0; }
+    }
+    /* Radial glow */
+    .uob-hero-new::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(80,130,255,0.22) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .uob-hero-text-block {
       position: relative;
+      z-index: 1;
+      max-width: 800px;
+      margin: 0 auto 52px;
     }
-    .uob-hero-band::before {
-      content: ''; position: absolute; top: -30%; left: -8%;
-      width: 650px; height: 650px;
-      background: radial-gradient(circle, rgba(220,20,25,0.14) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .uob-hero-band::after {
-      content: ''; position: absolute; bottom: -15%; right: 8%;
-      width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(31,75,255,0.1) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .uob-hero-inner {
-      max-width: 1240px; margin: 0 auto;
-      display: grid; grid-template-columns: 300px 1fr;
-      gap: 64px; align-items: center;
-    }
-    .uob-hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(220,20,25,0.12); border: 1px solid rgba(220,20,25,0.28);
-      border-radius: 100px; padding: 6px 14px;
-      font-size: 10px; font-weight: 700; letter-spacing: 1.8px; text-transform: uppercase;
-      color: #fca5a5; margin-bottom: 20px;
-    }
-    .uob-hero-eyebrow::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%; background: #f87171;
-      animation: uobPulse 2s ease-in-out infinite;
-    }
-    @keyframes uobPulse { 0%,100%{opacity:1} 50%{opacity:0.25} }
+    .uob-hero-band { display: none; } /* legacy — hidden */
     .uob-hero-title {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: clamp(28px,3.2vw,44px); font-weight: 800;
-      color: #fff; letter-spacing: -1.5px; line-height: 1.1; margin-bottom: 16px;
+      font-family: 'Cormorant Garant', serif;
+      font-style: italic;
+      font-weight: 600;
+      font-size: clamp(30px, 3.8vw, 54px);
+      color: #ffffff;
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 20px;
     }
-    .uob-hero-title em { font-style: normal; color: #f87171; }
-    .uob-hero-sub {
-      font-size: 14px; line-height: 1.8; color: rgba(255,255,255,0.42); margin-bottom: 28px;
+    .uob-hero-subtitle {
+      font-size: 15px; line-height: 1.7;
+      color: rgba(255,255,255,0.65);
+      max-width: 560px;
+      margin: 0 auto 28px;
     }
-    .uob-hero-stats { display: flex; flex-direction: column; gap: 10px; }
-    .uob-hero-stat {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 12px; color: rgba(255,255,255,0.5);
+    .uob-hero-tags { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+    .uob-htag {
+      padding: 6px 15px; border-radius: 100px;
+      font-size: 12.5px; font-weight: 500; white-space: nowrap;
     }
-    .uob-hero-stat::before {
-      content: '✓'; width: 18px; height: 18px; border-radius: 50%;
-      background: rgba(220,20,25,0.18); color: #f87171;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 9px; font-weight: 800; flex-shrink: 0;
+    .uob-htag-blue   { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.88); border: 1px solid rgba(255,255,255,0.2); }
+    .uob-htag-green  { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.88); border: 1px solid rgba(255,255,255,0.2); }
+    .uob-htag-purple { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.88); border: 1px solid rgba(255,255,255,0.2); }
+    .uob-htag-warm   { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.88); border: 1px solid rgba(255,255,255,0.2); }
+
+    /* ─── HERO SCENE — wrapper that triggers all hover effects ─── */
+    .uob-hero-scene {
+      position: relative;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
-    /* ─── MOCKUPS WRAP ─── */
-    .uob-mockups-wrap {
-      position: relative; display: flex; align-items: flex-end;
-      justify-content: center;
+    /* ─── MAIN FRAME ─── */
+    .uob-hero-frame-wrap {
+      position: relative;
+      z-index: 2;
+      max-width: 780px;
+      margin: 0 auto;
+      cursor: pointer;
+      will-change: transform;
+      transform: scale(0.88);
+      transform-origin: center bottom;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .uob-hero-scene:hover .uob-hero-frame-wrap {
+      transform: scale(1.0);
     }
 
-    /* ─── LAPTOP ─── */
-    .uob-laptop-wrap { width: 100%; max-width: 580px; position: relative; }
+    /* ─── SIDE FRAMES — whole frame pops then floats as one unit ─── */
+    .uob-sf {
+      position: absolute;
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 3px;
+      overflow: hidden;
+      z-index: 3;
+      opacity: 0;
+      transform: scale(0.88) translateY(18px);
+      pointer-events: none;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.32), 0 4px 14px rgba(0,0,0,0.12);
+      /* smooth exit when hover leaves */
+      transition: opacity 0.3s ease, transform 0.35s ease;
+    }
+    .uob-sf-inner { display: contents; }
+    .uob-sf img {
+      width: 100%; height: auto;
+      display: block; border-radius: 4px;
+    }
+
+    /* Left — mobile portrait, right side overlapping the main frame's left edge */
+    .uob-sf-left {
+      width: 160px;
+      top: -15px; left: 90px;
+      background: none; padding: 0;
+      box-shadow: none;
+      filter: drop-shadow(0 16px 40px rgba(0,0,0,0.5)) drop-shadow(0 4px 12px rgba(0,0,0,0.25));
+    }
+    .uob-sf-left img {
+      mix-blend-mode: multiply;
+      border-radius: 0;
+    }
+    /* Right 1 — Frame 5690 stepper, top-right, overlapping ~130px into main frame from right */
+    .uob-sf-right1 {
+      width: 300px;
+      top: 22px; right: 60px;
+    }
+    /* Right 2 — Frame 5691 chart, far right, barely overlapping right edge of main frame */
+    .uob-sf-right2 {
+      width: 230px;
+      top: 190px; right: 6px;
+    }
+
+    /* Pop — mobile slides in from the left */
+    @keyframes uobPopLeft {
+      from { opacity: 0; transform: scale(0.9) translateX(-24px); }
+      to   { opacity: 1; transform: scale(1) translateX(0); }
+    }
+    /* Pop — stepper drops down from above */
+    @keyframes uobPopTop {
+      from { opacity: 0; transform: scale(0.9) translateY(-20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    /* Pop — chart rises up from below */
+    @keyframes uobPopBottom {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    /* Mobile — gentle sway (up + slight side drift) */
+    @keyframes uobFloatMobile {
+      0%   { transform: scale(1) translate(0px, 0px); }
+      30%  { transform: scale(1) translate(-5px, -10px); }
+      65%  { transform: scale(1) translate(4px, -6px); }
+      100% { transform: scale(1) translate(0px, 0px); }
+    }
+    /* Stepper — simple slow bob */
+    @keyframes uobFloatStepper {
+      0%, 100% { transform: scale(1) translateY(0px); }
+      50%       { transform: scale(1) translateY(-7px); }
+    }
+    /* Chart — drifts diagonally, opposite phase */
+    @keyframes uobFloatChart {
+      0%   { transform: scale(1) translate(0px, 0px); }
+      40%  { transform: scale(1) translate(6px, -8px); }
+      75%  { transform: scale(1) translate(-3px, -4px); }
+      100% { transform: scale(1) translate(0px, 0px); }
+    }
+
+    /* Hover: pop then each element floats differently */
+    .uob-hero-scene:hover .uob-sf { pointer-events: auto; }
+    .uob-hero-scene:hover .uob-sf-left {
+      animation: uobPopLeft 0.55s cubic-bezier(0.16, 1, 0.3, 1) both,
+                 uobFloatMobile 3.4s ease-in-out 0.55s infinite;
+    }
+    .uob-hero-scene:hover .uob-sf-right1 {
+      animation: uobPopTop 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both,
+                 uobFloatStepper 2.6s ease-in-out 0.58s infinite;
+    }
+    .uob-hero-scene:hover .uob-sf-right2 {
+      animation: uobPopBottom 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both,
+                 uobFloatChart 3.8s ease-in-out 0.65s infinite;
+    }
+    .uob-hero-frame {
+      background: #ffffff;
+      border-radius: 14px 14px 0 0;
+      padding: 14px 14px 0;
+      overflow: hidden;
+      /* no shadow — only pop-up screens have shadow */
+    }
+    .uob-frame-chrome {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-bottom: 12px;
+    }
+    .uob-frame-dot {
+      width: 11px; height: 11px;
+      border-radius: 50%;
+    }
+    .uob-frame-dot:nth-child(1) { background: #ff5f57; }
+    .uob-frame-dot:nth-child(2) { background: #febc2e; }
+    .uob-frame-dot:nth-child(3) { background: #28c840; }
+    .uob-frame-img {
+      width: 100%;
+      height: 360px;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+      border-radius: 6px 6px 0 0;
+    }
+
+    /* legacy two-image styles — hidden */
+    .uob-hero-imgs { display: none; }
+    .uob-himg { display: none; }
+    .uob-mockups-wrap { display: none; }
+
+    /* legacy mockup styles — hidden */
+    .uob-mockups-wrap { display: none; }
+
+    /* legacy float animation — unused */
+
+    /* ─── legacy device CSS — all hidden via .uob-mockups-wrap{display:none} ─── */
+    .uob-laptop-wrap {
+      width: 100%; max-width: 520px; position: relative;
+      animation: uobFloat 5s linear infinite;
+    }
     .uob-laptop-shell {
-      background: #1c2333; border-radius: 10px 10px 0 0;
-      border: 2px solid #2d3b52; overflow: hidden;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04);
+      background: #141720;
+      border-radius: 14px;
+      border: 2px solid #ffffff;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,20,80,0.4);
       position: relative;
     }
-    .uob-laptop-chrome {
-      height: 26px; background: #1e2840;
-      display: flex; align-items: center; padding: 0 10px; gap: 8px;
-      border-bottom: 1px solid #1a2235;
-    }
-    .uob-chrome-dots { display: flex; gap: 5px; }
-    .uob-chrome-dot { width: 7px; height: 7px; border-radius: 50%; }
-    .uob-chrome-dot:nth-child(1){background:#ff5f57;}
-    .uob-chrome-dot:nth-child(2){background:#febc2e;}
-    .uob-chrome-dot:nth-child(3){background:#28c840;}
-    .uob-chrome-url {
-      flex: 1; height: 14px; background: #141d30; border-radius: 3px;
-      display: flex; align-items: center; padding: 0 8px;
-      font-size: 8px; color: rgba(255,255,255,0.28);
-    }
-    .uob-chrome-lock { margin-right: 4px; font-size: 7px; }
+    /* chrome hidden — minimal dark frame */
+    .uob-laptop-chrome,
+    .uob-chrome-dots, .uob-chrome-dot,
+    .uob-chrome-url, .uob-chrome-lock { display: none; }
 
     /* UOB App */
-    .uob-app { display: flex; flex-direction: column; height: 320px; background: #f0f2f5; position: relative; overflow: hidden; }
+    .uob-app { display: flex; flex-direction: column; height: 295px; background: #f0f2f5; position: relative; overflow: hidden; }
     .uob-app-topbar {
       height: 40px; background: #dc1419; flex-shrink: 0;
       display: flex; align-items: center; padding: 0 14px; justify-content: space-between;
@@ -927,33 +1304,24 @@
     .uob-lap-notif-body { font-size: 8px; color: #374151; line-height: 1.5; }
     .uob-lap-notif-amount { filter: blur(4px); user-select: none; display: inline; }
 
-    /* Laptop base */
-    .uob-laptop-base {
-      background: linear-gradient(180deg, #1c2333 0%, #141d2e 100%);
-      height: 14px; border-radius: 0 0 4px 4px;
-      border: 2px solid #2d3b52; border-top: none; position: relative;
-    }
-    .uob-laptop-foot {
-      position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-      width: 55%; height: 8px;
-      background: linear-gradient(180deg, #1c2333, #141d2e);
-      border-radius: 0 0 8px 8px; border: 2px solid #2d3b52; border-top: none;
-    }
+    /* Laptop base — hidden for minimal frame */
+    .uob-laptop-base, .uob-laptop-foot { display: none; }
 
-    /* ─── PHONE (floating) ─── */
-    .uob-phone-wrap { position: absolute; right: -28px; bottom: 24px; z-index: 5; }
+    /* ─── PHONE ─── */
+    .uob-phone-wrap {
+      position: absolute; right: -24px; bottom: 20px; z-index: 5;
+      animation: uobFloat 7s linear infinite;
+      animation-delay: -3.1s;
+    }
     .uob-phone {
-      width: 132px; background: #1c2333; border-radius: 22px;
-      border: 3px solid #2e3d54; overflow: hidden;
-      box-shadow: 0 24px 64px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.04);
-      position: relative; padding-top: 20px; padding-bottom: 12px;
+      width: 118px; background: #141720; border-radius: 22px;
+      border: 2px solid #ffffff; overflow: hidden;
+      box-shadow: 0 20px 56px rgba(0,20,80,0.45);
+      position: relative;
     }
-    .uob-phone-notch {
-      position: absolute; top: 7px; left: 50%; transform: translateX(-50%);
-      width: 38px; height: 10px; background: #141d2e; border-radius: 5px; z-index: 5;
-    }
-    .uob-phone-screen { background: #fff; height: 252px; overflow: hidden; position: relative; }
-    .uob-phone-home { width: 34px; height: 3px; background: rgba(255,255,255,0.22); border-radius: 3px; margin: 6px auto 0; }
+    .uob-phone-notch { display: none; }
+    .uob-phone-screen { background: #fff; height: 222px; overflow: hidden; position: relative; }
+    .uob-phone-home { display: none; }
 
     /* Phone login screen */
     .uob-login-screen {
@@ -1052,17 +1420,132 @@
       transition: object-position 2.5s ease;
     }
 
-    /* Mobile responsive for UOB hero */
+    /* ═══ RESPONSIVE ═══ */
+
+    /* ─── TABLET + MOBILE (≤900px) — sidebar hides, hero stacks ─── */
     @media (max-width: 900px) {
-      .uob-hero-inner { grid-template-columns: 1fr; gap: 40px; }
-      .uob-hero-band { padding: 48px 24px 60px; }
-      .uob-mockups-wrap { justify-content: center; max-width: 500px; margin: 0 auto; }
-      .uob-phone-wrap { right: -16px; bottom: 16px; }
+
+      /* Layout: collapse sidebar */
+      .page-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .main-content { padding: 36px 24px 80px; max-width: 100%; overflow-x: clip; }
+
+      /* Nav */
+      nav { padding: 0 20px; }
+      .hamburger { display: flex; }
+      .nav-pill { display: none; }
+
+      /* Hero: tablet */
+      .uob-hero-new { padding: calc(var(--nav-h) + 56px) 24px 0; }
+      .uob-hero-title { font-size: clamp(28px, 5vw, 44px); }
+      .uob-hero-subtitle { font-size: 15px; }
+      .uob-frame-img { height: 320px; }
+
+      /* Meta strip */
+      .project-meta-strip { padding: 20px; flex-direction: column; gap: 16px; }
+      .pms-divider { width: 100%; height: 1px; align-self: auto; }
+      .pms-value { font-size: 13px; }
+
+      /* Sections */
+      .sec-heading { font-size: clamp(20px, 5vw, 30px); }
+      .overview-card { padding: 24px; }
+      .sec-body { font-size: 15px; }
+
+      /* How I Work tabs: tablet */
+      .hiw-tab { padding: 12px 14px; }
+      .hiw-panel { padding: 28px; }
+      .hiw-title { font-size: 19px; }
+
+      /* Initiatives: hide desktop sticky, show card carousel */
+      .initiatives-scroll-wrap { display: none; }
+      .init-mobile-cards {
+        display: flex;
+        gap: 14px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        /* Use padding instead of negative margins — avoids layout expansion */
+        padding: 4px 0 20px;
+        margin-top: 20px;
+      }
+      .init-mobile-cards::-webkit-scrollbar { display: none; }
+      .init-mobile-card {
+        flex: 0 0 82vw;
+        max-width: 320px;
+        scroll-snap-align: start;
+        background: var(--white);
+        border-radius: 18px;
+        overflow: hidden;
+        border: 1px solid var(--gray-3);
+        min-width: 0;
+      }
+      .init-mobile-img {
+        height: 180px;
+        background: #e8eaf0;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center;
+        gap: 8px; color: var(--gray-2);
+        font-size: 12px; font-weight: 500;
+        border-bottom: 1px solid var(--gray-3);
+      }
+      .init-mobile-img svg { opacity: 0.35; }
+      .init-mobile-body { padding: 20px; }
+      .init-mobile-body .init-counter { margin-bottom: 8px; }
+      .init-mobile-body .init-heading { font-size: 16px; margin-bottom: 4px; }
+      .init-mobile-body .init-sub-label { font-size: 12px; margin-bottom: 20px; }
+      .init-mobile-body .init-row { margin-bottom: 16px; }
+      .init-mobile-body .init-row-body { font-size: 14px; }
+
+      /* Contributions */
+      .contributions-grid { grid-template-columns: 1fr; }
+      .contribution-item-text { font-size: 14px; }
+
+      /* Reflection */
+      .reflection-card { padding: 28px; }
+      .reflection-card p { font-size: 14px; }
+
+      /* Case footer */
+      .case-footer { flex-direction: column; align-items: flex-start; gap: 14px; }
     }
+
+    /* ─── SMALL PHONE (≤480px) ─── */
     @media (max-width: 480px) {
-      .uob-laptop-wrap { max-width: 320px; }
-      .uob-phone-wrap { display: none; }
-    }
+      .main-content { padding: 28px 16px 72px; }
+
+      /* Hero: mobile */
+      .uob-hero-new { padding: calc(var(--nav-h) + 40px) 16px 0; }
+      .uob-hero-title { font-size: clamp(28px, 7.5vw, 38px); }
+      .uob-hero-subtitle { font-size: 14px; }
+      .uob-hero-tags { margin-bottom: 36px; }
+      .uob-htag { font-size: 12px; padding: 5px 12px; }
+      .uob-frame-img { height: 220px; }
+      .uob-hero-frame { padding: 10px 10px 0; }
+      .uob-sf { display: none; }
+
+      /* Meta */
+      .project-meta-strip { padding: 16px; }
+      .pms-tags { gap: 4px; }
+      .pms-tag { font-size: 11px; padding: 3px 9px; }
+
+      /* Sections */
+      .sec-heading { font-size: clamp(18px, 5.5vw, 24px); }
+      .overview-card { padding: 20px; }
+      .sec-body { font-size: 14px; }
+
+      /* How I Work tabs: mobile */
+      .hiw-tabs { gap: 6px; }
+      .hiw-tab { flex: 0 0 calc(50% - 3px); }
+      .hiw-panel { padding: 22px; }
+      .hiw-title { font-size: 17px; }
+      .hiw-body { font-size: 14px; }
+
+      /* Initiatives cards */
+      .init-mobile-card { flex: 0 0 85vw; }
+
+      /* Reflection */
+      .reflection-card { padding: 20px; }
+    }  50%{transform:rotate(-28deg)} }
   </style>
 </head>
 <body>
@@ -1098,87 +1581,63 @@
   </div>
 
   <!-- UOB HERO BAND -->
-  <section class="uob-hero-band">
-    <div class="uob-hero-inner">
+  <!-- ═══ NEW HERO ═══ -->
+  <section class="uob-hero-new">
 
-      <!-- Text -->
-      <div>
-        <div class="uob-hero-eyebrow">UOB Infinity</div>
-        <h2 class="uob-hero-title">Corporate <em>Banking</em>,<br>Redesigned.</h2>
-        <p class="uob-hero-sub">Embedded within UOB's agile delivery team, evolving corporate digital banking experiences for enterprises across Southeast Asia.</p>
-        <div class="uob-hero-stats">
-          <span class="uob-hero-stat">Cross-border payment workflows</span>
-          <span class="uob-hero-stat">Virtual account hierarchy design</span>
-          <span class="uob-hero-stat">Fraud risk monitoring dashboard</span>
-          <span class="uob-hero-stat">Rapid-delivery product sprints</span>
+    <!-- Text block -->
+    <div class="uob-hero-text-block">
+      <h1 class="uob-hero-title">Evolving user experiences within corporate digital banking</h1>
+      <p class="uob-hero-subtitle">Designing and improving complex banking experiences across Southeast Asia, embedded within UOB's agile product environment.</p>
+      <div class="uob-hero-tags">
+        <span class="uob-htag uob-htag-blue">Corporate Banking</span>
+        <span class="uob-htag uob-htag-green">In-house UX Team</span>
+        <span class="uob-htag uob-htag-purple">UX + UI Design</span>
+        <span class="uob-htag uob-htag-warm">2+ Years</span>
+      </div>
+    </div>
+
+    <!-- Hero scene: main frame + side frames that pop on hover -->
+    <div class="uob-hero-scene" id="uob-hero-imgs">
+
+      <!-- Side frame LEFT (14_1) -->
+      <div class="uob-sf uob-sf-left">
+        <div class="uob-sf-inner">
+          <img src="14_1.png" alt="UOB screen" />
         </div>
       </div>
 
-      <!-- Mockups -->
-      <div class="uob-mockups-wrap">
-
-        <!-- LAPTOP -->
-        <div class="uob-laptop-wrap" id="uob-laptop">
-          <div class="uob-laptop-shell">
-
-            <!-- Browser chrome -->
-            <div class="uob-laptop-chrome">
-              <div class="uob-chrome-dots">
-                <div class="uob-chrome-dot"></div>
-                <div class="uob-chrome-dot"></div>
-                <div class="uob-chrome-dot"></div>
-              </div>
-              <div class="uob-chrome-url"><span class="uob-chrome-lock">🔒</span> infinity.uob.com.sg/dashboard</div>
-            </div>
-
-            <!-- UOB App — real screenshot inside laptop frame -->
-            <div class="uob-app" style="position:relative;overflow:hidden;">
-              <img class="uob-screen-img"
-                src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_1400,h_700,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg"
-                alt="UOB Infinity Dashboard" />
-
-              <!-- Blur zones over sensitive balance / amount areas -->
-              <div class="uob-blur-zone" style="top:18%;left:15%;width:26%;height:17%;"></div>
-              <div class="uob-blur-zone" style="top:18%;left:47%;width:26%;height:17%;"></div>
-              <div class="uob-blur-zone" style="top:52%;left:15%;width:18%;height:11%;"></div>
-              <div class="uob-blur-zone" style="top:65%;left:15%;width:18%;height:11%;"></div>
-              <div class="uob-blur-zone" style="top:78%;left:15%;width:18%;height:11%;"></div>
-              <div class="uob-blur-zone" style="top:52%;right:2%;width:20%;height:11%;"></div>
-              <div class="uob-blur-zone" style="top:65%;right:2%;width:20%;height:11%;"></div>
-              <div class="uob-blur-zone" style="top:78%;right:2%;width:20%;height:11%;"></div>
-
-              <!-- Payment approved notification overlay -->
-              <div class="uob-lap-notif" id="uob-lap-notif">
-                <div class="uob-lap-notif-title">✓ Payment Approved</div>
-                <div class="uob-lap-notif-body">Transfer to PT Mitra Global<br>SGD <span class="uob-lap-notif-amount">52,000.00</span> · Ref: TXN-8823</div>
-              </div>
-            </div>
-          </div>
-          <!-- Laptop base -->
-          <div class="uob-laptop-base"><div class="uob-laptop-foot"></div></div>
+      <!-- Side frame RIGHT 1 (Frame 5690 — stepper) -->
+      <div class="uob-sf uob-sf-right1">
+        <div class="uob-sf-inner">
+          <img src="Frame%205690.png" alt="UOB journey stepper" />
         </div>
+      </div>
 
-        <!-- PHONE (floating) -->
-        <div class="uob-phone-wrap">
-          <div class="uob-phone" id="uob-phone">
-            <div class="uob-phone-notch"></div>
-            <div class="uob-phone-screen" style="position:relative;overflow:hidden;">
-              <!-- Same UOB Infinity image, panning to show different areas -->
-              <img id="uob-phone-img" class="uob-phone-img"
-                src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_1400,h_700,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg"
-                alt="UOB Infinity"
-                style="object-position: 20% top;" />
-              <!-- Blur zones for phone -->
-              <div class="uob-blur-zone" style="top:20%;left:5%;width:85%;height:20%;"></div>
-              <div class="uob-blur-zone" style="top:50%;right:3%;width:40%;height:12%;"></div>
-              <div class="uob-blur-zone" style="top:65%;right:3%;width:40%;height:12%;"></div>
-            </div>
-            <div class="uob-phone-home"></div>
-          </div>
+      <!-- Side frame RIGHT 2 (Frame 5691 — chart) -->
+      <div class="uob-sf uob-sf-right2">
+        <div class="uob-sf-inner">
+          <img src="Frame%205691.png" alt="UOB balance chart" />
         </div>
+      </div>
 
-      </div><!-- /mockups-wrap -->
-    </div><!-- /hero-inner -->
+      <!-- Main frame -->
+      <div class="uob-hero-frame-wrap">
+        <div class="uob-hero-frame">
+          <div class="uob-frame-chrome">
+            <span class="uob-frame-dot"></span>
+            <span class="uob-frame-dot"></span>
+            <span class="uob-frame-dot"></span>
+          </div>
+          <img
+            src="1280_UOBSend17_Dashboard%20Favourite%20Functions_My%20Tasks_Single%20(1).png"
+            alt="UOB Infinity Dashboard — Favourite Functions"
+            class="uob-frame-img"
+          />
+        </div>
+      </div>
+
+    </div>
+
   </section>
 
   <div class="page-layout">
@@ -1187,13 +1646,12 @@
     <aside class="sidebar">
       <p class="sidebar-label">On this page</p>
       <ul class="sidebar-nav" id="sidebar-nav">
-        <li><a href="#overview" class="active">Overview</a></li>
-        <li><a href="#uob-pay">UOB Pay / UOB Send</a></li>
-        <li><a href="#vasa">Virtual Account Sub-Account</a></li>
-        <li><a href="#boatsize">Boatsize Changes</a></li>
-        <li><a href="#fraud">Fraud Dashboard</a></li>
-        <li><a href="#contributions">What I Worked On</a></li>
-        <li><a href="#outcomes">Outcomes</a></li>
+        <li><a href="#environment" class="active">The Environment</a></li>
+        <li><a href="#role">My Role</a></li>
+        <li><a href="#how-i-work">How I Work</a></li>
+        <li><a href="#initiatives">Key Initiatives</a></li>
+        <li><a href="#contributions">Contributions</a></li>
+        <li><a href="#outcome">Outcome</a></li>
       </ul>
 
     </aside>
@@ -1201,13 +1659,8 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-      <!-- HERO -->
+      <!-- META + NDA -->
       <div class="case-hero fade-up">
-        <p class="case-company">UOB Singapore</p>
-        <h1 class="case-title">Evolving user experiences within corporate digital banking</h1>
-        <p class="case-subtitle">Improving complex corporate banking experiences through systems thinking and collaborative delivery.</p>
-
-        <!-- PROJECT META STRIP -->
         <div class="project-meta-strip">
           <div class="pms-item">
             <p class="pms-label">Role</p>
@@ -1248,145 +1701,352 @@
       </div>
 
 
-      <!-- OVERVIEW -->
-      <section id="overview" class="cs-section fade-up">
-        <p class="sec-tag">Overview</p>
-        <h2 class="sec-heading">About the project</h2>
-        <div class="overview-card">
-          <p>UOB Infinity is a corporate digital banking platform supporting complex financial workflows, including cross-border payments and corporate transactions across multiple markets. As UX Designer, I was embedded in an agile delivery team, working across multiple product streams to incrementally improve and evolve the user experience.</p>
+      <!-- THE ENVIRONMENT -->
+      <section id="environment" class="cs-section fade-up">
+        <p class="sec-tag">
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></span>
+          The Environment
+        </p>
+        <h2 class="sec-heading fade-up delay-1">About the platform</h2>
+        <div class="overview-card fade-up delay-2">
+          <p>UOB Infinity is a corporate digital banking platform supporting Corporate Cash Management, Financial Supply Chain Management, and Trade workflows across multiple markets.</p>
+          <p style="margin-top:14px;">As part of an in-house UX team, I worked on improving existing experiences within a highly regulated banking environment where usability, operational requirements, security, and technical constraints all needed to coexist.</p>
+          <p style="margin-top:14px;">The work involved designing for complex transaction flows, internal operational tools, and continuous product improvements across live enterprise systems.</p>
         </div>
       </section>
 
       <div class="section-divider"></div>
 
-      <!-- UOB PAY / SEND -->
-      <section id="uob-pay" class="cs-section fade-up">
-        <p class="sec-tag">Project 01</p>
-        <h2 class="sec-heading">UOB Pay / UOB Send</h2>
-        <p style="font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gray-2);margin-bottom:20px;">Cross-border payment workflows</p>
-
-        <div class="sec-body">
-          <p>Improved cross-border payment workflows within the corporate banking platform, focusing on making key transaction steps clearer and more intuitive for users. The work involved refining interaction patterns and aligning the experience with regulatory and system constraints required for financial transactions.</p>
+      <!-- MY ROLE -->
+      <section id="role" class="cs-section fade-up">
+        <p class="sec-tag">
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path stroke-linecap="round" d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
+          My Role
+        </p>
+        <h2 class="sec-heading fade-up delay-1">Embedded in the team</h2>
+        <div class="sec-body fade-up delay-2">
+          <p>Embedded within an 8-person design team, I collaborated closely with Product Owners, Product Managers, Business Analysts, engineers, System Analysts, and stakeholders across multiple initiatives.</p>
+          <p>Working in an agile environment, I contributed across the end-to-end product lifecycle — from problem framing and flow ideation to refinement, handoff, and delivery support.</p>
+          <p>My work focused on improving usability, strengthening design consistency, and supporting scalable product experiences across the platform.</p>
         </div>
       </section>
 
       <div class="section-divider"></div>
 
-      <!-- VASA -->
-      <section id="vasa" class="cs-section fade-up">
-        <p class="sec-tag">Project 02</p>
-        <h2 class="sec-heading">Virtual Account Sub-Account (VASA)</h2>
+      <!-- HOW I WORK -->
+      <section id="how-i-work" class="cs-section fade-up">
+        <p class="sec-tag">
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg></span>
+          How I Work
+        </p>
+        <h2 class="sec-heading fade-up delay-1">My approach</h2>
 
-        <div class="sec-body">
-          <p>The VASA initiative introduced the ability for corporate users to create and manage sub-accounts within their organisations. I designed the experience for creating and managing sub-accounts within corporate organisations.</p>
-          <p>The challenge was to represent complex account hierarchies in a way that remained clear and manageable for users performing financial administration tasks.</p>
+        <!-- Tab pills -->
+        <div class="hiw-tabs">
+          <button class="hiw-tab active" data-hiw="0">
+            <span class="hiw-tab-num">01</span>
+            <span class="hiw-tab-label">Agile Delivery</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
+          <button class="hiw-tab" data-hiw="1">
+            <span class="hiw-tab-num">02</span>
+            <span class="hiw-tab-label">Product Thinking</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
+          <button class="hiw-tab" data-hiw="2">
+            <span class="hiw-tab-num">03</span>
+            <span class="hiw-tab-label">Systems & Security</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
+          <button class="hiw-tab" data-hiw="3">
+            <span class="hiw-tab-num">04</span>
+            <span class="hiw-tab-label">Cross-Functional</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
         </div>
+
+        <!-- Content panels -->
+        <div class="hiw-content">
+          <div class="hiw-panel active" data-panel="0">
+            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>
+            <p class="hiw-number">01 — Agile Delivery</p>
+            <h4 class="hiw-title">Working iteratively, shipping continuously</h4>
+            <p class="hiw-body">Worked within agile product teams to deliver iterative UX improvements aligned with sprint timelines, business priorities, and technical feasibility. Comfortable moving fast while keeping quality high.</p>
+          </div>
+          <div class="hiw-panel" data-panel="1">
+            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></div>
+            <p class="hiw-number">02 — End-to-End Product Thinking</p>
+            <h4 class="hiw-title">From problem framing to delivery</h4>
+            <p class="hiw-body">Contributed across the full design process — from identifying problems and refining flows to supporting implementation and delivery within a live enterprise product. Never just a screen-pusher.</p>
+          </div>
+          <div class="hiw-panel" data-panel="2">
+            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+            <p class="hiw-number">03 — Systems & Security Awareness</p>
+            <h4 class="hiw-title">Designing within constraints</h4>
+            <p class="hiw-body">Designed within a highly regulated banking environment, balancing usability with operational, technical, compliance, and security requirements. Constraints aren't blockers — they're part of the brief.</p>
+          </div>
+          <div class="hiw-panel" data-panel="3">
+            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+            <p class="hiw-number">04 — Cross-Functional Collaboration</p>
+            <h4 class="hiw-title">Aligned across every team</h4>
+            <p class="hiw-body">Partnered closely with product, engineering, and business teams to align design decisions through structured communication, systems thinking, and shared problem-solving. Design as a shared language.</p>
+          </div>
+        </div>
+
       </section>
 
       <div class="section-divider"></div>
 
-      <!-- BOATSIZE -->
-      <section id="boatsize" class="cs-section fade-up">
-        <p class="sec-tag">Project 03</p>
-        <h2 class="sec-heading">Boatsize Creative Changes</h2>
+      <!-- KEY INITIATIVES -->
+      <section id="initiatives" class="cs-section fade-up">
+        <p class="sec-tag">
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></span>
+          Key Initiatives
+        </p>
+        <h2 class="sec-heading fade-up delay-1">What I worked on</h2>
 
-        <div class="sec-body">
-          <p>Supported rapid product updates and short-turnaround initiatives where design changes were required quickly due to business or operational needs. This involved collaborating closely with product and engineering teams to deliver feasible UX solutions while maintaining usability and design consistency.</p>
-        </div>
+        <div class="initiatives-scroll-wrap">
+
+          <!-- STICKY LEFT: image + dots -->
+          <div class="initiatives-sticky-left">
+            <div class="initiatives-img-wrap">
+              <div class="init-img active" data-project="pay">
+                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+                Image coming soon
+              </div>
+              <div class="init-img" data-project="vasa">
+                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+                Image coming soon
+              </div>
+              <div class="init-img" data-project="agile">
+                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+                Image coming soon
+              </div>
+              <div class="init-img" data-project="fraud">
+                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+                Image coming soon
+              </div>
+            </div>
+            <div class="init-dots">
+              <div class="init-dot active" data-project="pay"></div>
+              <div class="init-dot" data-project="vasa"></div>
+              <div class="init-dot" data-project="agile"></div>
+              <div class="init-dot" data-project="fraud"></div>
+            </div>
+          </div>
+
+          <!-- SCROLLABLE RIGHT: text panels -->
+          <div class="initiatives-panels">
+
+            <div class="init-panel" data-project="pay">
+              <div class="init-panel-content">
+                <p class="init-counter">01 / 04</p>
+                <h3 class="init-heading">Improving Cross-Border Payment Workflows</h3>
+                <p class="init-sub-label">UOB Pay / UOB Send</p>
+                <div class="init-row">
+                  <p class="init-row-label">Problem</p>
+                  <p class="init-row-body">Corporate payment flows involved complex transaction requirements, making it challenging for users to complete actions quickly and confidently across multiple markets.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">What I Did</p>
+                  <p class="init-row-body">Improved key payment interactions and refined transaction flows to make the experience clearer, more intuitive, and better aligned with regulatory and operational requirements.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">Outcome</p>
+                  <p class="init-row-body">Strengthened usability and consistency across payment workflows while supporting smoother transaction experiences for corporate users.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="init-panel" data-project="vasa">
+              <div class="init-panel-content">
+                <p class="init-counter">02 / 04</p>
+                <h3 class="init-heading">Designing Sub-Account Management</h3>
+                <p class="init-sub-label">Virtual Account Sub-Account (VASA)</p>
+                <div class="init-row">
+                  <p class="init-row-label">Problem</p>
+                  <p class="init-row-body">Users needed a clearer way to create and manage sub-accounts within complex organisational account structures.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">What I Did</p>
+                  <p class="init-row-body">Designed and refined the sub-account creation experience, focusing on simplifying account hierarchy visibility and improving overall usability for financial administration tasks.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">Outcome</p>
+                  <p class="init-row-body">Created a more structured and manageable experience for users handling corporate account organisation and management.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="init-panel" data-project="agile">
+              <div class="init-panel-content">
+                <p class="init-counter">03 / 04</p>
+                <h3 class="init-heading">Rapid UX Improvements & Business Requests</h3>
+                <p class="init-sub-label">Agile Product Enhancements</p>
+                <div class="init-row">
+                  <p class="init-row-label">Problem</p>
+                  <p class="init-row-body">Business and operational teams frequently required urgent product updates and UX changes within short delivery timelines.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">What I Did</p>
+                  <p class="init-row-body">Collaborated closely with product and engineering teams to quickly assess requirements, propose feasible UX solutions, and support implementation while maintaining usability and design consistency.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">Outcome</p>
+                  <p class="init-row-body">Delivered iterative UX improvements efficiently within agile workflows while balancing speed, technical feasibility, and product quality.</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="init-panel" data-project="fraud">
+              <div class="init-panel-content">
+                <p class="init-counter">04 / 04</p>
+                <h3 class="init-heading">Internal Operational Dashboard</h3>
+                <p class="init-sub-label">Fraud Detection & Risk Monitoring (OFM FDR)</p>
+                <div class="init-row">
+                  <p class="init-row-label">Problem</p>
+                  <p class="init-row-body">Backend operational teams needed a clearer and more efficient way to monitor fraud activity, risk scoring, and security controls across the platform.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">What I Did</p>
+                  <p class="init-row-body">Designed an internal dashboard experience focused on improving visibility of operational data, surfacing key risk indicators, and supporting faster decision-making for internal teams.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">Outcome</p>
+                  <p class="init-row-body">Improved clarity and accessibility of complex operational information, helping teams monitor and respond to risks more effectively.</p>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /initiatives-panels -->
+        </div><!-- /initiatives-scroll-wrap -->
+
+        <!-- MOBILE CARD CAROUSEL (shown only on ≤720px) -->
+        <div class="init-mobile-cards">
+
+          <div class="init-mobile-card">
+            <div class="init-mobile-img">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+              <span>Image coming soon</span>
+            </div>
+            <div class="init-mobile-body">
+              <p class="init-counter">01 / 04</p>
+              <h3 class="init-heading">Improving Cross-Border Payment Workflows</h3>
+              <p class="init-sub-label">UOB Pay / UOB Send</p>
+              <div class="init-row">
+                <p class="init-row-label">Problem</p>
+                <p class="init-row-body">Corporate payment flows involved complex transaction requirements, making it challenging for users to complete actions quickly and confidently.</p>
+              </div>
+              <div class="init-row">
+                <p class="init-row-label">What I Did</p>
+                <p class="init-row-body">Improved key payment interactions and refined transaction flows to make the experience clearer and better aligned with regulatory requirements.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="init-mobile-card">
+            <div class="init-mobile-img">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+              <span>Image coming soon</span>
+            </div>
+            <div class="init-mobile-body">
+              <p class="init-counter">02 / 04</p>
+              <h3 class="init-heading">Designing Sub-Account Management</h3>
+              <p class="init-sub-label">Virtual Account Sub-Account (VASA)</p>
+              <div class="init-row">
+                <p class="init-row-label">Problem</p>
+                <p class="init-row-body">Users needed a clearer way to create and manage sub-accounts within complex organisational account structures.</p>
+              </div>
+              <div class="init-row">
+                <p class="init-row-label">What I Did</p>
+                <p class="init-row-body">Designed and refined the sub-account creation experience, simplifying account hierarchy visibility and improving usability.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="init-mobile-card">
+            <div class="init-mobile-img">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+              <span>Image coming soon</span>
+            </div>
+            <div class="init-mobile-body">
+              <p class="init-counter">03 / 04</p>
+              <h3 class="init-heading">Rapid UX Improvements & Business Requests</h3>
+              <p class="init-sub-label">Agile Product Enhancements</p>
+              <div class="init-row">
+                <p class="init-row-label">Problem</p>
+                <p class="init-row-body">Business teams frequently required urgent product updates and UX changes within short delivery timelines.</p>
+              </div>
+              <div class="init-row">
+                <p class="init-row-label">What I Did</p>
+                <p class="init-row-body">Collaborated with product and engineering to quickly assess requirements, propose UX solutions, and support implementation.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="init-mobile-card">
+            <div class="init-mobile-img">
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
+              <span>Image coming soon</span>
+            </div>
+            <div class="init-mobile-body">
+              <p class="init-counter">04 / 04</p>
+              <h3 class="init-heading">Internal Operational Dashboard</h3>
+              <p class="init-sub-label">Fraud Detection & Risk Monitoring (OFM FDR)</p>
+              <div class="init-row">
+                <p class="init-row-label">Problem</p>
+                <p class="init-row-body">Operational teams needed a clearer way to monitor fraud activity, risk scoring, and security controls across the platform.</p>
+              </div>
+              <div class="init-row">
+                <p class="init-row-label">What I Did</p>
+                <p class="init-row-body">Designed an internal dashboard focused on improving visibility of operational data and supporting faster decision-making.</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /init-mobile-cards -->
+
       </section>
 
       <div class="section-divider"></div>
 
-      <!-- FRAUD DASHBOARD -->
-      <section id="fraud" class="cs-section fade-up">
-        <p class="sec-tag">Project 04</p>
-        <h2 class="sec-heading">Fraud Detection & Risk Monitoring Dashboard</h2>
-
-        <div class="sec-body">
-          <p>Designed an internal dashboard used by backend teams to monitor and manage risk, fraud, and security within the banking platform. The focus was on presenting complex operational data in a clear and actionable way to support faster decision-making and system oversight.</p>
-        </div>
-      </section>
-
-      <div class="section-divider"></div>
-
-      <!-- WHAT I WORKED ON -->
+      <!-- CONTRIBUTIONS -->
       <section id="contributions" class="cs-section fade-up">
-        <p class="sec-tag">What I Worked On</p>
-        <h2 class="sec-heading">My contributions across the platform</h2>
-        <p style="font-size:14px;color:var(--gray-1);margin-bottom:8px;">Due to confidentiality, detailed flows and data structures cannot be shared.</p>
-
-        <div class="contributions-grid">
-          <div class="contribution-card">
-            <div class="contribution-icon">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
-              </svg>
-            </div>
-            <h4 class="contribution-title">Cross-Functional Product Delivery</h4>
-            <p class="contribution-body">Worked in close partnership with Product Owners, Product Managers, Business Analysts, System Analysts, and developers to align design decisions with technical feasibility and delivery timelines.</p>
-          </div>
-
-          <div class="contribution-card">
-            <div class="contribution-icon">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-              </svg>
-            </div>
-            <h4 class="contribution-title">Driving UX Improvements at Scale</h4>
-            <p class="contribution-body">Led UX enhancements across complex corporate banking workflows within a multi-market platform, focusing on clarity, consistency, and measurable product outcomes.</p>
-          </div>
-
-          <div class="contribution-card">
-            <div class="contribution-icon">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-              </svg>
-            </div>
-            <h4 class="contribution-title">Flow Ideation & Experience Evolution</h4>
-            <p class="contribution-body">Contributed to the design and refinement of new and existing journeys, applying systems thinking to ensure scalable and cohesive user experiences. Delivered short-turnaround UX initiatives balancing speed with usability.</p>
-          </div>
-
-          <div class="contribution-card">
-            <div class="contribution-icon">
-              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
-              </svg>
-            </div>
-            <h4 class="contribution-title">Internal Enablement & Design Support</h4>
-            <p class="contribution-body">Supported internal teams with design guidance, pattern documentation, and design system contributions to improve consistency and reduce decision-making friction across the product.</p>
-          </div>
+        <p class="sec-tag">
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></span>
+          My Contributions
+        </p>
+        <h2 class="sec-heading fade-up delay-1">Across the platform</h2>
+        <div class="contributions-list">
+          <div class="contribution-item fade-up delay-1"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Shipped 28+ UX improvements across live enterprise product flows</p></div>
+          <div class="contribution-item fade-up delay-2"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Improved usability across key corporate banking workflows in a multi-market environment</p></div>
+          <div class="contribution-item fade-up delay-3"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Strengthened design consistency across complex transaction modules</p></div>
+          <div class="contribution-item fade-up delay-4"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Maintained internal design resources including repositories and user guides</p></div>
+          <div class="contribution-item fade-up delay-5"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Contributed to internal operational tools supporting fraud, risk, and security monitoring</p></div>
+          <div class="contribution-item fade-up delay-6"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Supported both long-term initiatives and rapid business-driven product requests</p></div>
+          <div class="contribution-item fade-up delay-7"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Collaborated across product, engineering, business, and operational teams within agile workflows</p></div>
         </div>
       </section>
 
       <div class="section-divider"></div>
 
-      <!-- OUTCOMES -->
-      <section id="outcomes" class="cs-section fade-up">
-        <p class="sec-tag">Outcomes</p>
-        <h2 class="sec-heading">What I drove</h2>
-
-        <div class="outcomes-grid">
-          <div class="outcome-item nda-item">
-            <div class="outcome-dot" style="background:var(--gray-2)"></div>
-            <p class="outcome-text">Details of the solution and performance metrics are restricted due to NDA.</p>
-          </div>
-          <div class="outcome-item">
-            <div class="outcome-dot"></div>
-            <p class="outcome-text">Improved clarity and consistency across key workflows through incremental UX enhancements.</p>
-          </div>
-          <div class="outcome-item">
-            <div class="outcome-dot"></div>
-            <p class="outcome-text">Increased cross-team alignment, reducing ambiguity during design and delivery.</p>
-          </div>
-          <div class="outcome-item">
-            <div class="outcome-dot"></div>
-            <p class="outcome-text">Operated effectively within a regulated enterprise environment while driving continuous product improvements.</p>
-          </div>
+      <!-- OUTCOME & REFLECTION -->
+      <section id="outcome" class="cs-section fade-up">
+        <p class="sec-tag">
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></span>
+          Outcome
+        </p>
+        <h2 class="sec-heading fade-up delay-1">What it added up to</h2>
+        <div class="overview-card fade-up delay-2" style="margin-bottom:16px;">
+          <p>Due to NDA constraints, detailed metrics and product visuals cannot be shared publicly.</p>
+          <p style="margin-top:14px;">However, the initiatives contributed to clearer workflows, improved cross-functional alignment, and stronger consistency across the product experience.</p>
+          <p style="margin-top:14px;">Working within UOB Infinity strengthened my ability to operate inside complex enterprise environments where usability, scalability, delivery timelines, and security considerations must all work together.</p>
         </div>
-
-        <div class="reflection-card" style="margin-top:32px;">
+        <div class="reflection-card fade-up delay-3">
           <p class="reflection-label">Reflection</p>
-          <p>Working on UOB Infinity taught me how to navigate the complexity of enterprise banking — where regulatory constraints, multi-stakeholder teams, and technical limitations shape every design decision. The challenge wasn't just designing good experiences; it was making progress within a system that moves carefully and deliberately. I learned to work iteratively, communicate rationale clearly, and find meaningful improvements within significant constraints.</p>
+          <p>Designing within enterprise banking reinforced the importance of systems thinking, cross-functional collaboration, and clear communication when working across large-scale products.</p>
+          <p style="margin-top:16px;color:rgba(255,255,255,0.65);">Rather than designing isolated screens, the work required understanding how operational constraints, technical dependencies, regulatory requirements, and user needs connect across the wider product ecosystem.</p>
+          <p style="margin-top:16px;color:rgba(255,255,255,0.65);">It also strengthened my ability to work iteratively within agile teams, balancing speed, usability, and delivery realities while continuously improving live product experiences.</p>
         </div>
       </section>
 
@@ -1410,6 +2070,28 @@
   </div>
 
   <script>
+    // Scroll-driven initiatives
+    const initPanels = document.querySelectorAll('.init-panel');
+    const initImgs   = document.querySelectorAll('.init-img');
+    const initDots   = document.querySelectorAll('.init-dot');
+
+    function setActiveProject(project) {
+      initImgs.forEach(img => img.classList.toggle('active', img.dataset.project === project));
+      initDots.forEach(dot => dot.classList.toggle('active', dot.dataset.project === project));
+    }
+
+    const initObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const project = entry.target.dataset.project;
+          setActiveProject(project);
+          entry.target.classList.add('in-view');
+        }
+      });
+    }, { threshold: 0.35, rootMargin: '-5% 0px -35% 0px' });
+
+    initPanels.forEach(panel => initObserver.observe(panel));
+
     // Fade-up observer
     const observer = new IntersectionObserver(entries => {
       entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
@@ -1432,36 +2114,149 @@
     }, { rootMargin: '-20% 0px -70% 0px' });
 
     sections.forEach(s => scrollObserver.observe(s));
-  </script>
 
-  <!-- ═══ FOOTER ═══ -->
-  <div style="height:48px;"></div>
-  <div id="footer-cursor"></div>
-  <section id="contact">
-    <div class="footer-inner">
-      <div class="footer-left">
-        <p class="footer-tagline">Good design makes things work better.</p>
-      </div>
-      <div class="footer-right">
-        <div class="footer-link-col">
-          <p class="footer-link-col-label">Connect</p>
-          <ul>
-            <li><a href="https://www.linkedin.com/in/eeza" target="_blank" rel="noopener">LinkedIn</a></li>
-            <li><a href="mailto:eezasheren@gmail.com">Email</a></li>
-            <li><a href="Eeza-CV-2026-April.pdf" target="_blank" rel="noopener">Download CV</a></li>
-          </ul>
-        </div>
-        <div class="footer-link-col">
-          <p class="footer-link-col-label">Navigate</p>
-          <ul>
-            <li><a href="index.html#work">Work</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="index.html#method">Experience</a></li>
-            <li><a href="index.html#blog">Blog</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
+    // ── HERO CLICK BURST ──
+    (function () {
+      const hero = document.querySelector('.uob-hero-new');
+      if (!hero) return;
+      hero.addEventListener('click', function (e) {
+        const rect = hero.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        // Expanding ring
+        const ring = document.createElement('div');
+        ring.className = 'hero-burst-ring';
+        ring.style.cssText = `left:${x}px;top:${y}px;`;
+        hero.appendChild(ring);
+        ring.addEventListener('animationend', () => ring.remove());
+        // Burst dots
+        const count = 10;
+        for (let i = 0; i < count; i++) {
+          const dot = document.createElement('div');
+          dot.className = 'hero-burst-dot';
+          const angle = (i / count) * Math.PI * 2;
+          const dist = 36 + Math.random() * 28;
+          dot.style.cssText = `left:${x}px;top:${y}px;--dx:${Math.cos(angle)*dist}px;--dy:${Math.sin(angle)*dist}px;animation-delay:${i*0.02}s;`;
+          hero.appendChild(dot);
+          dot.addEventListener('animationend', () => dot.remove());
+        }
+      });
+    })();
+
+    // ── HERO FRAME — pop on hover handled by CSS ──
+
+    // ── HOW I WORK — auto-cycling tabs ──
+    (function () {
+      const tabs   = document.querySelectorAll('.hiw-tab');
+      const panels = document.querySelectorAll('.hiw-panel');
+      if (!tabs.length) return;
+      let current = 0;
+      let timer;
+
+      function activate(idx) {
+        tabs[current].classList.remove('active');
+        panels[current].classList.remove('active');
+        current = idx;
+        // Restart bar animation
+        const bar = tabs[current].querySelector('.hiw-tab-bar');
+        bar.style.animation = 'none';
+        bar.offsetHeight; // force reflow
+        bar.style.animation = '';
+        tabs[current].classList.add('active');
+        panels[current].classList.add('active');
+      }
+
+      function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => activate((current + 1) % tabs.length), 3000);
+      }
+
+      tabs.forEach((tab, i) => {
+        tab.addEventListener('click', () => { activate(i); startTimer(); });
+      });
+
+      startTimer();
+    })();
+
+    // ── HERO HOVER CIRCLES ──
+    (function () {
+      const hero = document.querySelector('.uob-hero-new');
+      if (!hero) return;
+      let circles = [];
+
+      function spawnCircle(left, top, size, alpha, staggerIdx) {
+        const c = document.createElement('div');
+        c.className = 'hero-circle';
+        const fy = -(6 + Math.random() * 14);
+        const dur = 2.5 + Math.random() * 2;
+        const delay = Math.random() * 0.8;
+        c.style.cssText = `width:${size}px;height:${size}px;left:${left}px;top:${top}px;background:rgba(255,255,255,${alpha.toFixed(2)});--fy:${fy}px;`;
+        hero.appendChild(c);
+        circles.push(c);
+        setTimeout(() => {
+          c.style.animation = `heroCirclePop 0.5s cubic-bezier(0.16,1,0.3,1) both, heroCircleFloat ${dur}s ease-in-out ${delay}s infinite`;
+          c.style.opacity = '1';
+        }, staggerIdx * 75);
+      }
+
+      function spawnCircles() {
+        const heroRect = hero.getBoundingClientRect();
+        const scene = hero.querySelector('.uob-hero-scene');
+        const mobile = hero.querySelector('.uob-sf-left');
+
+        // fallback coords if elements not found
+        const sceneRect = scene ? scene.getBoundingClientRect() : heroRect;
+        const mobileRect = mobile ? mobile.getBoundingClientRect() : null;
+
+        // convert rects to hero-local coords
+        const sL = sceneRect.left - heroRect.left;
+        const sT = sceneRect.top  - heroRect.top;
+        const sW = sceneRect.width;
+        const sH = sceneRect.height;
+
+        let idx = 0;
+
+        // ── 5 circles scattered around the scene area ──
+        for (let i = 0; i < 5; i++) {
+          const size  = 8 + Math.random() * 22;
+          const alpha = 0.07 + Math.random() * 0.12;
+          // pad slightly outside scene edges for a natural spill
+          const left  = sL - 40 + Math.random() * (sW + 80);
+          const top   = sT - 20 + Math.random() * (sH + 40);
+          spawnCircle(left, top, size, alpha, idx++);
+        }
+
+        // ── 5 circles clustered tightly around the mobile device ──
+        if (mobileRect) {
+          const mL = mobileRect.left - heroRect.left;
+          const mT = mobileRect.top  - heroRect.top;
+          const mW = mobileRect.width;
+          const mH = mobileRect.height;
+          for (let i = 0; i < 5; i++) {
+            const size  = 6 + Math.random() * 18;
+            const alpha = 0.08 + Math.random() * 0.14;
+            // surround the device with a loose halo
+            const left  = mL - 30 + Math.random() * (mW + 60);
+            const top   = mT - 30 + Math.random() * (mH + 60);
+            spawnCircle(left, top, size, alpha, idx++);
+          }
+        }
+      }
+
+      function removeCircles() {
+        const toRemove = circles.slice();
+        circles = [];
+        toRemove.forEach(c => {
+          c.style.animation = 'none';
+          c.style.opacity = '0';
+          setTimeout(() => { if (c.parentNode) c.remove(); }, 300);
+        });
+      }
+
+      hero.addEventListener('mouseenter', spawnCircles);
+      hero.addEventListener('mouseleave', removeCircles);
+    })();
+  </script>
     <div class="footer-bottom">
       <p class="footer-copy">© 2026 Eeza Sheren. All rights reserved.</p>
       <p class="footer-copy">Based in Singapore · Open to opportunities</p>
@@ -1469,106 +2264,5 @@
   </section>
 
   <!-- UOB HERO ANIMATIONS -->
-  <script>
-  (function() {
-    // ── Laptop animation: payment notification slides in ──
-    function runLaptopAnim() {
-      var notif = document.getElementById('uob-lap-notif');
-      if (!notif) return;
-      notif.classList.remove('show');
-      setTimeout(function(){ notif.classList.add('show');    }, 900);
-      setTimeout(function(){ notif.classList.remove('show'); }, 3800);
-    }
-
-    // ── Phone animation: pan across the dashboard image ──
-    function runPhoneAnim() {
-      var img = document.getElementById('uob-phone-img');
-      if (!img) return;
-      // Reset to left
-      img.style.transition = 'none';
-      img.style.objectPosition = '20% top';
-      // Pan right
-      setTimeout(function(){
-        img.style.transition = 'object-position 2.8s ease-in-out';
-        img.style.objectPosition = '85% top';
-      }, 600);
-      // Pan back left
-      setTimeout(function(){
-        img.style.transition = 'object-position 2.8s ease-in-out';
-        img.style.objectPosition = '20% top';
-      }, 3800);
-    }
-
-    // ── IntersectionObserver auto-loop ──
-    function autoLoop(elId, fn, intervalMs) {
-      var el = document.getElementById(elId);
-      if (!el) return;
-      var timer = null;
-      var io = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-          if (entry.isIntersecting) {
-            fn();
-            timer = setInterval(fn, intervalMs);
-          } else {
-            clearInterval(timer);
-            timer = null;
-          }
-        });
-      }, { threshold: 0.15 });
-      io.observe(el);
-    }
-
-    autoLoop('uob-laptop', runLaptopAnim, 5000);
-    autoLoop('uob-phone',  runPhoneAnim,  7200);
-  })();
-  </script>
-
-  <div id="cursor-dot"></div>
-  <script>
-    // ── Star cursor follow ──
-    (function() {
-      const dot = document.getElementById('cursor-dot');
-      if (!dot) return;
-      document.addEventListener('mousemove', e => {
-        dot.style.left = e.clientX + 'px';
-        dot.style.top  = e.clientY + 'px';
-      });
-    })();
-  </script>
-  <!-- Footer: burst on click + custom cursor -->
-  <script>
-  (function() {
-    const footer = document.getElementById('contact');
-    const cur    = document.getElementById('footer-cursor');
-    if (!footer || !cur) return;
-    const COLORS = ['#B2B0FC','#D5DA81','#E95341','#ffffff','#a8e6cf'];
-    const BURST_COUNT = 14;
-    footer.addEventListener('mousemove', e => {
-      cur.style.left = e.clientX + 'px';
-      cur.style.top  = e.clientY + 'px';
-    });
-    footer.addEventListener('mouseenter', () => { cur.style.opacity = '1'; });
-    footer.addEventListener('mouseleave', () => { cur.style.opacity = '0'; });
-    footer.addEventListener('click', e => {
-      const rect = footer.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      for (let i = 0; i < BURST_COUNT; i++) {
-        const p = document.createElement('div');
-        p.className = 'footer-burst';
-        const angle = (360 / BURST_COUNT) * i + Math.random() * 20 - 10;
-        const dist  = 40 + Math.random() * 60;
-        const rad   = (angle * Math.PI) / 180;
-        const tx    = Math.cos(rad) * dist;
-        const ty    = Math.sin(rad) * dist;
-        const size  = 5 + Math.random() * 7;
-        const color = COLORS[Math.floor(Math.random() * COLORS.length)];
-        p.style.cssText = `left:${x}px;top:${y}px;width:${size}px;height:${size}px;background:${color};--tx:${tx}px;--ty:${ty}px;animation-duration:${0.5+Math.random()*0.4}s;`;
-        footer.appendChild(p);
-        p.addEventListener('animationend', () => p.remove());
-      }
-    });
-  })();
-  </script>
 </body>
 </html>
