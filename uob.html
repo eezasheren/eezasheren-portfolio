@@ -22,6 +22,7 @@
       --orange:  #ff7442;
       --uob-red: #ef4444;
       --lime:    #c5f135;
+      --blue-tint: #eef3ff;
       --nav-h:   80px;
       --radius:  20px;
       --sidebar: 220px;
@@ -83,6 +84,9 @@
     .btn-dark:hover { background: var(--lime); color: var(--black); }
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; border: none; background: none; }
     .hamburger span { display: block; width: 22px; height: 2px; background: var(--black); border-radius: 2px; }
+
+    /* ─── WIP: hide everything below the hero until page is ready to ship ─── */
+    .page-layout { display: none !important; }
 
     /* ─── LAYOUT ─── */
     .page-layout {
@@ -381,17 +385,76 @@
     .sec-body p { margin-bottom: 16px; }
     .sec-body p:last-child { margin-bottom: 0; }
 
+    /* ─── EDITORIAL ROW ─── */
+    .editorial-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: start;
+    }
+    .editorial-statement {
+      font-size: clamp(18px, 2vw, 26px);
+      font-weight: 400;
+      line-height: 1.4;
+      color: var(--gray-2);
+      letter-spacing: -0.2px;
+      position: sticky;
+      top: calc(var(--nav-h) + 32px);
+    }
+    .editorial-statement strong {
+      color: var(--black);
+      font-weight: 700;
+    }
+    .editorial-statement em {
+      color: var(--black);
+      font-style: italic;
+      font-family: 'Cormorant Garant', serif;
+      font-size: 1.12em;
+      font-weight: 600;
+    }
+    .editorial-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .editorial-detail p {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--gray-1);
+    }
+    .editorial-insight {
+      padding: 18px 20px;
+      background: var(--blue-tint);
+      border-radius: 12px;
+    }
+    .editorial-insight-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 6px;
+    }
+    .editorial-insight-text {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--black);
+    }
+    @media (max-width: 720px) {
+      .editorial-row { grid-template-columns: 1fr; gap: 24px; }
+      .editorial-statement { position: static; }
+    }
+
     /* ─── OVERVIEW CARD ─── */
     .overview-card {
-      background: var(--white);
+      background: var(--blue-tint);
       border-radius: var(--radius);
       padding: 36px;
       margin-bottom: 12px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
     }
 
     .overview-card p {
-      font-size: 16px;
+      font-size: 15px;
       line-height: 1.8;
       color: var(--gray-1);
     }
@@ -559,7 +622,7 @@
     .hiw-tab {
       position: relative; flex: 1; min-width: 0;
       padding: 14px 16px 14px; border-radius: 14px;
-      background: var(--white); border: 1.5px solid var(--gray-3);
+      background: var(--blue-tint); border: 1.5px solid rgba(99,130,255,0.15);
       cursor: pointer; overflow: hidden; text-align: left;
       transition: border-color 0.25s; display: flex; flex-direction: column; gap: 3px;
     }
@@ -586,8 +649,8 @@
     .hiw-content { display: grid; margin-top: 8px; }
     .hiw-panel {
       grid-area: 1 / 1;
-      background: var(--white); border-radius: 20px; padding: 40px;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.05);
+      background: var(--blue-tint); border-radius: 20px; padding: 40px;
+      box-shadow: 0 2px 16px rgba(99,130,255,0.08);
       opacity: 0; transform: translateY(14px);
       transition: opacity 0.45s cubic-bezier(0.16,1,0.3,1), transform 0.45s cubic-bezier(0.16,1,0.3,1);
       pointer-events: none;
@@ -628,8 +691,8 @@
       height: 360px;
       border-radius: 20px;
       overflow: hidden;
-      background: var(--white);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      background: var(--blue-tint);
+      box-shadow: 0 4px 24px rgba(99,130,255,0.1);
     }
     .init-img {
       position: absolute; inset: 0;
@@ -940,6 +1003,223 @@
     .mobile-close {
       position: absolute; top: 24px; right: 24px;
       font-size: 22px; background: none; border: none; cursor: pointer; color: var(--gray-1);
+    }
+
+    /* ─── PROCESS SECTION ─── */
+    .process-diagrams {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      margin-top: 40px;
+    }
+    .process-diagram-card {
+      background: var(--blue-tint);
+      border-radius: var(--radius);
+      padding: 48px;
+      box-shadow: 0 2px 12px rgba(99,130,255,0.08);
+      overflow: visible;
+    }
+    .pdc-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gray-2); margin-bottom: 20px;
+    }
+
+    /* ── Constraint Stack diagram ── */
+    .constraint-stack {
+      position: relative;
+      width: 100%; max-width: 400px;
+      aspect-ratio: 1;
+      margin: 0 auto;
+      overflow: visible;
+      cursor: crosshair;
+    }
+    .cs-ring {
+      position: absolute;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0;
+      transform: scale(0.6);
+      transition: opacity 0.6s cubic-bezier(0.16,1,0.3,1),
+                  transform 0.6s cubic-bezier(0.16,1,0.3,1);
+      pointer-events: none;
+    }
+    .cs-ring.visible { opacity: 1; transform: scale(1); }
+    /* fast override for hover movement */
+    .cs-ring.visible.ring-hovered {
+      transform: scale(1) translateX(10px) !important;
+      transition: transform 0.22s cubic-bezier(0.16,1,0.3,1) !important;
+    }
+    .cs-ring:nth-child(1) { inset: 0%;   background: #e8eeff; transition-delay: 0s; }
+    .cs-ring:nth-child(2) { inset: 11%;  background: #d0d9ff; transition-delay: 0.1s; }
+    .cs-ring:nth-child(3) { inset: 22%;  background: #b8c8ff; transition-delay: 0.2s; }
+    .cs-ring:nth-child(4) { inset: 33%;  background: #8fa8ff; transition-delay: 0.3s; }
+    .cs-ring:nth-child(5) { inset: 44%;  background: var(--black); transition-delay: 0.4s; }
+
+    /* centre label */
+    .cs-ring-label { display: none; }
+    .cs-ring:nth-child(5) .cs-ring-label {
+      display: flex; align-items: center; justify-content: center;
+      position: absolute; inset: 0;
+      color: #fff; font-size: 9px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      text-align: center; line-height: 1.4;
+    }
+
+    /* ── Hover callout ── */
+    .cs-callout {
+      position: absolute;
+      top: 50%;
+      left: calc(100% + 20px);
+      transform: translateY(-50%) translateX(-8px);
+      background: var(--page-bg);
+      border: 1.5px solid var(--gray-3);
+      border-left-width: 3px;
+      border-left-color: var(--gray-3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      width: 176px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease,
+                  transform 0.22s cubic-bezier(0.16,1,0.3,1);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      z-index: 20;
+    }
+    .cs-callout.visible {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+    .cs-callout-name {
+      font-size: 12px; font-weight: 700; color: var(--black);
+      letter-spacing: -0.2px; margin-bottom: 4px;
+    }
+    .cs-callout-sub {
+      font-size: 11px; color: var(--gray-1); line-height: 1.5;
+    }
+
+    .constraint-stack-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+    }
+    .cstack-copy { display: flex; flex-direction: column; gap: 16px; }
+    .cstack-title {
+      font-size: 20px; font-weight: 600; letter-spacing: -0.4px;
+      color: var(--black); line-height: 1.2;
+    }
+    .cstack-body {
+      font-size: 14px; line-height: 1.75; color: var(--gray-1);
+    }
+    .cstack-layers { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .cstack-layer-row {
+      display: flex; align-items: center; gap: 10px;
+      opacity: 0; transform: translateX(-12px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+    .cstack-layer-row.visible { opacity: 1; transform: translateX(0); }
+    .cstack-layer-row:nth-child(1) { transition-delay: 0.05s; }
+    .cstack-layer-row:nth-child(2) { transition-delay: 0.12s; }
+    .cstack-layer-row:nth-child(3) { transition-delay: 0.19s; }
+    .cstack-layer-row:nth-child(4) { transition-delay: 0.26s; }
+    .cstack-layer-row:nth-child(5) { transition-delay: 0.33s; }
+    .cstack-layer-dot {
+      width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+    }
+    .cstack-layer-text { font-size: 13px; font-weight: 500; color: var(--black); }
+    .cstack-layer-sub  { font-size: 12px; color: var(--gray-2); }
+
+    /* ── Process Flow diagram ── */
+    .process-flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      position: relative;
+    }
+    .process-flow::before {
+      content: '';
+      position: absolute;
+      top: 28px; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gray-3) 15%, var(--gray-3) 85%, transparent);
+    }
+    .pf-step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 12px;
+      opacity: 0; transform: translateY(18px);
+      transition: opacity 0.5s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.16,1,0.3,1);
+    }
+    .pf-step.visible { opacity: 1; transform: translateY(0); }
+    .pf-step:nth-child(1) { transition-delay: 0s; }
+    .pf-step:nth-child(2) { transition-delay: 0.08s; }
+    .pf-step:nth-child(3) { transition-delay: 0.16s; }
+    .pf-step:nth-child(4) { transition-delay: 0.24s; }
+    .pf-step:nth-child(5) { transition-delay: 0.32s; }
+    .pf-num {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--black); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; letter-spacing: -0.3px;
+      margin-bottom: 16px; position: relative; z-index: 1;
+      box-shadow: 0 0 0 6px #fff;
+      flex-shrink: 0;
+    }
+    .pf-step:nth-child(2) .pf-num { background: var(--blue); }
+    .pf-step:nth-child(3) .pf-num { background: #7c3aed; }
+    .pf-step:nth-child(4) .pf-num { background: var(--orange); }
+    .pf-step:nth-child(5) .pf-num { background: #16a34a; }
+    .pf-title {
+      font-size: 13px; font-weight: 700; color: var(--black);
+      letter-spacing: -0.2px; margin-bottom: 6px; line-height: 1.3;
+    }
+    .pf-note {
+      font-size: 11.5px; line-height: 1.6; color: var(--gray-1);
+    }
+    @media (max-width: 720px) {
+      .process-flow { grid-template-columns: 1fr; gap: 24px; }
+      .process-flow::before { display: none; }
+      .constraint-stack-wrap { grid-template-columns: 1fr; }
+      .constraint-stack { max-width: 280px; }
+      .process-diagram-card { padding: 28px 20px; }
+    }
+
+    /* ─── INITIATIVE — learning callout ─── */
+    .init-learning {
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: var(--blue-tint);
+      border-left: 3px solid var(--blue);
+      border-radius: 0 8px 8px 0;
+    }
+    .init-learning-label {
+      font-size: 9px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gray-2); margin-bottom: 4px;
+    }
+    .init-learning-text {
+      font-size: 13.5px; line-height: 1.6; color: var(--black);
+      font-style: italic;
+    }
+
+    /* ─── WHAT I'D DO DIFFERENTLY ─── */
+    .differently-card {
+      background: var(--blue-tint);
+      border-radius: var(--radius);
+      padding: 32px;
+      margin-top: 16px;
+      border: 1.5px dashed rgba(99,130,255,0.3);
+      display: flex; gap: 20px; align-items: flex-start;
+    }
+    .differently-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--gray-3);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .differently-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--gray-2); margin-bottom: 6px;
+    }
+    .differently-text {
+      font-size: 15px; line-height: 1.75; color: var(--gray-1);
     }
 
     /* ─── UOB HERO BAND ─── */
@@ -1587,7 +1867,7 @@
     <!-- Text block -->
     <div class="uob-hero-text-block">
       <h1 class="uob-hero-title">Evolving user experiences within corporate digital banking</h1>
-      <p class="uob-hero-subtitle">Designing and improving complex banking experiences across Southeast Asia, embedded within UOB's agile product environment.</p>
+      <p class="uob-hero-subtitle">Two years inside one of Southeast Asia's largest corporate banking platforms. Real constraints, real scale, real consequences.</p>
       <div class="uob-hero-tags">
         <span class="uob-htag uob-htag-blue">Corporate Banking</span>
         <span class="uob-htag uob-htag-green">In-house UX Team</span>
@@ -1646,14 +1926,13 @@
     <aside class="sidebar">
       <p class="sidebar-label">On this page</p>
       <ul class="sidebar-nav" id="sidebar-nav">
-        <li><a href="#environment" class="active">The Environment</a></li>
+        <li><a href="#environment" class="active">The Problem Space</a></li>
         <li><a href="#role">My Role</a></li>
+        <li><a href="#process">Process</a></li>
         <li><a href="#how-i-work">How I Work</a></li>
         <li><a href="#initiatives">Key Initiatives</a></li>
-        <li><a href="#contributions">Contributions</a></li>
         <li><a href="#outcome">Outcome</a></li>
       </ul>
-
     </aside>
 
     <!-- MAIN CONTENT -->
@@ -1695,23 +1974,25 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
           </svg>
           <p class="nda-text">
-            <strong>This project is under NDA — content is confidential.</strong> I'm happy to share details of my experience in person. <a href="mailto:eezasheren@gmail.com" style="color:#92400e;">Contact me directly</a> to know more.
+            <strong>Protected by NDA.</strong> Visuals and product details stay confidential, but what I can share is how I think, how I work, and what I learned. That's what this page is. <a href="mailto:eezasheren@gmail.com" style="color:#92400e;font-weight:600;">Let's talk in person →</a>
           </p>
         </div>
       </div>
 
 
-      <!-- THE ENVIRONMENT -->
+      <!-- THE PROBLEM SPACE -->
       <section id="environment" class="cs-section fade-up">
         <p class="sec-tag">
           <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></span>
-          The Environment
+          The Problem Space
         </p>
-        <h2 class="sec-heading fade-up delay-1">About the platform</h2>
+        <h2 class="sec-heading fade-up delay-1">Designing inside constraints most designers never see</h2>
         <div class="overview-card fade-up delay-2">
-          <p>UOB Infinity is a corporate digital banking platform supporting Corporate Cash Management, Financial Supply Chain Management, and Trade workflows across multiple markets.</p>
-          <p style="margin-top:14px;">As part of an in-house UX team, I worked on improving existing experiences within a highly regulated banking environment where usability, operational requirements, security, and technical constraints all needed to coexist.</p>
-          <p style="margin-top:14px;">The work involved designing for complex transaction flows, internal operational tools, and continuous product improvements across live enterprise systems.</p>
+          <div class="sec-body">
+            <p>Corporate banking UX isn't hard because the interfaces are complex. It's hard because <strong>everything around them</strong> is.</p>
+            <p>UOB Infinity serves corporate clients across Southeast Asia, treasurers, finance managers, operational teams. Every decision sits at the intersection of regulatory requirements, security controls, legacy systems, and user habits built over years.</p>
+            <p>No blank canvas. Getting it wrong has real financial and legal consequences. That context shapes everything.</p>
+          </div>
         </div>
       </section>
 
@@ -1723,11 +2004,105 @@
           <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path stroke-linecap="round" d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
           My Role
         </p>
-        <h2 class="sec-heading fade-up delay-1">Embedded in the team</h2>
-        <div class="sec-body fade-up delay-2">
-          <p>Embedded within an 8-person design team, I collaborated closely with Product Owners, Product Managers, Business Analysts, engineers, System Analysts, and stakeholders across multiple initiatives.</p>
-          <p>Working in an agile environment, I contributed across the end-to-end product lifecycle — from problem framing and flow ideation to refinement, handoff, and delivery support.</p>
-          <p>My work focused on improving usability, strengthening design consistency, and supporting scalable product experiences across the platform.</p>
+        <h2 class="sec-heading fade-up delay-1">Not just a screen-maker, a thinking partner</h2>
+        <div class="overview-card fade-up delay-2">
+          <div class="sec-body">
+            <p>Embedded in a live product team. 8 people, multiple concurrent initiatives. The role was never just about producing screens.</p>
+            <p>My value was helping teams get clearer on the <em>right</em> problem before jumping to solutions. Asking uncomfortable questions in refinements, flagging when a quick fix had usability implications nobody spotted, holding the line when business pressure pushed the other way.</p>
+            <p>I owned end-to-end design on several key workstreams and contributed across others, from problem framing through to handoff.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="section-divider"></div>
+
+      <!-- PROCESS -->
+      <section id="process" class="cs-section fade-up">
+        <p class="sec-tag">
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7"/></svg></span>
+          Process
+        </p>
+        <h2 class="sec-heading fade-up delay-1">How I actually work</h2>
+        <p class="sec-body fade-up delay-2" style="max-width:560px;"><p style="font-size:17px;line-height:1.7;color:var(--gray-1);">Especially inside environments where the constraints are as complex as the problems.</p></p>
+
+        <div class="process-diagrams">
+
+          <!-- Diagram 1: Constraint Stack -->
+          <div class="process-diagram-card fade-up delay-2">
+            <p class="pdc-label">01 / The Canvas</p>
+            <div class="constraint-stack-wrap">
+              <div class="cstack-copy">
+                <h3 class="cstack-title">Most designers work on a blank canvas. This is mine.</h3>
+                <p class="cstack-body">Every design decision lives inside these layers. The UX work isn't just about making things usable, it's making them usable <em>within</em> all of this.</p>
+                <div class="cstack-layers" id="cstack-layers">
+                  <div class="cstack-layer-row">
+                    <div class="cstack-layer-dot" style="background:#e8eeff;border:1.5px solid #c7d4ff;"></div>
+                    <div><p class="cstack-layer-text">Regulatory &amp; Compliance</p><p class="cstack-layer-sub">Multi-market banking rules, audit trails</p></div>
+                  </div>
+                  <div class="cstack-layer-row">
+                    <div class="cstack-layer-dot" style="background:#d0d9ff;border:1.5px solid #a8bcff;"></div>
+                    <div><p class="cstack-layer-text">Security Controls</p><p class="cstack-layer-sub">Authentication, fraud prevention, access</p></div>
+                  </div>
+                  <div class="cstack-layer-row">
+                    <div class="cstack-layer-dot" style="background:#b8c8ff;border:1.5px solid #8fa8ff;"></div>
+                    <div><p class="cstack-layer-text">Technical Limits</p><p class="cstack-layer-sub">Legacy systems, engineering feasibility</p></div>
+                  </div>
+                  <div class="cstack-layer-row">
+                    <div class="cstack-layer-dot" style="background:#8fa8ff;border:1.5px solid #6080ee;"></div>
+                    <div><p class="cstack-layer-text">Business Priorities</p><p class="cstack-layer-sub">Sprint timelines, stakeholder needs</p></div>
+                  </div>
+                  <div class="cstack-layer-row">
+                    <div class="cstack-layer-dot" style="background:var(--black);"></div>
+                    <div><p class="cstack-layer-text" style="color:var(--black);font-weight:700;">User Experience</p><p class="cstack-layer-sub">Where the real craft lives</p></div>
+                  </div>
+                </div>
+              </div>
+              <div class="constraint-stack" id="constraint-stack">
+                <div class="cs-ring" data-idx="0"><span class="cs-ring-label"></span></div>
+                <div class="cs-ring" data-idx="1"><span class="cs-ring-label"></span></div>
+                <div class="cs-ring" data-idx="2"><span class="cs-ring-label"></span></div>
+                <div class="cs-ring" data-idx="3"><span class="cs-ring-label"></span></div>
+                <div class="cs-ring" data-idx="4"><span class="cs-ring-label">UX Layer</span></div>
+                <div class="cs-callout" id="cs-callout">
+                  <p class="cs-callout-name"></p>
+                  <p class="cs-callout-sub"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Diagram 2: Process Flow -->
+          <div class="process-diagram-card fade-up delay-3">
+            <p class="pdc-label">02 / How a Problem Becomes a Screen</p>
+            <div class="process-flow" id="process-flow">
+              <div class="pf-step">
+                <div class="pf-num">01</div>
+                <p class="pf-title">Reframe the Brief</p>
+                <p class="pf-note">Business request ≠ design problem. I spend real time here before opening Figma.</p>
+              </div>
+              <div class="pf-step">
+                <div class="pf-num">02</div>
+                <p class="pf-title">Map the Constraints</p>
+                <p class="pf-note">Compliance, tech limits, existing patterns. Know the walls before you draw.</p>
+              </div>
+              <div class="pf-step">
+                <div class="pf-num">03</div>
+                <p class="pf-title">Sketch the Logic</p>
+                <p class="pf-note">Flows and decisions first. Whiteboards and rough sketches before any UI.</p>
+              </div>
+              <div class="pf-step">
+                <div class="pf-num">04</div>
+                <p class="pf-title">Design Within It</p>
+                <p class="pf-note">Make it feel simple despite everything underneath. This is the real craft.</p>
+              </div>
+              <div class="pf-step">
+                <div class="pf-num">05</div>
+                <p class="pf-title">Stay Through Delivery</p>
+                <p class="pf-note">Dev review, QA, iteration. What ships matters more than what's in Figma.</p>
+              </div>
+            </div>
+          </div>
+
         </div>
       </section>
 
@@ -1739,7 +2114,7 @@
           <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg></span>
           How I Work
         </p>
-        <h2 class="sec-heading fade-up delay-1">My approach</h2>
+        <h2 class="sec-heading fade-up delay-1">Four things that define how I operate</h2>
 
         <!-- Tab pills -->
         <div class="hiw-tabs">
@@ -1769,27 +2144,27 @@
         <div class="hiw-content">
           <div class="hiw-panel active" data-panel="0">
             <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>
-            <p class="hiw-number">01 — Agile Delivery</p>
-            <h4 class="hiw-title">Working iteratively, shipping continuously</h4>
-            <p class="hiw-body">Worked within agile product teams to deliver iterative UX improvements aligned with sprint timelines, business priorities, and technical feasibility. Comfortable moving fast while keeping quality high.</p>
+            <p class="hiw-number">01 / Agile Delivery</p>
+            <h4 class="hiw-title">Ship fast. Don't cut corners.</h4>
+            <p class="hiw-body">The skill isn't speed, it's knowing what needs to be right before a sprint ends and what can wait. I make that call quickly and communicate it clearly. Fast without sacrificing quality.</p>
           </div>
           <div class="hiw-panel" data-panel="1">
             <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></div>
-            <p class="hiw-number">02 — End-to-End Product Thinking</p>
-            <h4 class="hiw-title">From problem framing to delivery</h4>
-            <p class="hiw-body">Contributed across the full design process — from identifying problems and refining flows to supporting implementation and delivery within a live enterprise product. Never just a screen-pusher.</p>
+            <p class="hiw-number">02 / Product Thinking</p>
+            <h4 class="hiw-title">Start with the problem, not the brief.</h4>
+            <p class="hiw-body">The most valuable thing a designer can do isn't design the solution, it's challenge whether you're solving the right problem. I regularly reframed requests before opening Figma. That pushback either sharpened the brief or saved the team from building the wrong thing entirely.</p>
           </div>
           <div class="hiw-panel" data-panel="2">
             <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
-            <p class="hiw-number">03 — Systems & Security Awareness</p>
-            <h4 class="hiw-title">Designing within constraints</h4>
-            <p class="hiw-body">Designed within a highly regulated banking environment, balancing usability with operational, technical, compliance, and security requirements. Constraints aren't blockers — they're part of the brief.</p>
+            <p class="hiw-number">03 / Systems & Security</p>
+            <h4 class="hiw-title">Constraints are the brief.</h4>
+            <p class="hiw-body">Compliance, security protocols, legacy systems. Most designers never encounter these. I stopped treating them as blockers early on. The real craft is making something feel simple <em>despite</em> everything underneath. Constraints don't kill creativity, they shape it.</p>
           </div>
           <div class="hiw-panel" data-panel="3">
             <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
-            <p class="hiw-number">04 — Cross-Functional Collaboration</p>
-            <h4 class="hiw-title">Aligned across every team</h4>
-            <p class="hiw-body">Partnered closely with product, engineering, and business teams to align design decisions through structured communication, systems thinking, and shared problem-solving. Design as a shared language.</p>
+            <p class="hiw-number">04 / Cross-Functional</p>
+            <h4 class="hiw-title">Design as a shared language.</h4>
+            <p class="hiw-body">Daily work with POs, BAs, engineers, and senior stakeholders, each with a different definition of "good." My job was translation. Sometimes a quick sketch in a meeting does more than a polished Figma file. Getting everyone to see the same problem is half the work.</p>
           </div>
         </div>
 
@@ -1803,7 +2178,7 @@
           <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg></span>
           Key Initiatives
         </p>
-        <h2 class="sec-heading fade-up delay-1">What I worked on</h2>
+        <h2 class="sec-heading fade-up delay-1">Four problems. Four ways of thinking through them.</h2>
 
         <div class="initiatives-scroll-wrap">
 
@@ -1841,19 +2216,23 @@
             <div class="init-panel" data-project="pay">
               <div class="init-panel-content">
                 <p class="init-counter">01 / 04</p>
-                <h3 class="init-heading">Improving Cross-Border Payment Workflows</h3>
+                <h3 class="init-heading">Making high-stakes payments feel less frightening</h3>
                 <p class="init-sub-label">UOB Pay / UOB Send</p>
                 <div class="init-row">
-                  <p class="init-row-label">Problem</p>
-                  <p class="init-row-body">Corporate payment flows involved complex transaction requirements, making it challenging for users to complete actions quickly and confidently across multiple markets.</p>
+                  <p class="init-row-label">The Problem</p>
+                  <p class="init-row-body">Corporate users moving significant sums across borders are under pressure. The existing flows created friction at the exact moments they needed the most confidence.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">How I Approached It</p>
+                  <p class="init-row-body">I mapped the journey to find where <em>trust</em> broke down, not just usability. Where did users second-guess themselves? Where did language create ambiguity? That analysis drove prioritisation.</p>
                 </div>
                 <div class="init-row">
                   <p class="init-row-label">What I Did</p>
-                  <p class="init-row-body">Improved key payment interactions and refined transaction flows to make the experience clearer, more intuitive, and better aligned with regulatory and operational requirements.</p>
+                  <p class="init-row-body">Redesigned confirmation patterns, status communication, and decision architecture across the payment flow. Every change had to survive compliance and technical review.</p>
                 </div>
-                <div class="init-row">
-                  <p class="init-row-label">Outcome</p>
-                  <p class="init-row-body">Strengthened usability and consistency across payment workflows while supporting smoother transaction experiences for corporate users.</p>
+                <div class="init-learning">
+                  <p class="init-learning-label">Key Learning</p>
+                  <p class="init-learning-text">In high-stakes flows, clarity beats cleverness every time.</p>
                 </div>
               </div>
             </div>
@@ -1861,19 +2240,23 @@
             <div class="init-panel" data-project="vasa">
               <div class="init-panel-content">
                 <p class="init-counter">02 / 04</p>
-                <h3 class="init-heading">Designing Sub-Account Management</h3>
+                <h3 class="init-heading">Untangling a mental model nobody had mapped</h3>
                 <p class="init-sub-label">Virtual Account Sub-Account (VASA)</p>
                 <div class="init-row">
-                  <p class="init-row-label">Problem</p>
-                  <p class="init-row-body">Users needed a clearer way to create and manage sub-accounts within complex organisational account structures.</p>
+                  <p class="init-row-label">The Problem</p>
+                  <p class="init-row-body">Corporate clients managing complex account hierarchies, parent accounts, sub-accounts, multiple currencies, had no intuitive way to understand what they owned or how to navigate it.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">How I Approached It</p>
+                  <p class="init-row-body">Before touching the UI, I focused on the mental model. How do these users <em>think</em> about account structures? The challenge was representational, making invisible hierarchy visible without overwhelming the screen.</p>
                 </div>
                 <div class="init-row">
                   <p class="init-row-label">What I Did</p>
-                  <p class="init-row-body">Designed and refined the sub-account creation experience, focusing on simplifying account hierarchy visibility and improving overall usability for financial administration tasks.</p>
+                  <p class="init-row-body">Designed the full sub-account experience, hierarchy visualisation, state management, flow architecture. Built closely with engineering around the actual data model.</p>
                 </div>
-                <div class="init-row">
-                  <p class="init-row-label">Outcome</p>
-                  <p class="init-row-body">Created a more structured and manageable experience for users handling corporate account organisation and management.</p>
+                <div class="init-learning">
+                  <p class="init-learning-label">Key Learning</p>
+                  <p class="init-learning-text">The gap between how a system is built and how users understand it is where the real UX work lives.</p>
                 </div>
               </div>
             </div>
@@ -1881,19 +2264,23 @@
             <div class="init-panel" data-project="agile">
               <div class="init-panel-content">
                 <p class="init-counter">03 / 04</p>
-                <h3 class="init-heading">Rapid UX Improvements & Business Requests</h3>
+                <h3 class="init-heading">The unglamorous work that actually makes a product better</h3>
                 <p class="init-sub-label">Agile Product Enhancements</p>
                 <div class="init-row">
-                  <p class="init-row-label">Problem</p>
-                  <p class="init-row-body">Business and operational teams frequently required urgent product updates and UX changes within short delivery timelines.</p>
+                  <p class="init-row-label">The Problem</p>
+                  <p class="init-row-body">Business teams regularly needed urgent UX changes within short sprint timelines. Volume was high, timelines were tight, and quality still had to hold.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">How I Approached It</p>
+                  <p class="init-row-body">For every request, one quick check: does this serve the user, or just satisfy the ask? Often I'd land on something slightly different that did both. Sometimes I had to deliver what was asked. Knowing the difference mattered.</p>
                 </div>
                 <div class="init-row">
                   <p class="init-row-label">What I Did</p>
-                  <p class="init-row-body">Collaborated closely with product and engineering teams to quickly assess requirements, propose feasible UX solutions, and support implementation while maintaining usability and design consistency.</p>
+                  <p class="init-row-body">Triaged and shipped 28+ UX improvements across live product flows, from minor refinements to full flow redesigns within sprint constraints.</p>
                 </div>
-                <div class="init-row">
-                  <p class="init-row-label">Outcome</p>
-                  <p class="init-row-body">Delivered iterative UX improvements efficiently within agile workflows while balancing speed, technical feasibility, and product quality.</p>
+                <div class="init-learning">
+                  <p class="init-learning-label">Key Learning</p>
+                  <p class="init-learning-text">Taste and speed don't have to be opposites. The skill is knowing what "good enough" means in context.</p>
                 </div>
               </div>
             </div>
@@ -1901,19 +2288,23 @@
             <div class="init-panel" data-project="fraud">
               <div class="init-panel-content">
                 <p class="init-counter">04 / 04</p>
-                <h3 class="init-heading">Internal Operational Dashboard</h3>
+                <h3 class="init-heading">Designing for people who can't afford to miss things</h3>
                 <p class="init-sub-label">Fraud Detection & Risk Monitoring (OFM FDR)</p>
                 <div class="init-row">
-                  <p class="init-row-label">Problem</p>
-                  <p class="init-row-body">Backend operational teams needed a clearer and more efficient way to monitor fraud activity, risk scoring, and security controls across the platform.</p>
+                  <p class="init-row-label">The Problem</p>
+                  <p class="init-row-body">Internal teams monitoring fraud and risk were scanning dense data under pressure, making time-sensitive calls. The tools gave them information, not clarity.</p>
+                </div>
+                <div class="init-row">
+                  <p class="init-row-label">How I Approached It</p>
+                  <p class="init-row-body">I reframed it as a decision-support problem. Not "how do we show more data?" but "what does this person need to know in the next 90 seconds?" That shift changed the entire design direction.</p>
                 </div>
                 <div class="init-row">
                   <p class="init-row-label">What I Did</p>
-                  <p class="init-row-body">Designed an internal dashboard experience focused on improving visibility of operational data, surfacing key risk indicators, and supporting faster decision-making for internal teams.</p>
+                  <p class="init-row-body">Designed the dashboard with a clear hierarchy based on urgency and decision-relevance. Worked directly with ops teams to understand how they actually worked, not just what they said they needed.</p>
                 </div>
-                <div class="init-row">
-                  <p class="init-row-label">Outcome</p>
-                  <p class="init-row-body">Improved clarity and accessibility of complex operational information, helping teams monitor and respond to risks more effectively.</p>
+                <div class="init-learning">
+                  <p class="init-learning-label">Key Learning</p>
+                  <p class="init-learning-text">The best internal tools are invisible. When the interface stops being something people think about, you've done your job.</p>
                 </div>
               </div>
             </div>
@@ -2010,26 +2401,6 @@
 
       <div class="section-divider"></div>
 
-      <!-- CONTRIBUTIONS -->
-      <section id="contributions" class="cs-section fade-up">
-        <p class="sec-tag">
-          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></span>
-          My Contributions
-        </p>
-        <h2 class="sec-heading fade-up delay-1">Across the platform</h2>
-        <div class="contributions-list">
-          <div class="contribution-item fade-up delay-1"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Shipped 28+ UX improvements across live enterprise product flows</p></div>
-          <div class="contribution-item fade-up delay-2"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Improved usability across key corporate banking workflows in a multi-market environment</p></div>
-          <div class="contribution-item fade-up delay-3"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Strengthened design consistency across complex transaction modules</p></div>
-          <div class="contribution-item fade-up delay-4"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Maintained internal design resources including repositories and user guides</p></div>
-          <div class="contribution-item fade-up delay-5"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Contributed to internal operational tools supporting fraud, risk, and security monitoring</p></div>
-          <div class="contribution-item fade-up delay-6"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Supported both long-term initiatives and rapid business-driven product requests</p></div>
-          <div class="contribution-item fade-up delay-7"><div class="contribution-check"><svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div><p class="contribution-item-text">Collaborated across product, engineering, business, and operational teams within agile workflows</p></div>
-        </div>
-      </section>
-
-      <div class="section-divider"></div>
-
       <!-- OUTCOME & REFLECTION -->
       <section id="outcome" class="cs-section fade-up">
         <p class="sec-tag">
@@ -2037,16 +2408,25 @@
           Outcome
         </p>
         <h2 class="sec-heading fade-up delay-1">What it added up to</h2>
-        <div class="overview-card fade-up delay-2" style="margin-bottom:16px;">
-          <p>Due to NDA constraints, detailed metrics and product visuals cannot be shared publicly.</p>
-          <p style="margin-top:14px;">However, the initiatives contributed to clearer workflows, improved cross-functional alignment, and stronger consistency across the product experience.</p>
-          <p style="margin-top:14px;">Working within UOB Infinity strengthened my ability to operate inside complex enterprise environments where usability, scalability, delivery timelines, and security considerations must all work together.</p>
+        <div class="overview-card fade-up delay-2">
+          <div class="sec-body">
+            <p>Two years. Real constraints, real consequences. Work that's used daily across Southeast Asia.</p>
+            <p>I learned to hold the line on quality under pressure. Great UX at enterprise scale isn't one brilliant solution, it's hundreds of small, considered decisions made consistently over time.</p>
+          </div>
         </div>
         <div class="reflection-card fade-up delay-3">
           <p class="reflection-label">Reflection</p>
-          <p>Designing within enterprise banking reinforced the importance of systems thinking, cross-functional collaboration, and clear communication when working across large-scale products.</p>
-          <p style="margin-top:16px;color:rgba(255,255,255,0.65);">Rather than designing isolated screens, the work required understanding how operational constraints, technical dependencies, regulatory requirements, and user needs connect across the wider product ecosystem.</p>
-          <p style="margin-top:16px;color:rgba(255,255,255,0.65);">It also strengthened my ability to work iteratively within agile teams, balancing speed, usability, and delivery realities while continuously improving live product experiences.</p>
+          <p>The best design work is invisible. No one notices the confirmation pattern you agonised over, they just feel more confident. That's the job.</p>
+          <p style="margin-top:16px;color:rgba(255,255,255,0.65);">The real skill isn't designing within constraints, it's making something feel effortless despite everything underneath. That tension is what I find most interesting about this work.</p>
+        </div>
+        <div class="differently-card fade-up delay-4">
+          <div class="differently-icon">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+          </div>
+          <div>
+            <p class="differently-label">If I were starting over</p>
+            <p class="differently-text">I'd document design decisions as we went, not just Figma files but the <em>rationale</em>. Knowledge lives in people's heads. A decision log would have made every handoff smoother.</p>
+          </div>
         </div>
       </section>
 
@@ -2114,6 +2494,104 @@
     }, { rootMargin: '-20% 0px -70% 0px' });
 
     sections.forEach(s => scrollObserver.observe(s));
+
+    // ── PROCESS DIAGRAMS — animate on scroll ──
+    (function () {
+      const processObs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+
+          // Constraint stack rings
+          if (entry.target.id === 'constraint-stack') {
+            const rings = entry.target.querySelectorAll('.cs-ring');
+            rings.forEach((r, i) => setTimeout(() => r.classList.add('visible'), i * 110));
+          }
+
+          // Constraint stack layer rows (left side)
+          if (entry.target.id === 'cstack-layers') {
+            const rows = entry.target.querySelectorAll('.cstack-layer-row');
+            rows.forEach((r, i) => setTimeout(() => r.classList.add('visible'), i * 80));
+          }
+
+          // Process flow steps
+          if (entry.target.id === 'process-flow') {
+            const steps = entry.target.querySelectorAll('.pf-step');
+            steps.forEach((s, i) => setTimeout(() => s.classList.add('visible'), i * 100));
+          }
+
+          processObs.unobserve(entry.target);
+        });
+      }, { threshold: 0.2 });
+
+      ['constraint-stack', 'cstack-layers', 'process-flow'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) processObs.observe(el);
+      });
+    })();
+
+    // ── CONSTRAINT RING HOVER ──
+    (function () {
+      const stack   = document.getElementById('constraint-stack');
+      const callout = document.getElementById('cs-callout');
+      if (!stack || !callout) return;
+
+      const rings = stack.querySelectorAll('.cs-ring');
+
+      // ring data: outerRadius fraction, label, sub, accent colour
+      const data = [
+        { r: 1.00, label: 'Regulatory & Compliance', sub: 'Multi-market banking rules & audit trails', color: '#c7d4ff' },
+        { r: 0.78, label: 'Security Controls',       sub: 'Authentication, fraud prevention & access', color: '#a8bcff' },
+        { r: 0.56, label: 'Technical Limits',        sub: 'Legacy systems & engineering feasibility',  color: '#8fa8ff' },
+        { r: 0.34, label: 'Business Priorities',     sub: 'Sprint timelines & stakeholder needs',      color: '#6080ee' },
+        { r: 0.12, label: 'UX Layer',                sub: 'Where the real craft lives',                color: '#1a1d21' },
+      ];
+
+      let active = -1;
+
+      stack.addEventListener('mousemove', function (e) {
+        const rect = stack.getBoundingClientRect();
+        const cx = rect.width  / 2;
+        const cy = rect.height / 2;
+        const dx = e.clientX - rect.left  - cx;
+        const dy = e.clientY - rect.top   - cy;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const maxR = rect.width / 2;
+
+        // outside the circle
+        if (dist > maxR) {
+          clear();
+          return;
+        }
+
+        // find which band: outermost ring whose outer-edge contains the point
+        let found = -1;
+        for (let i = 0; i < data.length; i++) {
+          const outer = data[i].r * maxR;
+          const inner = (i < data.length - 1) ? data[i + 1].r * maxR : 0;
+          if (dist <= outer && dist > inner) { found = i; break; }
+        }
+
+        if (found === active) return;
+        if (active >= 0) rings[active].classList.remove('ring-hovered');
+        active = found;
+
+        if (active >= 0) {
+          rings[active].classList.add('ring-hovered');
+          const d = data[active];
+          callout.querySelector('.cs-callout-name').textContent = d.label;
+          callout.querySelector('.cs-callout-sub').textContent  = d.sub;
+          callout.style.borderLeftColor = d.color;
+          callout.classList.add('visible');
+        }
+      });
+
+      function clear() {
+        if (active >= 0) rings[active].classList.remove('ring-hovered');
+        active = -1;
+        callout.classList.remove('visible');
+      }
+      stack.addEventListener('mouseleave', clear);
+    })();
 
     // ── HERO CLICK BURST ──
     (function () {
