@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Character — Star Blob</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #e8e8e4;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+    }
+
+    label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #9ca3af;
+      text-align: center;
+    }
+
+    .poses {
+      display: flex;
+      align-items: flex-end;
+      gap: 56px;
+    }
+
+    .pose { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+
+    /* ══════════════════════════════
+       SHARED STAR BODY STYLES
+    ══════════════════════════════ */
+
+    .star-body { fill: #c5f135; }
+
+    .face-eye {
+      fill: none;
+      stroke: #1a1d21;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+    .face-smile {
+      fill: none;
+      stroke: #1a1d21;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+    }
+
+    .limb {
+      fill: none;
+      stroke: #1a1d21;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: url(#rough);
+    }
+    .arm  { stroke-width: 4.5; }
+    .leg  { stroke-width: 8; }
+
+    /* Blue prop (mug, pen etc) */
+    .prop-fill   { fill: #1f4bff; }
+    .prop-stroke { fill: none; stroke: #1a1d21; stroke-width: 2; stroke-linecap: round; }
+
+
+    /* ══════════════════════════════
+       IDLE — gentle bob + blink
+    ══════════════════════════════ */
+    #pose-idle .fig {
+      animation: idleBob 2.6s ease-in-out infinite;
+      transform-origin: 55px 110px;
+    }
+    @keyframes idleBob {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-5px); }
+    }
+    #pose-idle .fig-eye {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: blink 4.5s ease-in-out infinite;
+    }
+    #pose-idle .fig-eye.d { animation-delay: 0.06s; }
+    @keyframes blink {
+      0%, 88%, 100% { transform: scaleY(1); }
+      93%            { transform: scaleY(0.05); }
+    }
+
+
+    /* ══════════════════════════════
+       WALK — arms + legs swing
+             + walk across and flip direction
+    ══════════════════════════════ */
+
+    /* Whole SVG slides right → flips → slides left → flips back */
+    #pose-walk svg {
+      transform-origin: center;
+      animation: walkAcross 5s linear infinite;
+    }
+    @keyframes walkAcross {
+      0%   { transform: translateX(-36px) scaleX(1);  }  /* left, facing right */
+      44%  { transform: translateX(36px)  scaleX(1);  }  /* right edge */
+      50%  { transform: translateX(36px)  scaleX(-1); }  /* flip → facing left */
+      94%  { transform: translateX(-36px) scaleX(-1); }  /* left edge */
+      100% { transform: translateX(-36px) scaleX(1);  }  /* flip → facing right */
+    }
+
+    #pose-walk .arm-l {
+      transform-origin: 38px 70px;
+      animation: walkArmL 0.9s ease-in-out infinite;
+    }
+    #pose-walk .arm-r {
+      transform-origin: 72px 70px;
+      animation: walkArmR 0.9s ease-in-out infinite;
+    }
+    #pose-walk .leg-l {
+      transform-origin: 44px 97px;
+      animation: walkLegL 0.9s ease-in-out infinite;
+    }
+    #pose-walk .leg-r {
+      transform-origin: 66px 97px;
+      animation: walkLegR 0.9s ease-in-out infinite;
+    }
+    @keyframes walkArmL { 0%,100%{transform:rotate(-28deg)} 50%{transform:rotate(28deg)} }
+    @keyframes walkArmR { 0%,100%{transform:rotate(28deg)}  50%{transform:rotate(-28deg)} }
+    @keyframes walkLegL { 0%,100%{transform:rotate(-26deg)} 50%{transform:rotate(26deg)} }
+    @keyframes walkLegR { 0%,100%{transform:rotate(26deg)}  50%{transform:rotate(-26deg)} }
+
+
+    /* ══════════════════════════════
+       DRAWING — arm raises + wiggles
+    ══════════════════════════════ */
+    #pose-draw .arm-r {
+      transform-origin: 72px 68px;
+      animation: drawArm 1.4s ease-in-out infinite;
+    }
+    @keyframes drawArm {
+      0%,100% { transform: rotate(-15deg); }
+      50%      { transform: rotate(-30deg); }
+    }
+    #pose-draw .arm-l {
+      transform-origin: 38px 72px;
+      animation: idleArmL 2.2s ease-in-out infinite;
+    }
+    @keyframes idleArmL {
+      0%,100% { transform: rotate(8deg); }
+      50%      { transform: rotate(-8deg); }
+    }
+
+
+    /* ══════════════════════════════
+       COFFEE — gentle sway + steam
+    ══════════════════════════════ */
+    #pose-coffee .fig {
+      animation: coffeeSway 3s ease-in-out infinite;
+      transform-origin: 55px 100px;
+    }
+    @keyframes coffeeSway {
+      0%,100% { transform: rotate(-2deg); }
+      50%      { transform: rotate(2deg); }
+    }
+    #pose-coffee .steam {
+      animation: steamRise 1.8s ease-out infinite;
+      transform-origin: center;
+    }
+    #pose-coffee .steam.d2 { animation-delay: 0.6s; }
+    @keyframes steamRise {
+      0%   { opacity: 0; transform: translateY(0) scaleX(1); }
+      30%  { opacity: 0.8; }
+      100% { opacity: 0; transform: translateY(-14px) scaleX(1.4); }
+    }
+
+
+    /* ══════════════════════════════
+       Controls
+    ══════════════════════════════ */
+    .controls { display: flex; gap: 10px; }
+    .btn {
+      padding: 10px 22px; border-radius: 100px;
+      font-size: 13px; font-weight: 600;
+      border: 1.5px solid #1a1d21;
+      cursor: pointer; background: transparent; color: #1a1d21;
+      transition: all 0.18s;
+    }
+    .btn:hover, .btn.active { background: #1a1d21; color: #c5f135; }
+  </style>
+</head>
+<body>
+
+  <!-- Shared SVG filter defs — sketchy hand-drawn line effect -->
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true">
+    <defs>
+      <filter id="rough" x="-8%" y="-8%" width="116%" height="116%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.055 0.035" numOctaves="4" seed="5" result="noise"/>
+        <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.8" xChannelSelector="R" yChannelSelector="G"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <div class="poses">
+
+    <!-- ── IDLE ── -->
+    <div class="pose" id="pose-idle">
+      <svg width="110" height="132" viewBox="0 0 110 132">
+        <g class="fig">
+          <!-- Legs — symmetric, feet point out -->
+          <path class="limb leg" d="M 44 97 C 42 109, 37 117, 34 122 L 24 122"/>
+          <path class="limb leg" d="M 66 97 C 68 109, 73 117, 76 122 L 86 122"/>
+
+          <!-- Star body -->
+          <path class="star-body" d="
+            M 42 40
+            C 42 22, 68 22, 68 40
+            C 84 32, 98 46, 88 60
+            C 104 70, 98 90, 82 88
+            C 82 104, 62 108, 55 96
+            C 48 108, 28 104, 28 88
+            C 12 90, 6 70, 22 60
+            C 12 46, 26 32, 42 40 Z
+          "/>
+
+          <!-- Arms -->
+          <path class="limb arm arm-l" d="M 28 64 C 16 62, 8 70, 5 82"/>
+          <path class="limb arm arm-r" d="M 82 64 C 94 62, 102 70, 105 82"/>
+
+          <!-- Face -->
+          <path class="face-eye fig-eye"   d="M 44 56 C 44 54, 48 54, 48 56"/>
+          <path class="face-eye fig-eye d" d="M 62 56 C 62 54, 66 54, 66 56"/>
+          <path class="face-smile" d="M 46 66 C 50 70, 60 70, 64 66"/>
+        </g>
+      </svg>
+      <label>Idle</label>
+    </div>
+
+    <!-- ── WALK ── -->
+    <div class="pose" id="pose-walk">
+      <svg width="110" height="132" viewBox="0 0 110 132">
+
+        <!-- Legs — both feet pointing RIGHT (direction of travel);
+             walkAcross scaleX(-1) flips them when going left -->
+        <path class="limb leg leg-l" d="M 44 97 C 41 110, 39 118, 40 122 L 53 122"/>
+        <path class="limb leg leg-r" d="M 66 97 C 63 110, 60 118, 60 122 L 73 122"/>
+
+        <!-- Star body -->
+        <path class="star-body" d="
+          M 42 40
+          C 42 22, 68 22, 68 40
+          C 84 32, 98 46, 88 60
+          C 104 70, 98 90, 82 88
+          C 82 104, 62 108, 55 96
+          C 48 108, 28 104, 28 88
+          C 12 90, 6 70, 22 60
+          C 12 46, 26 32, 42 40 Z
+        "/>
+
+        <!-- Arms (swing) -->
+        <path class="limb arm arm-l" d="M 28 64 C 16 60, 6 66, 2 78"/>
+        <path class="limb arm arm-r" d="M 82 64 C 94 60, 104 66, 108 78"/>
+
+        <!-- Face -->
+        <path class="face-eye" d="M 44 56 C 44 54, 48 54, 48 56"/>
+        <path class="face-eye" d="M 62 56 C 62 54, 66 54, 66 56"/>
+        <path class="face-smile" d="M 46 66 C 50 70, 60 70, 64 66"/>
+      </svg>
+      <label>Walk</label>
+    </div>
+
+    <!-- ── DRAWING ── -->
+    <div class="pose" id="pose-draw">
+      <svg width="120" height="132" viewBox="0 0 120 132">
+        <!-- Legs — symmetric -->
+        <path class="limb leg" d="M 46 97 C 44 109, 39 118, 36 123 L 26 123"/>
+        <path class="limb leg" d="M 68 97 C 70 109, 75 118, 78 123 L 88 123"/>
+
+        <!-- Star body -->
+        <path class="star-body" d="
+          M 44 40
+          C 44 22, 70 22, 70 40
+          C 86 32, 100 46, 90 60
+          C 106 70, 100 90, 84 88
+          C 84 104, 64 108, 57 96
+          C 50 108, 30 104, 30 88
+          C 14 90, 8 70, 24 60
+          C 14 46, 28 32, 44 40 Z
+        "/>
+
+        <!-- Left arm (resting at side) -->
+        <path class="limb arm arm-l" d="M 30 64 C 22 72, 20 82, 26 90"/>
+
+        <!-- Right arm (raised, holding pen) -->
+        <path class="limb arm arm-r" d="M 84 58 C 96 48, 106 36, 112 22"/>
+        <!-- Pen -->
+        <rect x="108" y="10" width="7" height="18" rx="3" fill="#1f4bff" transform="rotate(20 112 22)"/>
+        <path class="prop-stroke" d="M 108 26 L 105 32" stroke-width="2"/>
+        <!-- Sparkle -->
+        <text x="88" y="14" font-size="13" fill="#1a1d21">✦</text>
+
+        <!-- Face -->
+        <path class="face-eye" d="M 46 56 C 46 54, 50 54, 50 56"/>
+        <path class="face-eye" d="M 64 56 C 64 54, 68 54, 68 56"/>
+        <path class="face-smile" d="M 48 66 C 52 70, 62 70, 66 66"/>
+      </svg>
+      <label>Drawing</label>
+    </div>
+
+    <!-- ── COFFEE ── -->
+    <div class="pose" id="pose-coffee">
+      <svg width="110" height="132" viewBox="0 0 110 132">
+        <g class="fig">
+          <!-- Legs — symmetric -->
+          <path class="limb leg" d="M 44 97 C 42 109, 37 117, 34 122 L 24 122"/>
+          <path class="limb leg" d="M 66 97 C 68 109, 73 117, 76 122 L 86 122"/>
+
+          <!-- Star body -->
+          <path class="star-body" d="
+            M 42 40
+            C 42 22, 68 22, 68 40
+            C 84 32, 98 46, 88 60
+            C 104 70, 98 90, 82 88
+            C 82 104, 62 108, 55 96
+            C 48 108, 28 104, 28 88
+            C 12 90, 6 70, 22 60
+            C 12 46, 26 32, 42 40 Z
+          "/>
+
+          <!-- Arms cradling mug -->
+          <path class="limb arm" d="M 28 68 C 20 76, 26 90, 42 92"/>
+          <path class="limb arm" d="M 82 68 C 90 76, 88 88, 78 92"/>
+
+          <!-- Mug -->
+          <rect x="42" y="82" width="26" height="20" rx="4" fill="#1f4bff"/>
+          <path class="prop-stroke" d="M 68 88 C 74 88, 74 96, 68 96"/>
+
+          <!-- Steam -->
+          <path class="steam prop-stroke" d="M 50 80 C 48 75, 52 70, 50 65" stroke-width="1.8"/>
+          <path class="steam d2 prop-stroke" d="M 57 79 C 55 74, 59 68, 57 62" stroke-width="1.8"/>
+
+          <!-- Face -->
+          <path class="face-eye" d="M 44 55 C 44 53, 48 53, 48 55"/>
+          <path class="face-eye" d="M 62 55 C 62 53, 66 53, 66 55"/>
+          <path class="face-smile" d="M 46 66 C 50 70, 60 70, 64 66"/>
+        </g>
+      </svg>
+      <label>Coffee</label>
+    </div>
+
+  </div>
+
+  <div class="controls">
+    <button class="btn" onclick="toggleAll()">Toggle All Animations</button>
+  </div>
+
+  <script>
+    let paused = false;
+    function toggleAll() {
+      paused = !paused;
+      document.querySelectorAll('*').forEach(el => {
+        el.style.animationPlayState = paused ? 'paused' : 'running';
+      });
+    }
+  </script>
+
+  <div id="site-footer"></div>
+  <script src="footer.js"></script>
+</body>
+</html>

@@ -813,6 +813,9 @@
     }
 
     @media (max-width: 700px) { .proj-grid-v2 { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) {
+      .pc-expand { max-height: 300px; opacity: 1; }
+    }
 
     /* ─── UOB THUMBNAIL SCENE ─── */
     .pc-uob .pc-img {
@@ -963,6 +966,35 @@
     @media (max-width: 900px) {
       .pc-uob-sf { display: none; }
       .pc-uob-main-img { height: 220px; }
+    }
+    /* ── 360 mobile: show everything by default, no hover needed ── */
+    @media (max-width: 480px) {
+      /* Main frame — bigger and always at full scale */
+      .pc-uob-frame-wrap {
+        top: 28px;
+        transform: scale(0.78) !important;
+      }
+      .pc-uob:hover .pc-uob-frame-wrap { transform: scale(0.78) !important; }
+      .pc-uob-frame { padding: 5px 5px 0; }
+      .pc-uob-chrome { padding-bottom: 4px; gap: 3px; }
+      .pc-uob-dot { width: 5px; height: 5px; }
+      .pc-uob-main-img { height: 260px; }
+
+      /* Side frames — visible by default, no animation */
+      .pc-uob-sf {
+        display: block;
+        opacity: 1 !important;
+        animation: none !important;
+        pointer-events: none;
+      }
+      .pc-uob-sf-left  { transform: scale(1) translateX(0) !important; width: 68px; top: 44px; left: 10px; }
+      .pc-uob-sf-right1 { transform: scale(1) translateY(0) !important; width: 120px; top: 30px; right: 10px; }
+      .pc-uob-sf-right2 { transform: scale(1) translateY(0) !important; width: 92px; top: 148px; right: 10px; }
+
+      /* Kill hover animations on touch */
+      .pc-uob:hover .pc-uob-sf-left,
+      .pc-uob:hover .pc-uob-sf-right1,
+      .pc-uob:hover .pc-uob-sf-right2 { animation: none !important; }
     }
 
     /* Project card — title top, image bottom */
@@ -1208,145 +1240,6 @@
     .exp-row.open .exp-row-desc-wrap { max-height: 120px; opacity: 1; }
     .exp-row-desc { font-size: 13.5px; line-height: 1.65; color: var(--gray-1); padding-bottom: 14px; }
 
-    /* ─── FOOTER ─── */
-    section#contact {
-      padding: 0;
-      position: relative;
-      background: #065B5C;
-      overflow: hidden;
-      cursor: none;
-    }
-
-    /* animated checkered dots */
-    section#contact::before {
-      content: '';
-      position: absolute;
-      inset: -40px;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,0.18) 1px, transparent 1px);
-      background-size: 18px 18px;
-      animation: footerDrift 14s ease-in-out infinite alternate;
-      pointer-events: none;
-      z-index: 0;
-    }
-    @keyframes footerDrift {
-      0%   { transform: translate(0px, 0px) scale(1); }
-      33%  { transform: translate(8px, -6px) scale(1.02); }
-      66%  { transform: translate(-6px, 10px) scale(0.98); }
-      100% { transform: translate(4px, -4px) scale(1.01); }
-    }
-
-    .footer-inner {
-      position: relative;
-      z-index: 1;
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 40px 64px 24px;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 64px;
-      align-items: center;
-    }
-
-    .footer-left {}
-
-    .footer-tagline {
-      font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: clamp(20px, 2.5vw, 32px);
-      font-weight: 600;
-      letter-spacing: -0.8px;
-      line-height: 1.2;
-      color: #fff;
-      margin-bottom: 16px;
-    }
-
-    .footer-email-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 15px;
-      font-weight: 600;
-      color: rgba(255,255,255,0.7);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(255,255,255,0.3);
-      padding-bottom: 3px;
-      letter-spacing: 0.2px;
-      transition: color 0.2s, border-color 0.2s;
-    }
-    .footer-email-link:hover { color: #fff; border-color: rgba(255,255,255,0.8); }
-
-    .footer-right {
-      display: flex;
-      gap: 40px;
-      align-items: flex-start;
-    }
-
-    .footer-link-col {}
-    .footer-link-col-label {
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 10px;
-    }
-    .footer-link-col ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-    }
-    .footer-link-col a {
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.4px;
-      color: rgba(255,255,255,0.65);
-      text-decoration: none;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .footer-link-col a:hover { color: #fff; }
-
-    .footer-bottom {
-      position: relative;
-      z-index: 1;
-      padding: 14px 64px 24px;
-      border-top: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .footer-copy { font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 0.3px; }
-
-    /* click burst particles */
-    .footer-burst {
-      position: absolute;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 10;
-      animation: burstOut 0.7s cubic-bezier(0.25,0.46,0.45,0.94) forwards;
-    }
-    @keyframes burstOut {
-      0%   { transform: translate(0,0) scale(1); opacity: 1; }
-      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
-    }
-
-    /* footer custom cursor dot */
-    #footer-cursor {
-      position: fixed;
-      width: 10px; height: 10px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.8);
-      pointer-events: none;
-      z-index: 99998;
-      opacity: 0;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.15s;
-    }
-
     /* ─── MOBILE MENU ─── */
     .mobile-menu {
       display: none;
@@ -1507,13 +1400,6 @@
       /* ── Testimonials ── */
       .testi-card { padding: 20px; min-width: 280px; }
       .testi-quote { font-size: 14px; }
-
-      /* ── Footer ── */
-      .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 36px 24px 20px; }
-      .footer-tagline { font-size: 22px; letter-spacing: -0.5px; }
-      .footer-email-link { font-size: 13px; }
-      .footer-right { gap: 28px; }
-      .footer-bottom { padding: 14px 24px 24px; flex-direction: column; align-items: flex-start; gap: 4px; }
 
       /* ── Awards ── */
       .awards-top { grid-template-columns: 1fr; padding: 32px 24px; }
@@ -2415,37 +2301,8 @@
 
   <!-- ═══ FOOTER ═══ -->
   <div style="height:48px;"></div>
-  <div id="footer-cursor"></div>
-  <section id="contact">
-    <div class="footer-inner">
-      <div class="footer-left">
-        <p class="footer-tagline">Good design makes things work better.</p>
-      </div>
-      <div class="footer-right">
-        <div class="footer-link-col">
-          <p class="footer-link-col-label">Connect</p>
-          <ul>
-            <li><a href="https://www.linkedin.com/in/eeza" target="_blank" rel="noopener">LinkedIn</a></li>
-            <li><a href="mailto:eezasheren@gmail.com">Email</a></li>
-            <li><a href="Eeza-CV-2026-April.pdf" target="_blank" rel="noopener">Download CV</a></li>
-          </ul>
-        </div>
-        <div class="footer-link-col">
-          <p class="footer-link-col-label">Navigate</p>
-          <ul>
-            <li><a href="#work">Work</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#method">Experience</a></li>
-            <li><a href="#blog">Blog</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p class="footer-copy">© 2026 Eeza Sheren. All rights reserved.</p>
-      <p class="footer-copy">Based in Singapore · Open to opportunities</p>
-    </div>
-  </section>
+  <div id="site-footer"></div>
+  <script src="footer.js"></script>
 
   <script>
     // See more / See less toggle for extra project cards
