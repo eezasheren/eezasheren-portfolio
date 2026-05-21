@@ -45,6 +45,20 @@
       color: #fff;
       margin-bottom: 16px;
     }
+    .footer-type-cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1em;
+      background: rgba(255,255,255,0.75);
+      vertical-align: middle;
+      margin-left: 3px;
+      border-radius: 1px;
+      animation: cursorBlink 0.85s step-end infinite;
+    }
+    @keyframes cursorBlink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
     .footer-right {
       display: flex;
       gap: 40px;
@@ -128,7 +142,7 @@
     <section id="contact">
       <div class="footer-inner">
         <div class="footer-left">
-          <p class="footer-tagline">You cannot understand good design<br>if you do not understand people</p>
+          <p class="footer-tagline"><span class="footer-typed"></span><span class="footer-type-cursor"></span></p>
         </div>
         <div class="footer-right">
           <div class="footer-link-col">
@@ -136,7 +150,7 @@
             <ul>
               <li><a href="https://www.linkedin.com/in/eeza" target="_blank" rel="noopener">LinkedIn</a></li>
               <li><a href="mailto:eezasheren@gmail.com">Email</a></li>
-              <li><a href="Eeza-CV-2026-April.pdf" target="_blank" rel="noopener">Download CV</a></li>
+              <li><a href="Eeza 2026 CV May 02_compressed (1).pdf" target="_blank" rel="noopener">Download CV</a></li>
             </ul>
           </div>
           <div class="footer-link-col">
@@ -161,6 +175,47 @@
   const cur    = document.getElementById('footer-cursor');
   const footer = target.querySelector('section#contact');
   if (!cur || !footer) return;
+
+  /* ─── 4. Typewriter effect on tagline ─── */
+  const typedEl = footer.querySelector('.footer-typed');
+  const LINES = [
+    'You cannot understand good design',
+    'if you do not understand people'
+  ];
+  const TOTAL = LINES.reduce((s, l) => s + l.length, 0);
+
+  function renderTyped(n) {
+    let html = '';
+    let rem = n;
+    for (let i = 0; i < LINES.length; i++) {
+      const take = Math.min(rem, LINES[i].length);
+      html += LINES[i].slice(0, take).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+      rem -= take;
+      if (rem > 0 && i < LINES.length - 1) { html += '<br>'; }
+      if (rem <= 0) break;
+    }
+    typedEl.innerHTML = html;
+  }
+
+  let typed = 0, typeStarted = false;
+  function startTyping() {
+    if (typeStarted) return;
+    typeStarted = true;
+    function tick() {
+      if (typed >= TOTAL) return;
+      typed++;
+      renderTyped(typed);
+      // slight variance: a touch slower at line break for natural feel
+      const atBreak = typed === LINES[0].length;
+      setTimeout(tick, atBreak ? 120 : 28 + Math.random() * 22);
+    }
+    tick();
+  }
+
+  const typeObs = new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) { startTyping(); typeObs.disconnect(); }
+  }, { threshold: 0.25 });
+  typeObs.observe(footer);
 
   const BURST_COUNT = 14;
   const COLORS = ['#fff', '#c5f135', '#80ffea', '#ffd166', '#ff6b9d'];
