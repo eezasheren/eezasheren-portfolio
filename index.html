@@ -1410,6 +1410,14 @@
       .exp-row-role { font-size: 14px; }
       .exp-row-company { font-size: 12px; }
       .exp-row-date { font-size: 10px; }
+      .exp-btns-row { flex-direction: column !important; }
+      .btn-exp-more, .btn-exp-cv {
+        width: 100% !important;
+        justify-content: center !important;
+        padding: 16px 20px !important;
+        font-size: 15px !important;
+        box-sizing: border-box !important;
+      }
 
       /* ── Blog ── */
       .blog-scroll-outer { margin: 0 -20px !important; padding: 4px 20px 16px !important; }
@@ -2169,7 +2177,7 @@
 
         </div>
       </div>
-      <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;">
+      <div class="exp-btns-row" style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap;">
         <a href="about.html#experience" class="btn-exp-more">
           See more
           <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M7 17L17 7M7 7h10v10"/></svg>
