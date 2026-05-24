@@ -212,7 +212,7 @@
 
     .case-title {
       font-size: clamp(36px, 5vw, 58px);
-      font-weight: 700;
+      font-weight: 600;
       letter-spacing: -1.5px;
       line-height: 1.1;
       margin-bottom: 12px;
@@ -366,7 +366,7 @@
     /* Section heading */
     .sec-heading {
       font-size: clamp(24px, 3vw, 34px);
-      font-weight: 600;
+      font-weight: 500;
       letter-spacing: -0.8px;
       line-height: 1.2;
       margin-bottom: 16px;
@@ -633,20 +633,13 @@
       font-size: 12.5px; font-weight: 600; color: var(--black);
       line-height: 1.3; letter-spacing: -0.2px;
     }
-    .hiw-tab-bar {
-      position: absolute; bottom: 0; left: 0; height: 3px;
-      width: 0%; background: var(--black);
-    }
-    .hiw-tab.active .hiw-tab-bar {
-      animation: hiwFill 3s linear forwards;
-    }
-    @keyframes hiwFill { from { width: 0%; } to { width: 100%; } }
+    .hiw-tab-bar { display: none; }
 
     /* Content panels — stacked in same grid cell */
     .hiw-content { display: grid; margin-top: 8px; }
     .hiw-panel {
       grid-area: 1 / 1;
-      background: var(--blue-tint); border-radius: 20px; padding: 40px;
+      background: var(--blue-tint); border-radius: 20px; padding: 28px 32px;
       box-shadow: 0 2px 16px rgba(99,130,255,0.08);
       opacity: 0; transform: translateY(14px);
       transition: opacity 0.45s cubic-bezier(0.16,1,0.3,1), transform 0.45s cubic-bezier(0.16,1,0.3,1);
@@ -654,19 +647,20 @@
     }
     .hiw-panel.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
     .hiw-icon {
-      width: 52px; height: 52px; border-radius: 16px; background: var(--black);
-      display: flex; align-items: center; justify-content: center; margin-bottom: 24px;
+      width: 44px; height: 44px; border-radius: 12px; background: var(--black);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 16px;
     }
     .hiw-panel[data-panel="1"] .hiw-icon { background: var(--blue); }
     .hiw-panel[data-panel="2"] .hiw-icon { background: #7c3aed; }
     .hiw-panel[data-panel="3"] .hiw-icon { background: var(--orange); }
+    .hiw-panel[data-panel="4"] .hiw-icon { background: #16a34a; }
     .hiw-number {
       font-size: 11px; font-weight: 700; letter-spacing: 2px;
-      color: var(--gray-2); margin-bottom: 10px; text-transform: uppercase;
+      color: var(--gray-2); margin-bottom: 6px; text-transform: uppercase;
     }
     .hiw-title {
-      font-size: 22px; font-weight: 600; color: var(--black);
-      letter-spacing: -0.5px; margin-bottom: 14px; line-height: 1.2;
+      font-size: 20px; font-weight: 500; color: var(--black);
+      letter-spacing: -0.5px; margin-bottom: 10px; line-height: 1.2;
     }
     .hiw-body { font-size: 15px; line-height: 1.8; color: var(--gray-1); max-width: 580px; }
 
@@ -691,6 +685,33 @@
       background: var(--blue-tint);
       box-shadow: 0 4px 24px rgba(99,130,255,0.1);
     }
+    .init-img-confidential {
+      position: absolute;
+      top: 12px; left: 12px;
+      z-index: 10;
+      font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.9);
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 4px 10px; border-radius: 100px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .init-img-disclaimer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 10;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      font-size: 10px; font-weight: 500;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.2px;
+      text-align: center;
+      line-height: 1.4;
+    }
     .init-img {
       position: absolute; inset: 0;
       opacity: 0;
@@ -710,6 +731,107 @@
       width: 100%; height: 100%;
       object-fit: cover; object-position: top left;
       border-radius: 20px;
+    }
+
+    /* ── PAY single browser-frame visual ── */
+    .init-img[data-project="pay"],
+    .init-img[data-project="agile"],
+    .init-img[data-project="fraud"] {
+      background: linear-gradient(148deg, #0a1744 0%, #0f2a86 38%, #1848b8 62%, #0d1f70 100%) !important;
+      border: none !important;
+    }
+    .pay-stack {
+      position: relative;
+      width: 100%; height: 100%;
+    }
+    .pay-frame {
+      position: absolute;
+      background: #fff;
+      border-radius: 10px 10px 0 0;
+      padding: 8px 8px 0;
+      width: 82%;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      left: 50%; margin-left: -41%;
+      top: 36px;
+    }
+    .pay-frame img {
+      width: 100%; height: auto;
+      display: block;
+      border-radius: 3px 3px 0 0;
+    }
+
+    /* ── VASA stacked browser-frame visual ── */
+    .init-img[data-project="vasa"] {
+      background: linear-gradient(148deg, #0a1744 0%, #0f2a86 38%, #1848b8 62%, #0d1f70 100%) !important;
+      border: none !important;
+    }
+    .vasa-stack {
+      position: relative;
+      width: 100%; height: 100%;
+    }
+    .vasa-frame {
+      position: absolute;
+      background: #fff;
+      border-radius: 10px 10px 0 0;
+      padding: 8px 8px 0;
+      width: 78%;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      transition: transform 0.45s cubic-bezier(0.16,1,0.3,1), box-shadow 0.45s;
+    }
+    .vasa-chrome {
+      display: flex; align-items: center; gap: 4px;
+      padding-bottom: 6px;
+    }
+    .vasa-dot { width: 6px; height: 6px; border-radius: 50%; }
+    .vasa-dot:nth-child(1) { background: #ff5f57; }
+    .vasa-dot:nth-child(2) { background: #febc2e; }
+    .vasa-dot:nth-child(3) { background: #28c840; }
+    .vasa-frame img {
+      width: 100%; height: auto;
+      display: block;
+      border-radius: 3px 3px 0 0;
+    }
+    .vasa-frame-back {
+      left: 50%; margin-left: -39%;
+      top: 44px;
+      transform: translate(18px, 14px);
+      z-index: 1;
+    }
+    .vasa-frame-front {
+      left: 50%; margin-left: -39%;
+      top: 28px;
+      transform: translate(-10px, 60px);
+      z-index: 2;
+    }
+
+    /* VASA mobile */
+    .vasa-stack-mobile {
+      position: relative;
+      width: 100%; height: 100%;
+    }
+    .vasa-frame-mobile {
+      position: absolute;
+      background: #fff;
+      border-radius: 7px 7px 0 0;
+      padding: 6px 6px 0;
+      width: 68%;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+    .vasa-frame-mobile img { width: 100%; height: auto; display: block; border-radius: 2px 2px 0 0; }
+    .vasa-frame-mobile-back {
+      left: 50%; margin-left: -34%;
+      top: 28px;
+      transform: translateX(18px);
+      z-index: 1;
+    }
+    .vasa-frame-mobile-front {
+      left: 50%; margin-left: -34%;
+      top: 16px;
+      transform: translateX(-14px);
+      z-index: 2;
     }
 
     /* Dot nav */
@@ -747,7 +869,7 @@
     }
     .init-heading {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: 24px; font-weight: 600; letter-spacing: -0.4px;
+      font-size: 24px; font-weight: 500; letter-spacing: -0.4px;
       color: var(--black); margin-bottom: 6px; line-height: 1.25;
     }
     .init-sub-label {
@@ -903,7 +1025,7 @@
     }
     .pdc-label {
       font-size: 10px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: var(--gray-2); margin-bottom: 20px;
+      text-transform: uppercase; color: var(--black); margin-bottom: 20px;
     }
 
     /* ── Constraint Stack diagram ── */
@@ -982,10 +1104,32 @@
     .constraint-stack-wrap {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 48px;
-      align-items: center;
+      gap: 28px;
+      align-items: start;
     }
-    .cstack-copy { display: flex; flex-direction: column; gap: 16px; }
+    .cstack-img-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -60px;
+    }
+    .cstack-diagram-img {
+      width: 110%;
+      max-width: none;
+      height: auto;
+      display: block;
+      mix-blend-mode: multiply;
+    }
+    .cstack-copy { display: flex; flex-direction: column; gap: 10px; }
+
+    /* Cross-functional two-col layout */
+    .hiw-cf-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: start;
+      margin-top: 12px;
+    }
     .cstack-title {
       font-size: 20px; font-weight: 600; letter-spacing: -0.4px;
       color: var(--black); line-height: 1.2;
@@ -993,7 +1137,7 @@
     .cstack-body {
       font-size: 14px; line-height: 1.75; color: var(--gray-1);
     }
-    .cstack-layers { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; }
+    .cstack-layers { display: flex; flex-direction: column; gap: 5px; margin-top: 4px; }
     .cstack-layer-row {
       display: flex; align-items: center; gap: 10px;
       opacity: 0; transform: translateX(-12px);
@@ -1039,31 +1183,205 @@
     .pf-step:nth-child(5) { transition-delay: 0.32s; }
     .pf-num {
       width: 56px; height: 56px; border-radius: 50%;
-      background: var(--black); color: #fff;
+      background: var(--blue); color: #fff;
       display: flex; align-items: center; justify-content: center;
       font-size: 13px; font-weight: 700; letter-spacing: -0.3px;
       margin-bottom: 16px; position: relative; z-index: 1;
       box-shadow: 0 0 0 6px #fff;
       flex-shrink: 0;
     }
-    .pf-step:nth-child(2) .pf-num { background: var(--blue); }
-    .pf-step:nth-child(3) .pf-num { background: #7c3aed; }
-    .pf-step:nth-child(4) .pf-num { background: var(--orange); }
-    .pf-step:nth-child(5) .pf-num { background: #16a34a; }
-    .pf-title {
-      font-size: 13px; font-weight: 700; color: var(--black);
-      letter-spacing: -0.2px; margin-bottom: 6px; line-height: 1.3;
+    .pf-title, .process-flow .pf-title {
+      font-size: 12px; font-weight: 600; color: var(--black);
+      letter-spacing: -0.1px; margin-bottom: 5px; line-height: 1.3;
     }
-    .pf-note {
-      font-size: 11.5px; line-height: 1.6; color: var(--gray-1);
+    .pf-note, .process-flow .pf-note {
+      font-size: 11px; line-height: 1.6; color: var(--gray-1);
     }
+    .pf-mobile-nav { display: none; }
     @media (max-width: 720px) {
-      .process-flow { grid-template-columns: 1fr; gap: 24px; }
+      .process-flow { grid-template-columns: 1fr; gap: 0; }
       .process-flow::before { display: none; }
+      .pf-step { display: none; }
+      .pf-step.pf-active { display: flex; padding: 8px 0 20px; }
+      .pf-mobile-nav {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-top: 4px;
+      }
+      .pf-nav-btn {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: var(--black); color: #fff; border: none;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: background 0.2s, opacity 0.2s;
+        flex-shrink: 0;
+      }
+      .pf-nav-btn:disabled { opacity: 0.25; cursor: default; }
+      .pf-nav-counter {
+        font-size: 12px; font-weight: 600; color: var(--gray-2);
+        letter-spacing: 1px;
+      }
       .constraint-stack-wrap { grid-template-columns: 1fr; }
       .constraint-stack { max-width: 280px; }
       .process-diagram-card { padding: 28px 20px; }
     }
+
+    /* ─── RESEARCH METHODS GRID ─── */
+    .research-methods {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .rm-card {
+      background: var(--blue-tint);
+      border-radius: 14px;
+      padding: 20px;
+      transition: box-shadow 0.2s ease;
+    }
+    .rm-card:hover { box-shadow: 0 4px 20px rgba(99,130,255,0.15); }
+    .rm-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px; flex-shrink: 0;
+    }
+    .rm-title { font-size: 14px; font-weight: 600; color: var(--black); margin-bottom: 6px; letter-spacing: -0.2px; }
+    .rm-body  { font-size: 12.5px; line-height: 1.65; color: var(--gray-1); }
+    .rm-collab {
+      margin-top: 20px;
+      padding: 16px 20px;
+      background: var(--white);
+      border-radius: 12px;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    .rm-collab-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--gray-2); white-space: nowrap;
+    }
+    .rm-collab-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .rm-collab-tag {
+      font-size: 12px; font-weight: 500; color: var(--gray-1);
+      background: var(--page-bg); border: 1px solid var(--gray-3);
+      padding: 4px 11px; border-radius: 100px;
+    }
+    @media (max-width: 720px) { .research-methods { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .research-methods { grid-template-columns: 1fr; } }
+    .cs-confidential-outer {
+      display: flex; justify-content: center;
+      margin-bottom: 24px;
+    }
+    .cs-confidential-wrap {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      width: 75%;
+      user-select: none;
+    }
+    .cs-confidential-wrap img {
+      width: 100%; height: auto;
+      display: block;
+      filter: blur(0.6px);
+    }
+    .cs-blur-overlay {
+      position: absolute; inset: 0;
+      backdrop-filter: blur(1px);
+      -webkit-backdrop-filter: blur(1px);
+      background: rgba(10, 14, 40, 0.10);
+      clip-path: inset(0 100% 0 0);
+    }
+    .cs-ba-divider {
+      position: absolute; top: 0; bottom: 0;
+      width: 2px;
+      background: rgba(255,255,255,0.9);
+      box-shadow: 0 0 10px rgba(0,0,0,0.25);
+      left: 0%;
+      pointer-events: none;
+    }
+    @keyframes baSweepOverlay {
+      0%   { clip-path: inset(0 100% 0 0); }
+      23%  { clip-path: inset(0 0% 0 0); }
+      80%  { clip-path: inset(0 0% 0 0); }
+      81%  { clip-path: inset(0 100% 0 0); }
+      100% { clip-path: inset(0 100% 0 0); }
+    }
+    @keyframes baSweepLine {
+      0%   { left: 0%;   opacity: 1; }
+      23%  { left: 100%; opacity: 1; }
+      24%  { left: 100%; opacity: 0; }
+      80%  { left: 100%; opacity: 0; }
+      81%  { left: 0%;   opacity: 0; }
+      82%  { left: 0%;   opacity: 1; }
+      100% { left: 0%;   opacity: 1; }
+    }
+    .cs-confidential-wrap.animated .cs-blur-overlay {
+      animation: baSweepOverlay 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .cs-confidential-wrap.animated .cs-ba-divider {
+      animation: baSweepLine 7s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    .cs-img-caption-glass {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 5;
+      padding: 10px 14px 12px;
+      background: rgba(0,0,0,0.42);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      text-align: center;
+    }
+    .cs-img-caption-glass p {
+      font-size: 11px; font-weight: 500;
+      color: rgba(255,255,255,0.72);
+      letter-spacing: 0.3px; line-height: 1.5;
+      margin: 0;
+    }
+    .cs-confidential-tag {
+      font-size: 10px; font-weight: 600; letter-spacing: 1.2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 3px 10px; border-radius: 100px;
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.5s ease 2s, transform 0.5s ease 2s;
+    }
+    .cs-confidential-wrap.animated .cs-confidential-tag {
+      opacity: 1; transform: translateY(0);
+    }
+    .cs-img-caption-glass p {
+      opacity: 0; transform: translateY(4px);
+      transition: opacity 0.5s ease 2.1s, transform 0.5s ease 2.1s;
+    }
+    .cs-confidential-wrap.animated .cs-img-caption-glass p {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ─── VALIDATION GRID ─── */
+    .val-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 28px;
+    }
+    .val-card {
+      background: var(--blue-tint);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .val-card-header { display: flex; align-items: center; justify-content: space-between; }
+    .val-icon {
+      width: 34px; height: 34px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .val-num { font-size: 11px; font-weight: 700; letter-spacing: 2px; color: var(--gray-3); }
+    .val-title { font-size: 15px; font-weight: 600; color: var(--black); letter-spacing: -0.2px; line-height: 1.3; }
+    .val-body  { font-size: 13px; line-height: 1.7; color: var(--gray-1); flex: 1; }
+    .val-tags  { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .val-tag {
+      font-size: 11px; font-weight: 500; color: var(--blue);
+      background: rgba(99,130,255,0.1); border-radius: 100px;
+      padding: 3px 10px;
+    }
+    @media (max-width: 600px) { .val-grid { grid-template-columns: 1fr; } }
 
     /* ─── INITIATIVE — learning callout ─── */
     .init-learning {
@@ -1221,6 +1539,13 @@
       position: relative;
       max-width: 1200px;
       margin: 0 auto;
+    }
+    .hero-mock-note {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255,255,255,0.35);
+      letter-spacing: 0.3px;
+      margin-bottom: 20px;
     }
 
     /* ─── MAIN FRAME ─── */
@@ -1650,6 +1975,7 @@
         gap: 8px; color: var(--gray-2);
         font-size: 12px; font-weight: 500;
         border-bottom: 1px solid var(--gray-3);
+        position: relative; overflow: hidden;
       }
       .init-mobile-img svg { opacity: 0.35; }
       .init-mobile-body { padding: 20px; }
@@ -1695,12 +2021,53 @@
       .overview-card { padding: 20px; }
       .sec-body { font-size: 14px; }
 
-      /* How I Work tabs: mobile */
-      .hiw-tabs { gap: 6px; }
-      .hiw-tab { flex: 0 0 calc(50% - 3px); }
-      .hiw-panel { padding: 22px; }
+      /* How I Work: mobile carousel */
+      .hiw-tabs { display: none; }
+      .hiw-content { display: block; }
+      .hiw-panel {
+        display: none;
+        padding: 20px;
+        opacity: 1 !important;
+        transform: none !important;
+        pointer-events: auto !important;
+      }
+      .hiw-panel.hiw-mobile-active { display: block; }
       .hiw-title { font-size: 17px; }
       .hiw-body { font-size: 14px; }
+
+      /* Systems & Security: image above text on mobile */
+      .hiw-panel .constraint-stack-wrap {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+      }
+      .hiw-panel .cstack-img-wrap { order: -1; }
+
+      /* Cross-Functional: image above text on mobile */
+      .hiw-cf-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 16px !important;
+      }
+      .hiw-cf-img { order: -1; }
+
+      /* carousel nav */
+      .hiw-mobile-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 12px;
+      }
+      .hiw-mobile-btn {
+        width: 40px; height: 40px; border-radius: 50%;
+        background: var(--black); color: #fff; border: none;
+        cursor: pointer; display: flex; align-items: center; justify-content: center;
+        transition: opacity 0.2s; flex-shrink: 0;
+      }
+      .hiw-mobile-btn:disabled { opacity: 0.25; cursor: default; }
+      .hiw-mobile-counter {
+        font-size: 12px; font-weight: 600; color: var(--gray-2); letter-spacing: 1px;
+      }
 
       /* Initiatives cards */
       .init-mobile-card { flex: 0 0 85vw; }
@@ -1758,6 +2125,8 @@
       </div>
     </div>
 
+    <p class="hero-mock-note">All figures, account names, and data shown are illustrative mock values used for design purposes only.</p>
+
     <!-- Hero scene: main frame + side frames that pop on hover -->
     <div class="uob-hero-scene" id="uob-hero-imgs">
 
@@ -1798,6 +2167,7 @@
         </div>
       </div>
 
+
     </div>
 
   </section>
@@ -1809,8 +2179,8 @@
       <p class="sidebar-label">On this page</p>
       <ul class="sidebar-nav" id="sidebar-nav">
         <li><a href="#environment" class="active">The Problem Space</a></li>
-        <li><a href="#role">My Role</a></li>
-        <li><a href="#process">Process</a></li>
+        <li><a href="#role">My Process</a></li>
+        <li><a href="#research">Research</a></li>
         <li><a href="#how-i-work">How I Work</a></li>
         <li><a href="#initiatives">Key Initiatives</a></li>
         <li><a href="#outcome">Outcome</a></li>
@@ -1856,24 +2226,23 @@
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
           </svg>
           <p class="nda-text">
-            <strong>Protected by NDA.</strong> Visuals and product details stay confidential, but what I can share is how I think, how I work, and what I learned. That's what this page is. <a href="mailto:eezasheren@gmail.com" style="color:#92400e;font-weight:600;">Let's talk in person →</a>
+            <strong>Protected by NDA.</strong> Visuals and product details stay confidential. This case study focuses on process, collaboration, systems thinking, and delivery. <a href="mailto:eezasheren@gmail.com" style="color:#92400e;font-weight:600;">To view more, let's talk in person →</a>
           </p>
         </div>
       </div>
 
 
-      <!-- THE PROBLEM SPACE -->
+      <!-- THE CHALLENGE -->
       <section id="environment" class="cs-section fade-up">
         <p class="sec-tag">
           <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path stroke-linecap="round" d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20"/></svg></span>
-          The Problem Space
+          Challenge
         </p>
-        <h2 class="sec-heading fade-up delay-1">Designing inside constraints most designers never see</h2>
+        <h2 class="sec-heading fade-up delay-1">The landscape</h2>
         <div class="overview-card fade-up delay-2">
           <div class="sec-body">
-            <p>Corporate banking UX isn't hard because the interfaces are complex. It's hard because <strong>everything around them</strong> is.</p>
-            <p>UOB Infinity serves corporate clients across Southeast Asia, treasurers, finance managers, operational teams. Every decision sits at the intersection of regulatory requirements, security controls, legacy systems, and user habits built over years.</p>
-            <p>No blank canvas. Getting it wrong has real financial and legal consequences. That context shapes everything.</p>
+            <p>Corporate banking UX is complex not just because of the interfaces, but because of everything connected to them.</p>
+            <p>Every workflow sits between business priorities, operational processes, technical limitations, security requirements, and user behaviour. The challenge was finding the balance between usability, scalability, speed, and accuracy while designing within real-world systems.</p>
           </div>
         </div>
       </section>
@@ -1884,37 +2253,171 @@
       <section id="role" class="cs-section fade-up">
         <p class="sec-tag">
           <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path stroke-linecap="round" d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg></span>
-          My Role
+          My Process
         </p>
-        <h2 class="sec-heading fade-up delay-1">Not just a screen-maker, a thinking partner</h2>
+        <h2 class="sec-heading fade-up delay-1">A thinking partner</h2>
         <div class="overview-card fade-up delay-2">
+          <p class="pdc-label" style="margin-bottom:28px;">How a problem becomes a screen</p>
+          <div class="process-flow" id="process-flow">
+            <div class="pf-step">
+              <div class="pf-num">01</div>
+              <p class="pf-title">Reframe the Brief</p>
+              <p class="pf-note">Business request ≠ design problem. I spend real time here before opening Figma.</p>
+            </div>
+            <div class="pf-step">
+              <div class="pf-num">02</div>
+              <p class="pf-title">Map the Constraints</p>
+              <p class="pf-note">Compliance, tech limits, existing patterns. Know the walls before you draw.</p>
+            </div>
+            <div class="pf-step">
+              <div class="pf-num">03</div>
+              <p class="pf-title">Sketch the Logic</p>
+              <p class="pf-note">Flows and decisions first. Whiteboards and rough sketches before any UI.</p>
+            </div>
+            <div class="pf-step">
+              <div class="pf-num">04</div>
+              <p class="pf-title">Design Within It</p>
+              <p class="pf-note">Make it feel simple despite everything underneath. This is the real craft.</p>
+            </div>
+            <div class="pf-step">
+              <div class="pf-num">05</div>
+              <p class="pf-title">Stay Through Delivery</p>
+              <p class="pf-note">Dev review, QA, user testing, iteration. What ships matters more than what's in Figma.</p>
+            </div>
+          </div>
+
+          <!-- Mobile prev/next nav (hidden on desktop) -->
+          <div class="pf-mobile-nav">
+            <button class="pf-nav-btn" id="pf-prev" aria-label="Previous step">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <span class="pf-nav-counter" id="pf-counter">01 / 05</span>
+            <button class="pf-nav-btn" id="pf-next" aria-label="Next step">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+
+          <hr style="border:none;border-top:1px solid rgba(99,130,255,0.15);margin:32px 0;">
           <div class="sec-body">
-            <p>Embedded in a live product team. 8 people, multiple concurrent initiatives. The role was never just about producing screens.</p>
-            <p>My value was helping teams get clearer on the <em>right</em> problem before jumping to solutions. Asking uncomfortable questions in refinements, flagging when a quick fix had usability implications nobody spotted, holding the line when business pressure pushed the other way.</p>
-            <p>I owned end-to-end design on several key workstreams and contributed across others, from problem framing through to handoff.</p>
+            <p>Working within an agile product team, I contributed across initiatives spanning payments, operational tooling, account management, and workflow improvements.</p>
+            <p>My role covered the end-to-end design process — from research and ideation to collaboration, delivery support, testing, and iterative improvements. Beyond execution, I worked as a thinking partner alongside Product Owners, Business Analysts, engineers, System Analysts, and stakeholders to align user needs, business goals, and technical constraints.</p>
           </div>
         </div>
+
       </section>
 
       <div class="section-divider"></div>
 
-      <!-- PROCESS -->
-      <section id="process" class="cs-section fade-up">
+      <!-- RESEARCH -->
+      <section id="research" class="cs-section fade-up">
         <p class="sec-tag">
-          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7"/></svg></span>
-          Process
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg></span>
+          Research
         </p>
-        <h2 class="sec-heading fade-up delay-1">How I actually work</h2>
-        <p class="sec-body fade-up delay-2" style="max-width:560px;"><p style="font-size:17px;line-height:1.7;color:var(--gray-1);">Especially inside environments where the constraints are as complex as the problems.</p></p>
+        <h2 class="sec-heading fade-up delay-1">Understanding before designing</h2>
+        <div class="overview-card fade-up delay-2">
+          <img src="ChatGPT Image May 23, 2026, 07_19_38 PM.png" alt="Research process" style="width:80%;display:block;margin:0 auto 20px;border-radius:12px;">
+          <div class="sec-body">
+            <p>Research in enterprise banking is rarely straightforward. Access is limited, workflows are complex, and operational context matters as much as direct user feedback.</p>
+            <p>To validate decisions early, I combined stakeholder input, workflow analysis, usability reviews, and behavioural insights throughout the design process.</p>
+          </div>
+        </div>
 
-        <div class="process-diagrams">
 
-          <!-- Diagram 1: Constraint Stack -->
-          <div class="process-diagram-card fade-up delay-2">
-            <p class="pdc-label">01 / The Canvas</p>
+        <div class="cs-confidential-outer fade-up delay-3">
+          <div class="cs-confidential-wrap" id="researchBlur">
+            <img src="research-screenshot.png" alt="Research">
+            <div class="cs-blur-overlay"></div>
+            <div class="cs-ba-divider"></div>
+            <div class="cs-img-caption-glass">
+              <span class="cs-confidential-tag">🔒 Confidential</span>
+              <p>Research artefacts across the project — structured thinking and documentation that aligned teams and informed every design decision.</p>
+            </div>
+          </div>
+        </div>
+        <div class="rm-collab fade-up delay-4">
+          <p class="rm-collab-label">Collaborated with</p>
+          <div class="rm-collab-tags">
+            <span class="rm-collab-tag">Product Owners</span>
+            <span class="rm-collab-tag">Business Analysts</span>
+            <span class="rm-collab-tag">Engineers</span>
+            <span class="rm-collab-tag">Compliance Teams</span>
+            <span class="rm-collab-tag">Corporate Clients</span>
+            <span class="rm-collab-tag">Operations</span>
+            <span class="rm-collab-tag">Regional Markets</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- HOW I WORK -->
+      <section id="how-i-work" class="cs-section fade-up">
+        <p class="sec-tag">
+          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg></span>
+          How I Work
+        </p>
+        <h2 class="sec-heading fade-up delay-1">How I show up, every project.</h2>
+
+        <!-- Tab pills -->
+        <div class="hiw-tabs">
+          <button class="hiw-tab active" data-hiw="0">
+            <span class="hiw-tab-num">01</span>
+            <span class="hiw-tab-label">Agile Delivery</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
+          <button class="hiw-tab" data-hiw="1">
+            <span class="hiw-tab-num">02</span>
+            <span class="hiw-tab-label">Product Thinking</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
+          <button class="hiw-tab" data-hiw="2">
+            <span class="hiw-tab-num">03</span>
+            <span class="hiw-tab-label">Systems & Security</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
+          <button class="hiw-tab" data-hiw="3">
+            <span class="hiw-tab-num">04</span>
+            <span class="hiw-tab-label">Cross-Functional</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
+          <button class="hiw-tab" data-hiw="4">
+            <span class="hiw-tab-num">05</span>
+            <span class="hiw-tab-label">Validation</span>
+            <span class="hiw-tab-bar"></span>
+          </button>
+        </div>
+
+        <!-- Mobile carousel nav (top) -->
+        <div class="hiw-mobile-nav" id="hiw-mobile-nav" style="display:none;">
+          <button class="hiw-mobile-btn" id="hiw-prev">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <span class="hiw-mobile-counter" id="hiw-counter">01 / 05</span>
+          <button class="hiw-mobile-btn" id="hiw-next">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+
+        <!-- Content panels -->
+        <div class="hiw-content">
+          <div class="hiw-panel active" data-panel="0">
+            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>
+            <p class="hiw-number">01 / Agile Delivery</p>
+            <h4 class="hiw-title">Move fast. Stay intentional.</h4>
+            <p class="hiw-body">Working in agile environments meant balancing speed, quality, and delivery realities. The challenge was knowing what needed refinement immediately, what could iterate later, and communicating those decisions clearly across teams.</p>
+          </div>
+          <div class="hiw-panel" data-panel="1">
+            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></div>
+            <p class="hiw-number">02 / Product Thinking</p>
+            <h4 class="hiw-title">Design for confidence, not decoration.</h4>
+            <p class="hiw-body">Corporate banking users come to complete transactions quickly and accurately. Money naturally creates anxiety, so the goal was never to create flashy experiences, but clear, trustworthy, and low-friction ones.</p>
+            <p class="hiw-body" style="margin-top:12px;">I approached every workflow by asking what users needed to feel confident enough to move forward — whether through clearer hierarchy, simpler flows, better guidance, or reducing unnecessary cognitive load.</p>
+          </div>
+          <div class="hiw-panel" data-panel="2">
+            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
+            <p class="hiw-number">03 / Systems & Security</p>
+            <h4 class="hiw-title">Constraints are the brief.</h4>
             <div class="constraint-stack-wrap">
               <div class="cstack-copy">
-                <h3 class="cstack-title">Most designers work on a blank canvas. This is mine.</h3>
                 <p class="cstack-body">Every design decision lives inside these layers. The UX work isn't just about making things usable, it's making them usable <em>within</em> all of this.</p>
                 <div class="cstack-layers" id="cstack-layers">
                   <div class="cstack-layer-row">
@@ -1939,120 +2442,52 @@
                   </div>
                 </div>
               </div>
-              <div class="constraint-stack" id="constraint-stack">
-                <div class="cs-ring" data-idx="0"><span class="cs-ring-label"></span></div>
-                <div class="cs-ring" data-idx="1"><span class="cs-ring-label"></span></div>
-                <div class="cs-ring" data-idx="2"><span class="cs-ring-label"></span></div>
-                <div class="cs-ring" data-idx="3"><span class="cs-ring-label"></span></div>
-                <div class="cs-ring" data-idx="4"><span class="cs-ring-label">UX Layer</span></div>
-                <div class="cs-callout" id="cs-callout">
-                  <p class="cs-callout-name"></p>
-                  <p class="cs-callout-sub"></p>
-                </div>
+              <div class="cstack-img-wrap">
+                <img src="ChatGPT Image May 20, 2026, 10_11_20 PM.png" alt="Constraint layers diagram" class="cstack-diagram-img" />
               </div>
             </div>
-          </div>
-
-          <!-- Diagram 2: Process Flow -->
-          <div class="process-diagram-card fade-up delay-3">
-            <p class="pdc-label">02 / How a Problem Becomes a Screen</p>
-            <div class="process-flow" id="process-flow">
-              <div class="pf-step">
-                <div class="pf-num">01</div>
-                <p class="pf-title">Reframe the Brief</p>
-                <p class="pf-note">Business request ≠ design problem. I spend real time here before opening Figma.</p>
-              </div>
-              <div class="pf-step">
-                <div class="pf-num">02</div>
-                <p class="pf-title">Map the Constraints</p>
-                <p class="pf-note">Compliance, tech limits, existing patterns. Know the walls before you draw.</p>
-              </div>
-              <div class="pf-step">
-                <div class="pf-num">03</div>
-                <p class="pf-title">Sketch the Logic</p>
-                <p class="pf-note">Flows and decisions first. Whiteboards and rough sketches before any UI.</p>
-              </div>
-              <div class="pf-step">
-                <div class="pf-num">04</div>
-                <p class="pf-title">Design Within It</p>
-                <p class="pf-note">Make it feel simple despite everything underneath. This is the real craft.</p>
-              </div>
-              <div class="pf-step">
-                <div class="pf-num">05</div>
-                <p class="pf-title">Stay Through Delivery</p>
-                <p class="pf-note">Dev review, QA, iteration. What ships matters more than what's in Figma.</p>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      <div class="section-divider"></div>
-
-      <!-- HOW I WORK -->
-      <section id="how-i-work" class="cs-section fade-up">
-        <p class="sec-tag">
-          <span class="sec-tag-icon"><svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg></span>
-          How I Work
-        </p>
-        <h2 class="sec-heading fade-up delay-1">Four things that define how I operate</h2>
-
-        <!-- Tab pills -->
-        <div class="hiw-tabs">
-          <button class="hiw-tab active" data-hiw="0">
-            <span class="hiw-tab-num">01</span>
-            <span class="hiw-tab-label">Agile Delivery</span>
-            <span class="hiw-tab-bar"></span>
-          </button>
-          <button class="hiw-tab" data-hiw="1">
-            <span class="hiw-tab-num">02</span>
-            <span class="hiw-tab-label">Product Thinking</span>
-            <span class="hiw-tab-bar"></span>
-          </button>
-          <button class="hiw-tab" data-hiw="2">
-            <span class="hiw-tab-num">03</span>
-            <span class="hiw-tab-label">Systems & Security</span>
-            <span class="hiw-tab-bar"></span>
-          </button>
-          <button class="hiw-tab" data-hiw="3">
-            <span class="hiw-tab-num">04</span>
-            <span class="hiw-tab-label">Cross-Functional</span>
-            <span class="hiw-tab-bar"></span>
-          </button>
-        </div>
-
-        <!-- Content panels -->
-        <div class="hiw-content">
-          <div class="hiw-panel active" data-panel="0">
-            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg></div>
-            <p class="hiw-number">01 / Agile Delivery</p>
-            <h4 class="hiw-title">Ship fast. Don't cut corners.</h4>
-            <p class="hiw-body">The skill isn't speed, it's knowing what needs to be right before a sprint ends and what can wait. I make that call quickly and communicate it clearly. Fast without sacrificing quality.</p>
-          </div>
-          <div class="hiw-panel" data-panel="1">
-            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg></div>
-            <p class="hiw-number">02 / Product Thinking</p>
-            <h4 class="hiw-title">Start with the problem, not the brief.</h4>
-            <p class="hiw-body">The most valuable thing a designer can do isn't design the solution, it's challenge whether you're solving the right problem. I regularly reframed requests before opening Figma. That pushback either sharpened the brief or saved the team from building the wrong thing entirely.</p>
-          </div>
-          <div class="hiw-panel" data-panel="2">
-            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg></div>
-            <p class="hiw-number">03 / Systems & Security</p>
-            <h4 class="hiw-title">Constraints are the brief.</h4>
-            <p class="hiw-body">Compliance, security protocols, legacy systems. Most designers never encounter these. I stopped treating them as blockers early on. The real craft is making something feel simple <em>despite</em> everything underneath. Constraints don't kill creativity, they shape it.</p>
           </div>
           <div class="hiw-panel" data-panel="3">
             <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
             <p class="hiw-number">04 / Cross-Functional</p>
-            <h4 class="hiw-title">Design as a shared language.</h4>
-            <p class="hiw-body">Daily work with POs, BAs, engineers, and senior stakeholders, each with a different definition of "good." My job was translation. Sometimes a quick sketch in a meeting does more than a polished Figma file. Getting everyone to see the same problem is half the work.</p>
+            <h4 class="hiw-title">Better ideas come from shared thinking.</h4>
+            <div class="hiw-cf-grid">
+              <div class="hiw-cf-text">
+                <p class="hiw-body">The work was highly collaborative, involving regular discussions with Product Owners, Business Analysts, engineers, and stakeholders across different markets and operational teams.</p>
+                <p class="hiw-body" style="margin-top:12px;">A large part of the role was aligning perspectives, challenging assumptions, and shaping solutions together early before moving into delivery. Often, quick conversations, whiteboarding sessions, and collaborative ideation helped uncover better product decisions than working in isolation.</p>
+              </div>
+              <div class="hiw-cf-img">
+                <img src="ChatGPT Image May 23, 2026, 10_16_30 PM.png" alt="Cross-functional collaboration" style="width:100%;height:auto;display:block;border-radius:12px;mix-blend-mode:multiply;" />
+              </div>
+            </div>
+          </div>
+          <div class="hiw-panel" data-panel="4">
+            <div class="hiw-icon"><svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+            <p class="hiw-number">05 / Validation</p>
+            <h4 class="hiw-title">Design doesn't end at handoff.</h4>
+            <p class="hiw-body">In a platform where errors have real financial consequences, validation wasn't a phase at the end — it ran alongside design from the moment a flow took shape.</p>
+            <div style="display:flex;flex-direction:column;gap:8px;margin-top:16px;">
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-2);min-width:28px;padding-top:1px;">01</span>
+                <div><p style="font-size:13px;font-weight:600;color:var(--black);margin-bottom:2px;">Moderated Usability Testing</p><p style="font-size:13px;color:var(--gray-1);line-height:1.6;">Task-based sessions with corporate users and proxies. If a user hesitated, that was a signal.</p></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-2);min-width:28px;padding-top:1px;">02</span>
+                <div><p style="font-size:13px;font-weight:600;color:var(--black);margin-bottom:2px;">A/B Testing</p><p style="font-size:13px;color:var(--gray-1);line-height:1.6;">Tested layout and flow variants to validate design decisions with real usage data before full rollout.</p></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-2);min-width:28px;padding-top:1px;">03</span>
+                <div><p style="font-size:13px;font-weight:600;color:var(--black);margin-bottom:2px;">User Acceptance Testing</p><p style="font-size:13px;color:var(--gray-1);line-height:1.6;">Validated designs with stakeholders and compliance teams. UAT was an alignment checkpoint, not just sign-off.</p></div>
+              </div>
+              <div style="display:flex;gap:10px;align-items:flex-start;">
+                <span style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gray-2);min-width:28px;padding-top:1px;">04</span>
+                <div><p style="font-size:13px;font-weight:600;color:var(--black);margin-bottom:2px;">Design QA</p><p style="font-size:13px;color:var(--gray-1);line-height:1.6;">Reviewed built screens against Figma specs during sprint demos. Flagged deviations before they reached production.</p></div>
+              </div>
+            </div>
           </div>
         </div>
 
       </section>
-
-      <div class="section-divider"></div>
 
       <!-- KEY INITIATIVES -->
       <section id="initiatives" class="cs-section fade-up">
@@ -2068,21 +2503,53 @@
           <div class="initiatives-sticky-left">
             <div class="initiatives-img-wrap">
               <div class="init-img active" data-project="pay">
-                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
-                Image coming soon
+                <div class="pay-stack">
+                  <div class="pay-frame">
+                    <div class="vasa-chrome">
+                      <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                    </div>
+                    <img src="1280 CR IDB-326428 UOBSend Promo message_Finalised.png" alt="UOB Send Promo" />
+                  </div>
+                </div>
               </div>
               <div class="init-img" data-project="vasa">
-                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
-                Image coming soon
+                <div class="vasa-stack">
+                  <div class="vasa-frame vasa-frame-back">
+                    <div class="vasa-chrome">
+                      <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                    </div>
+                    <img src="1280_VASA_Create New SA_Input_Add SA.png" alt="Create Sub-Account" />
+                  </div>
+                  <div class="vasa-frame vasa-frame-front">
+                    <div class="vasa-chrome">
+                      <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                    </div>
+                    <img src="1280_VASA_SA Module_Successful Tab.png" alt="SA Module" />
+                  </div>
+                </div>
               </div>
               <div class="init-img" data-project="agile">
-                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
-                Image coming soon
+                <div class="pay-stack">
+                  <div class="pay-frame">
+                    <div class="vasa-chrome">
+                      <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                    </div>
+                    <img src="1280_CR IDB-57105 Enhance pagination logic_Approval Status@2x.png" alt="Approval Status" />
+                  </div>
+                </div>
               </div>
               <div class="init-img" data-project="fraud">
-                <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
-                Image coming soon
+                <div class="pay-stack">
+                  <div class="pay-frame">
+                    <div class="vasa-chrome">
+                      <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                    </div>
+                    <img src="1280_Fraud Detection and Response_Dashboard with Filters applied@2x.png" alt="Fraud Dashboard" />
+                  </div>
+                </div>
               </div>
+              <div class="init-img-confidential">🔒 Confidential</div>
+              <div class="init-img-disclaimer">All figures, account names, and data shown are illustrative mock values used for design purposes only.</div>
             </div>
             <div class="init-dots">
               <div class="init-dot active" data-project="pay"></div>
@@ -2198,9 +2665,15 @@
         <div class="init-mobile-cards">
 
           <div class="init-mobile-card">
-            <div class="init-mobile-img">
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
-              <span>Image coming soon</span>
+            <div class="init-mobile-img" style="background:linear-gradient(148deg,#0a1744 0%,#0f2a86 38%,#1848b8 62%,#0d1f70 100%);position:relative;overflow:hidden;">
+              <div style="position:absolute;width:78%;left:50%;margin-left:-39%;top:20px;background:#fff;border-radius:8px 8px 0 0;padding:6px 6px 0;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+                <div class="vasa-chrome" style="display:flex;gap:3px;padding-bottom:4px;">
+                  <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                </div>
+                <img src="1280 CR IDB-326428 UOBSend Promo message_Finalised.png" alt="UOB Send Promo" style="width:100%;height:auto;display:block;border-radius:2px 2px 0 0;" />
+              </div>
+              <div class="init-img-confidential">🔒 Confidential</div>
+              <div class="init-img-disclaimer">All figures, account names, and data shown are illustrative mock values used for design purposes only.</div>
             </div>
             <div class="init-mobile-body">
               <p class="init-counter">01 / 04</p>
@@ -2218,9 +2691,23 @@
           </div>
 
           <div class="init-mobile-card">
-            <div class="init-mobile-img">
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
-              <span>Image coming soon</span>
+            <div class="init-mobile-img" style="background:linear-gradient(148deg,#0a1744 0%,#0f2a86 38%,#1848b8 62%,#0d1f70 100%);position:relative;overflow:hidden;">
+              <div class="vasa-stack-mobile">
+                <div class="vasa-frame-mobile vasa-frame-mobile-back">
+                  <div class="vasa-chrome" style="display:flex;gap:3px;padding-bottom:4px;">
+                    <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                  </div>
+                  <img src="1280_VASA_Create New SA_Input_Add SA.png" alt="Create Sub-Account" />
+                </div>
+                <div class="vasa-frame-mobile vasa-frame-mobile-front">
+                  <div class="vasa-chrome" style="display:flex;gap:3px;padding-bottom:4px;">
+                    <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                  </div>
+                  <img src="1280_VASA_SA Module_Successful Tab.png" alt="SA Module" />
+                </div>
+              </div>
+              <div class="init-img-confidential">🔒 Confidential</div>
+              <div class="init-img-disclaimer">All figures, account names, and data shown are illustrative mock values used for design purposes only.</div>
             </div>
             <div class="init-mobile-body">
               <p class="init-counter">02 / 04</p>
@@ -2238,9 +2725,15 @@
           </div>
 
           <div class="init-mobile-card">
-            <div class="init-mobile-img">
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
-              <span>Image coming soon</span>
+            <div class="init-mobile-img" style="background:linear-gradient(148deg,#0a1744 0%,#0f2a86 38%,#1848b8 62%,#0d1f70 100%);position:relative;overflow:hidden;">
+              <div style="position:absolute;width:78%;left:50%;margin-left:-39%;top:20px;background:#fff;border-radius:8px 8px 0 0;padding:6px 6px 0;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+                <div class="vasa-chrome" style="display:flex;gap:3px;padding-bottom:4px;">
+                  <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                </div>
+                <img src="1280_CR IDB-57105 Enhance pagination logic_Approval Status@2x.png" alt="Approval Status" style="width:100%;height:auto;display:block;border-radius:2px 2px 0 0;" />
+              </div>
+              <div class="init-img-confidential">🔒 Confidential</div>
+              <div class="init-img-disclaimer">All figures, account names, and data shown are illustrative mock values used for design purposes only.</div>
             </div>
             <div class="init-mobile-body">
               <p class="init-counter">03 / 04</p>
@@ -2258,9 +2751,15 @@
           </div>
 
           <div class="init-mobile-card">
-            <div class="init-mobile-img">
-              <svg width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="14" rx="2"/><path stroke-linecap="round" d="M8 21h8M12 17v4"/></svg>
-              <span>Image coming soon</span>
+            <div class="init-mobile-img" style="background:linear-gradient(148deg,#0a1744 0%,#0f2a86 38%,#1848b8 62%,#0d1f70 100%);position:relative;overflow:hidden;">
+              <div style="position:absolute;width:78%;left:50%;margin-left:-39%;top:20px;background:#fff;border-radius:8px 8px 0 0;padding:6px 6px 0;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.3);">
+                <div class="vasa-chrome" style="display:flex;gap:3px;padding-bottom:4px;">
+                  <span class="vasa-dot"></span><span class="vasa-dot"></span><span class="vasa-dot"></span>
+                </div>
+                <img src="1280_Fraud Detection and Response_Dashboard with Filters applied@2x.png" alt="Fraud Dashboard" style="width:100%;height:auto;display:block;border-radius:2px 2px 0 0;" />
+              </div>
+              <div class="init-img-confidential">🔒 Confidential</div>
+              <div class="init-img-disclaimer">All figures, account names, and data shown are illustrative mock values used for design purposes only.</div>
             </div>
             <div class="init-mobile-body">
               <p class="init-counter">04 / 04</p>
@@ -2505,37 +3004,70 @@
 
     // ── HERO FRAME — pop on hover handled by CSS ──
 
-    // ── HOW I WORK — auto-cycling tabs ──
+    // ── HOW I WORK — tabs (desktop) + carousel (mobile) ──
     (function () {
-      const tabs   = document.querySelectorAll('.hiw-tab');
-      const panels = document.querySelectorAll('.hiw-panel');
-      if (!tabs.length) return;
+      const tabs    = document.querySelectorAll('.hiw-tab');
+      const panels  = document.querySelectorAll('.hiw-panel');
+      const mobileNav = document.getElementById('hiw-mobile-nav');
+      const prevBtn   = document.getElementById('hiw-prev');
+      const nextBtn   = document.getElementById('hiw-next');
+      const counter   = document.getElementById('hiw-counter');
+      if (!panels.length) return;
       let current = 0;
-      let timer;
+
+      const isMobile = () => window.innerWidth <= 480;
 
       function activate(idx) {
-        tabs[current].classList.remove('active');
-        panels[current].classList.remove('active');
-        current = idx;
-        // Restart bar animation
-        const bar = tabs[current].querySelector('.hiw-tab-bar');
-        bar.style.animation = 'none';
-        bar.offsetHeight; // force reflow
-        bar.style.animation = '';
-        tabs[current].classList.add('active');
-        panels[current].classList.add('active');
+        if (!isMobile()) {
+          // Desktop: tab-based
+          tabs[current].classList.remove('active');
+          panels[current].classList.remove('active');
+          panels[current].style.display = 'none';
+          current = idx;
+          panels[current].style.display = '';
+          tabs[current].classList.add('active');
+          panels[current].classList.add('active');
+        } else {
+          // Mobile: carousel
+          panels[current].classList.remove('hiw-mobile-active');
+          current = idx;
+          panels[current].classList.add('hiw-mobile-active');
+          counter.textContent = String(current + 1).padStart(2,'0') + ' / ' + String(panels.length).padStart(2,'0');
+          prevBtn.disabled = current === 0;
+          nextBtn.disabled = current === panels.length - 1;
+        }
       }
 
-      function startTimer() {
-        clearInterval(timer);
-        timer = setInterval(() => activate((current + 1) % tabs.length), 3000);
+      function initMode() {
+        if (isMobile()) {
+          // Hide all, show first, show nav
+          panels.forEach(p => { p.classList.remove('active'); p.classList.remove('hiw-mobile-active'); });
+          panels[current].classList.add('hiw-mobile-active');
+          if (mobileNav) mobileNav.style.display = 'flex';
+          counter.textContent = '01 / ' + String(panels.length).padStart(2,'0');
+          prevBtn.disabled = true;
+          nextBtn.disabled = panels.length <= 1;
+        } else {
+          // Desktop: show first panel active, hide nav
+          panels.forEach((p, i) => {
+            p.classList.remove('hiw-mobile-active');
+            p.style.display = i === current ? '' : 'none';
+          });
+          if (!document.querySelector('.hiw-panel.active')) panels[0].classList.add('active');
+          if (tabs.length) tabs[0].classList.add('active');
+          if (mobileNav) mobileNav.style.display = 'none';
+        }
       }
 
       tabs.forEach((tab, i) => {
-        tab.addEventListener('click', () => { activate(i); startTimer(); });
+        tab.addEventListener('click', () => activate(i));
       });
 
-      startTimer();
+      if (prevBtn) prevBtn.addEventListener('click', () => { if (current > 0) activate(current - 1); });
+      if (nextBtn) nextBtn.addEventListener('click', () => { if (current < panels.length - 1) activate(current + 1); });
+
+      initMode();
+      window.addEventListener('resize', initMode);
     })();
 
     // ── HERO HOVER CIRCLES ──
@@ -2615,6 +3147,37 @@
 
       hero.addEventListener('mouseenter', spawnCircles);
       hero.addEventListener('mouseleave', removeCircles);
+    })();
+
+    // Blur overlay on scroll into view
+    const blurEl = document.getElementById('researchBlur');
+    if (blurEl) {
+      const blurObs = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+          setTimeout(() => blurEl.classList.add('animated'), 300);
+          blurObs.disconnect();
+        }
+      }, { threshold: 0.2 });
+      blurObs.observe(blurEl);
+    }
+
+    // Mobile process-flow stepper carousel
+    (function () {
+      const steps   = Array.from(document.querySelectorAll('#process-flow .pf-step'));
+      const prevBtn = document.getElementById('pf-prev');
+      const nextBtn = document.getElementById('pf-next');
+      const counter = document.getElementById('pf-counter');
+      if (!prevBtn || !steps.length) return;
+      let cur = 0;
+      function render() {
+        steps.forEach((s, i) => s.classList.toggle('pf-active', i === cur));
+        counter.textContent = String(cur + 1).padStart(2,'0') + ' / ' + String(steps.length).padStart(2,'0');
+        prevBtn.disabled = cur === 0;
+        nextBtn.disabled = cur === steps.length - 1;
+      }
+      prevBtn.addEventListener('click', () => { if (cur > 0) { cur--; render(); } });
+      nextBtn.addEventListener('click', () => { if (cur < steps.length - 1) { cur++; render(); } });
+      render();
     })();
   </script>
   <div id="site-footer"></div>
