@@ -1014,6 +1014,83 @@
       .pc-uob:hover .pc-uob-sf-right2 { animation: none !important; }
     }
 
+    /* ─── CURIOUSCORE THUMBNAIL SCENE ─── */
+    .pc-cc .pc-img {
+      overflow: hidden;
+      background: linear-gradient(148deg, #0c2051 0%, #1546a0 42%, #e8620c 78%, #f07820 100%);
+    }
+    .pc-cc:hover .pc-cc-sf img { transform: none; } /* suppress generic scale on side panels only */
+    .pc-cc-frame-wrap {
+      position: absolute;
+      top: 48px; left: 14px; right: 14px;
+      transform-origin: top center;
+      transform: scale(0.60);
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      z-index: 2;
+    }
+    .pc-cc:hover .pc-cc-frame-wrap { transform: scale(0.70); }
+    .pc-cc-frame { background: #fff; border-radius: 10px 10px 0 0; padding: 9px 9px 0; overflow: hidden; }
+    .pc-cc-chrome { display: flex; align-items: center; gap: 4px; padding-bottom: 8px; }
+    .pc-cc-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .pc-cc-dot:nth-child(1) { background: #ff5f57; }
+    .pc-cc-dot:nth-child(2) { background: #febc2e; }
+    .pc-cc-dot:nth-child(3) { background: #28c840; }
+    .pc-cc-main-img {
+      width: 100%; height: auto;
+      display: block;
+      border-radius: 4px 4px 0 0;
+      transform: translateY(0);
+    }
+    /* Return to top — faster */
+    .pc-cc .pc-img .pc-cc-main-img { transition: transform 3s ease-out; }
+    /* Scroll down on hover — very slow */
+    .pc-cc:hover .pc-img .pc-cc-main-img { transition: transform 40s linear; }
+    .pc-cc:hover .pc-cc-frame .pc-cc-main-img { transform: translateY(-35%); }
+    .pc-cc-sf {
+      position: absolute;
+      background: #fff;
+      border-radius: 7px; padding: 2px;
+      overflow: hidden; z-index: 3;
+      opacity: 0; pointer-events: none;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.35), 0 3px 10px rgba(0,0,0,0.12);
+      transition: opacity 0.3s ease, transform 0.35s ease;
+    }
+    .pc-cc-sf img { width: 100%; height: auto; display: block; border-radius: 3px; }
+    .pc-cc-sf-right1 { width: 200px; top: 20px; right: 14px; transform: scale(0.9) translateY(-14px); }
+    .pc-cc-sf-left   { width: 168px; top: 155px; left: 14px; transform: scale(0.9) translateX(-14px); }
+    .pc-cc:hover .pc-cc-sf { pointer-events: auto; }
+    .pc-cc:hover .pc-cc-sf-right1 {
+      animation: pcCcPopTop 0.5s cubic-bezier(0.16,1,0.3,1) 0.08s both,
+                 pcCcFloatRight 2.6s ease-in-out 0.58s infinite;
+    }
+    .pc-cc:hover .pc-cc-sf-left {
+      animation: pcCcPopLeft 0.55s cubic-bezier(0.16,1,0.3,1) 0.15s both,
+                 pcCcFloatLeft 3.4s ease-in-out 0.65s infinite;
+    }
+    @keyframes pcCcPopTop  { from { opacity:0; transform: scale(0.9) translateY(-14px); } to { opacity:1; transform: scale(1) translateY(0); } }
+    @keyframes pcCcPopLeft { from { opacity:0; transform: scale(0.9) translateX(-14px); } to { opacity:1; transform: scale(1) translateX(0); } }
+    @keyframes pcCcFloatRight { 0%,100% { transform: scale(1) translateY(0); } 50% { transform: scale(1) translateY(-5px); } }
+    @keyframes pcCcFloatLeft  { 0% { transform:scale(1) translate(0,0); } 40% { transform:scale(1) translate(-3px,-6px); } 75% { transform:scale(1) translate(2px,-3px); } 100% { transform:scale(1) translate(0,0); } }
+    @media (max-width: 900px) { .pc-cc-sf { display: none; } }
+    @media (max-width: 480px) {
+      .pc-cc-frame-wrap { top: 28px; transform: scale(0.78) !important; }
+      .pc-cc:hover .pc-cc-frame-wrap { transform: scale(0.78) !important; }
+      .pc-cc-frame { padding: 5px 5px 0; }
+      .pc-cc-chrome { padding-bottom: 4px; gap: 3px; }
+      .pc-cc-dot { width: 5px; height: 5px; }
+
+      /* Side panels — visible by default, no animation */
+      .pc-cc-sf { display: block; opacity: 1 !important; animation: none !important; pointer-events: none; }
+      .pc-cc-sf-right1 { transform: scale(1) translateY(0) !important; width: 115px; top: 22px; right: 10px; }
+      .pc-cc-sf-left   { transform: scale(1) translateX(0) !important; width: 95px;  top: 145px; left: 10px; }
+
+      /* No scroll, no hover effects on touch */
+      .pc-cc:hover .pc-cc-frame .pc-cc-main-img { transform: translateY(0) !important; }
+      .pc-cc:hover .pc-img .pc-cc-main-img       { transition: none !important; }
+      .pc-cc:hover .pc-cc-sf-right1,
+      .pc-cc:hover .pc-cc-sf-left { animation: none !important; }
+    }
+
     /* Project card — title top, image bottom */
     .proj-card {
       background: var(--card-bg);
@@ -1914,11 +1991,26 @@
         </a>
 
         <!-- CuriousCore -->
-        <a href="curiouscore.html" class="pc fade-up" style="transition-delay:0.1s">
+        <a href="curiouscore.html" class="pc pc-cc fade-up" style="transition-delay:0.1s">
           <div class="pc-hole"></div>
           <span class="pc-num">NO. 02</span>
           <div class="pc-img">
-            <img src="https://static.wixstatic.com/media/c66d1c_9eb2eb4975694a7a9154dc9f83a79a78~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/OS971A1.jpg" alt="CuriousCore" loading="lazy" />
+            <div class="pc-cc-sf pc-cc-sf-right1">
+              <img src="Screenshot%202026-06-01%20at%205.50.54%20PM.png" alt="CuriousCore courses" />
+            </div>
+            <div class="pc-cc-sf pc-cc-sf-left">
+              <img src="Screenshot%202026-06-01%20at%205.50.49%20PM.png" alt="CuriousCore skills" />
+            </div>
+            <div class="pc-cc-frame-wrap">
+              <div class="pc-cc-frame">
+                <div class="pc-cc-chrome">
+                  <span class="pc-cc-dot"></span>
+                  <span class="pc-cc-dot"></span>
+                  <span class="pc-cc-dot"></span>
+                </div>
+                <img src="Frame%201204.jpg" alt="CuriousCore website" class="pc-cc-main-img" loading="lazy" />
+              </div>
+            </div>
             <div class="pc-img-dim"></div>
           </div>
           <div class="pc-body">
