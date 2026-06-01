@@ -38,15 +38,13 @@
     }
     .footer-tagline {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: clamp(7px, 1.5vw, 26px);
+      font-size: clamp(20px, 2.5vw, 32px);
       font-weight: 600;
       letter-spacing: -0.8px;
       line-height: 1.2;
       color: #fff;
       margin-bottom: 16px;
-      white-space: nowrap;
     }
-    .footer-left { min-width: 0; overflow: hidden; }
     .footer-type-cursor {
       display: inline-block;
       width: 2px;
@@ -127,7 +125,7 @@
     }
     @media (max-width: 768px) {
       .footer-inner { grid-template-columns: 1fr; gap: 28px; padding: 36px 24px 20px; }
-      .footer-tagline { font-size: clamp(7px, 4vw, 18px); letter-spacing: -0.5px; }
+      .footer-tagline { font-size: 22px; letter-spacing: -0.5px; }
       .footer-bottom { padding: 14px 24px 24px; flex-direction: column; align-items: flex-start; gap: 4px; }
     }
   `;
