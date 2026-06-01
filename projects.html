@@ -22,6 +22,7 @@
       --lime:    #c5f135;
       --nav-h:   80px;
       --radius:  20px;
+      --lavender:#B2B0FC;
     }
 
     html { scroll-behavior: smooth; }
@@ -171,98 +172,342 @@
       box-shadow: none;
     }
 
-    /* ─── PROJECTS GRID ─── */
-    .projects-grid {
+    /* ─── PROJECT CARDS ─── */
+    .proj-grid-v2 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-      perspective: 1000px;
+      gap: 24px;
+      margin-top: 32px;
+      align-items: start;
     }
 
-    /* ─── PROJECT CARD ─── */
-    .proj-card {
-      background: var(--card-bg);
-      border-radius: var(--radius);
-      overflow: hidden;
+    /* Card shell */
+    .pc {
+      background: #f5f4ef;
+      border-radius: 22px;
+      padding: 16px 24px 22px;
       text-decoration: none;
-      color: inherit;
-      display: flex;
-      flex-direction: column;
-      transition: transform 0.08s ease, box-shadow 0.3s ease;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-      will-change: transform;
-      transform-style: preserve-3d;
-      position: relative;
-    }
-    .proj-card:hover { box-shadow: 0 24px 60px rgba(0,0,0,0.13); }
-
-    .proj-text { padding: 72px 32px 24px; }
-    .proj-company { font-size: 15px; font-weight: 500; color: var(--gray-2); margin-bottom: 10px; }
-    .proj-title {
-      font-size: clamp(20px, 2.2vw, 27px);
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      line-height: 1.3;
-      margin-bottom: 14px;
       color: var(--black);
+      display: block;
+      position: relative;
+      transition: box-shadow 0.3s ease, transform 0.25s ease;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      cursor: none;
+      z-index: 1;
     }
-    .proj-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
-    .pill {
+    .pc:hover {
+      box-shadow: 0 14px 44px rgba(0,0,0,0.12);
+      transform: translateY(-4px);
+      z-index: 10;
+    }
+
+    /* Punch-hole */
+    .pc-hole {
+      position: absolute;
+      top: 18px; left: 18px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid rgba(0,0,0,0.13);
+      background: rgba(255,255,255,0.55);
+    }
+
+    /* Card number */
+    .pc-num {
+      position: absolute;
+      top: 20px; right: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: rgba(0,0,0,0.25);
+      font-family: 'Inter', monospace;
+    }
+
+    /* Nested image */
+    .pc-img {
+      position: relative;
+      border-radius: 14px;
+      overflow: hidden;
+      height: 320px;
+      margin-top: 44px;
+    }
+    .pc-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s ease;
+      display: block;
+    }
+    .pc:hover .pc-img img { transform: scale(1.04); }
+
+    .pc-img-dim {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      border-radius: 14px;
+      transition: background 0.3s ease;
+    }
+    .pc:hover .pc-img-dim { background: rgba(0,0,0,0.15); }
+
+    /* Cursor pill */
+    .pc-cursor-pill {
+      position: fixed;
+      pointer-events: none;
+      z-index: 99999;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.7);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .pc-cursor-pill.visible {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .pc-cursor-pill-inner {
+      background: var(--lavender);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+      padding: 11px 24px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    /* Body below image */
+    .pc-body { padding: 18px 6px 4px; }
+
+    .pc-title-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+    .pc-brand {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 22px;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--black);
+      flex: 1;
+    }
+    .pc-tags {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 5px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .pc-tag {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      background: rgba(178,176,252,0.25);
+      color: #6060a8;
+      padding: 5px 12px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .pc-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-1);
+      line-height: 1.5;
+      margin-bottom: 0;
+    }
+
+    /* Expandable section */
+    .pc-expand {
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: max-height 0.4s ease, opacity 0.3s ease 0.05s;
+    }
+    .pc:hover .pc-expand {
+      max-height: 220px;
+      opacity: 1;
+    }
+    .pc-divider {
+      border: none;
+      border-top: 1px dashed rgba(0,0,0,0.13);
+      margin: 14px 0 12px;
+    }
+    .pc-desc {
+      font-size: 13px;
+      color: var(--gray-1);
+      line-height: 1.65;
+      margin-bottom: 12px;
+    }
+    .pc-meta-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 7px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    .pc-meta-label {
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gray-2);
+      width: 92px;
+      flex-shrink: 0;
+      font-size: 10px;
+      padding-top: 1px;
+    }
+    .pc-meta-val {
+      color: var(--black);
+      font-weight: 500;
+    }
+
+    @media (max-width: 700px) { .proj-grid-v2 { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) {
+      .pc-expand { max-height: 300px; opacity: 1; }
+    }
+
+    /* ─── UOB THUMBNAIL SCENE ─── */
+    .pc-uob .pc-img {
+      overflow: hidden;
+      background: linear-gradient(148deg, #0a1744 0%, #0f2a86 38%, #1848b8 62%, #0d1f70 100%);
+    }
+    .pc-uob:hover .pc-img img { transform: none; }
+    .pc-uob-nda-pill {
+      position: absolute;
+      top: 14px; left: 14px;
+      z-index: 6;
       display: inline-flex; align-items: center; gap: 5px;
-      font-size: 13px; font-weight: 600; padding: 6px 14px; border-radius: 100px;
+      padding: 5px 10px;
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      font-size: 10px; font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      letter-spacing: 0.3px;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
     }
-    .pill-blue   { background: #e8eeff; color: #1f4bff; }
-    .pill-orange { background: #fff0eb; color: #d95a26; }
-    .pill-green  { background: #edfdf4; color: #16a34a; }
-    .pill-purple { background: #f3eeff; color: #7c3aed; }
-
-    .proj-meta {
-      position: absolute; top: 32px; left: 32px;
-      display: flex; align-items: center; gap: 6px;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase;
-      color: #16a34a; background: rgba(22,163,74,0.1);
-      padding: 5px 11px; border-radius: 100px; z-index: 2;
+    .pc-uob:hover .pc-uob-nda-pill { opacity: 1; transform: translateY(0); }
+    .pc-uob-disclaimer {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 6;
+      padding: 8px 12px;
+      background: rgba(0,0,0,0.45);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      font-size: 10px; font-weight: 500;
+      color: rgba(255,255,255,0.7);
+      letter-spacing: 0.3px;
+      text-align: center; line-height: 1.4;
     }
-    .proj-meta::before {
-      content: ''; width: 6px; height: 6px; border-radius: 50%; background: #16a34a;
+    .pc-uob-frame-wrap {
+      position: absolute;
+      top: 48px; left: 14px; right: 14px;
+      transform-origin: top center;
+      transform: scale(0.60);
+      transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+      z-index: 2;
     }
-
-    .proj-img {
-      flex: 1; min-height: 220px; overflow: hidden;
-      background: var(--page-bg); position: relative;
+    .pc-uob:hover .pc-uob-frame-wrap { transform: scale(0.70); }
+    .pc-uob-frame {
+      background: #ffffff;
+      border-radius: 10px 10px 0 0;
+      padding: 9px 9px 0;
     }
-    .proj-img img {
-      width: 100%; height: 100%; object-fit: cover; object-position: top;
-      display: block; transition: transform 0.5s ease;
+    .pc-uob-chrome { display: flex; align-items: center; gap: 4px; padding-bottom: 8px; }
+    .pc-uob-dot { width: 7px; height: 7px; border-radius: 50%; }
+    .pc-uob-dot:nth-child(1) { background: #ff5f57; }
+    .pc-uob-dot:nth-child(2) { background: #febc2e; }
+    .pc-uob-dot:nth-child(3) { background: #28c840; }
+    .pc-uob-main-img {
+      width: 100%; height: 290px;
+      object-fit: cover; object-position: top center;
+      display: block; border-radius: 4px 4px 0 0;
     }
-    .proj-card:hover .proj-img img { transform: scale(1.04); }
-
-    /* Wide card */
-    .proj-card.wide { grid-column: span 2; flex-direction: row; min-height: 320px; }
-    .proj-card.wide .proj-meta { left: 40px; top: 32px; }
-    .proj-card.wide .proj-text {
-      flex: 0 0 50%; padding: 76px 40px 24px;
-      display: flex; flex-direction: column; justify-content: space-between;
+    .pc-uob-sf {
+      position: absolute;
+      background: #ffffff;
+      border-radius: 7px; padding: 2px;
+      overflow: hidden; z-index: 3;
+      opacity: 0; pointer-events: none;
+      box-shadow: 0 10px 32px rgba(0,0,0,0.35), 0 3px 10px rgba(0,0,0,0.12);
+      transition: opacity 0.3s ease, transform 0.35s ease;
     }
-    .proj-card.wide .proj-img { flex: 1; min-height: unset; }
-    .proj-card.wide.dark { background: var(--black); }
-    .proj-card.wide.dark .proj-company { color: rgba(255,255,255,0.35); }
-    .proj-card.wide.dark .proj-title { color: #f2f3f5; }
-    .proj-card.wide.dark .proj-meta { background: rgba(22,163,74,0.18); color: #4ade80; }
-    .proj-card.wide.dark .proj-meta::before { background: #4ade80; }
-    .proj-card.wide.dark .pill-blue,
-    .proj-card.wide.dark .pill-orange,
-    .proj-card.wide.dark .pill-green,
-    .proj-card.wide.dark .pill-purple { background: rgba(31,75,255,0.22); color: #748fff; }
-
-    /* ─── CARD META (Role + Timeframe rows) ─── */
-    .proj-card-info { margin-top: 14px; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 14px; display: flex; flex-direction: column; gap: 6px; }
-    .proj-card.wide.dark .proj-card-info { border-top-color: rgba(255,255,255,0.1); }
-    .proj-card-info-row { display: flex; align-items: baseline; gap: 10px; font-size: 13px; }
-    .proj-card-info-label { font-weight: 600; color: var(--gray-2); min-width: 72px; }
-    .proj-card-info-val { color: var(--black); font-weight: 500; }
-    .proj-card.wide.dark .proj-card-info-label { color: rgba(255,255,255,0.4); }
-    .proj-card.wide.dark .proj-card-info-val { color: rgba(255,255,255,0.85); }
+    .pc-uob-sf img { width: 100%; height: auto; display: block; border-radius: 3px; }
+    .pc-uob-sf-left {
+      width: 80px; top: 60px; left: 36px;
+      background: none; padding: 0; box-shadow: none;
+      filter: drop-shadow(0 8px 20px rgba(0,0,0,0.55));
+      transform: scale(0.9) translateX(-16px);
+    }
+    .pc-uob-sf-left img { mix-blend-mode: multiply; border-radius: 0; }
+    .pc-uob-sf-right1 { width: 148px; top: 24px; right: 20px; transform: scale(0.9) translateY(-14px); }
+    .pc-uob-sf-right2 { width: 114px; top: 148px; right: 20px; transform: scale(0.9) translateY(14px); }
+    .pc-uob:hover .pc-uob-sf { pointer-events: auto; }
+    .pc-uob:hover .pc-uob-sf-left {
+      animation: pcUobPopLeft 0.55s cubic-bezier(0.16,1,0.3,1) both,
+                 pcUobFloatMobile 3.4s ease-in-out 0.55s infinite;
+    }
+    .pc-uob:hover .pc-uob-sf-right1 {
+      animation: pcUobPopTop 0.5s cubic-bezier(0.16,1,0.3,1) 0.08s both,
+                 pcUobFloatStepper 2.6s ease-in-out 0.58s infinite;
+    }
+    .pc-uob:hover .pc-uob-sf-right2 {
+      animation: pcUobPopBottom 0.5s cubic-bezier(0.16,1,0.3,1) 0.15s both,
+                 pcUobFloatChart 3.8s ease-in-out 0.65s infinite;
+    }
+    @keyframes pcUobPopLeft {
+      from { opacity: 0; transform: scale(0.9) translateX(-16px); }
+      to   { opacity: 1; transform: scale(1) translateX(0); }
+    }
+    @keyframes pcUobPopTop {
+      from { opacity: 0; transform: scale(0.9) translateY(-14px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes pcUobPopBottom {
+      from { opacity: 0; transform: scale(0.9) translateY(14px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    @keyframes pcUobFloatMobile {
+      0%   { transform: scale(1) translate(0,0); }
+      30%  { transform: scale(1) translate(-3px,-7px); }
+      65%  { transform: scale(1) translate(3px,-4px); }
+      100% { transform: scale(1) translate(0,0); }
+    }
+    @keyframes pcUobFloatStepper {
+      0%, 100% { transform: scale(1) translateY(0); }
+      50%       { transform: scale(1) translateY(-5px); }
+    }
+    @keyframes pcUobFloatChart {
+      0%   { transform: scale(1) translate(0,0); }
+      40%  { transform: scale(1) translate(4px,-6px); }
+      75%  { transform: scale(1) translate(-2px,-3px); }
+      100% { transform: scale(1) translate(0,0); }
+    }
+    @media (max-width: 900px) {
+      .pc-uob-sf { display: none; }
+      .pc-uob-main-img { height: 220px; }
+    }
+    @media (max-width: 480px) {
+      .pc-uob-frame-wrap { top: 28px; transform: scale(0.78) !important; }
+      .pc-uob:hover .pc-uob-frame-wrap { transform: scale(0.78) !important; }
+      .pc-uob-frame { padding: 5px 5px 0; }
+      .pc-uob-chrome { padding-bottom: 4px; gap: 3px; }
+      .pc-uob-dot { width: 5px; height: 5px; }
+      .pc-uob-main-img { height: 260px; }
+      .pc-uob-sf { display: block; opacity: 1 !important; animation: none !important; pointer-events: none; }
+      .pc-uob-sf-left  { transform: scale(1) translateX(0) !important; width: 68px; top: 44px; left: 10px; }
+      .pc-uob-sf-right1 { transform: scale(1) translateY(0) !important; width: 120px; top: 30px; right: 10px; }
+      .pc-uob-sf-right2 { transform: scale(1) translateY(0) !important; width: 92px; top: 148px; right: 10px; }
+      .pc-uob:hover .pc-uob-sf-left,
+      .pc-uob:hover .pc-uob-sf-right1,
+      .pc-uob:hover .pc-uob-sf-right2 { animation: none !important; }
+    }
 
     /* ─── FADE-UP ─── */
     .fade-up { opacity: 0; transform: translateY(28px); will-change: opacity, transform; transition: opacity 0.6s ease, transform 0.6s ease; }
@@ -274,16 +519,13 @@
       .nav-center { display: none; }
       .hamburger { display: flex; }
       .page-wrap { padding: calc(var(--nav-h) + 32px) 16px 60px; }
-      .projects-grid { grid-template-columns: 1fr; gap: 16px; }
-      .proj-card.wide { grid-column: span 1; flex-direction: column; }
-      .proj-card.wide .proj-img { min-height: 260px; }
-      .proj-img { min-height: 220px; }
-      .proj-meta { position: static; margin: 20px 0 16px 20px; align-self: flex-start; }
-      .proj-card.wide .proj-meta { left: unset; }
-      .proj-text { padding: 20px 20px 24px; }
-      .proj-card.wide .proj-text { padding: 20px 20px 24px; }
-      .proj-title { font-size: 20px; }
-    }  50%{transform:rotate(-28deg)} }
+      .proj-grid-v2 { grid-template-columns: 1fr; gap: 14px; }
+      .pc { padding: 14px 14px 18px; border-radius: 18px; }
+      .pc-img { height: 200px; margin-top: 36px; }
+      .pc-brand { font-size: 18px; }
+      .pc-subtitle { font-size: 13px; }
+      .pc-tag { font-size: 8px; }
+    }
   </style>
 </head>
 <body>
@@ -330,136 +572,162 @@
     </div>
 
     <!-- PROJECTS GRID -->
-    <div class="projects-grid">
+    <div class="proj-grid-v2">
 
-      <!-- UOB — Wide dark card -->
-      <a href="uob.html" class="proj-card wide dark fade-up" style="transition-delay:0.05s">
-        <span class="proj-meta">Shipped</span>
-        <div class="proj-text">
-          <div>
-            <p class="proj-company">UOB Singapore</p>
-            <h3 class="proj-title">Evolving user experiences within corporate digital banking</h3>
-            <div class="proj-pills">
-              <span class="pill pill-blue">UX Design</span>
-              <span class="pill pill-blue">Banking</span>
-            </div>
-            <div class="proj-card-info">
-              <div class="proj-card-info-row"><span class="proj-card-info-label">Role</span><span class="proj-card-info-val">Product Designer</span></div>
-              <div class="proj-card-info-row"><span class="proj-card-info-label">Timeframe</span><span class="proj-card-info-val">2023 – Present</span></div>
-            </div>
-            <span class="nda-note" style="margin-top:14px;">
-              <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
-              Content under NDA
-            </span>
+      <!-- UOB -->
+      <a href="uob.html" class="pc pc-uob fade-up" style="transition-delay:0.05s">
+        <div class="pc-hole"></div>
+        <span class="pc-num">NO. 01</span>
+        <div class="pc-img">
+          <div class="pc-uob-sf pc-uob-sf-left">
+            <img src="14_1.png" alt="UOB mobile screen" />
           </div>
+          <div class="pc-uob-sf pc-uob-sf-right1">
+            <img src="Frame%205690.png" alt="UOB journey stepper" />
+          </div>
+          <div class="pc-uob-sf pc-uob-sf-right2">
+            <img src="Frame%205691.png" alt="UOB balance chart" />
+          </div>
+          <div class="pc-uob-frame-wrap">
+            <div class="pc-uob-frame">
+              <div class="pc-uob-chrome">
+                <span class="pc-uob-dot"></span>
+                <span class="pc-uob-dot"></span>
+                <span class="pc-uob-dot"></span>
+              </div>
+              <img
+                src="1280_UOBSend17_Dashboard%20Favourite%20Functions_My%20Tasks_Single%20(1).png"
+                alt="UOB Infinity Dashboard"
+                class="pc-uob-main-img"
+                loading="lazy"
+              />
+            </div>
+          </div>
+          <div class="pc-img-dim"></div>
+          <div class="pc-uob-nda-pill">
+            <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            Content under NDA
+          </div>
+          <p class="pc-uob-disclaimer">All screens show mock data. No real values.</p>
         </div>
-        <div class="proj-img">
-          <img
-            src="https://static.wixstatic.com/media/c66d1c_d55378b47ae941f4b8df54724ecf3c83~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/Infinity%20Guide%20Template%20-%20Section%20mockup%20image%20(1).jpg"
-            alt="UOB Singapore corporate digital banking"
-            loading="lazy"
-          />
+        <div class="pc-body">
+          <div class="pc-title-row">
+            <h3 class="pc-brand">UOB Singapore</h3>
+            <div class="pc-tags">
+              <span class="pc-tag">UX Design</span>
+              <span class="pc-tag">Shipped</span>
+            </div>
+          </div>
+          <p class="pc-subtitle">Evolving user experiences within corporate digital banking</p>
+          <div class="pc-expand">
+            <hr class="pc-divider" />
+            <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">Product Designer</span></div>
+            <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">2023 – Present</span></div>
+          </div>
         </div>
       </a>
 
       <!-- CuriousCore -->
-      <a href="curiouscore.html" class="proj-card fade-up" style="transition-delay:0.1s">
-        <span class="proj-meta">Shipped</span>
-        <div class="proj-text">
-          <p class="proj-company">CuriousCore</p>
-          <h3 class="proj-title">Increasing customer confidence and sales</h3>
-          <div class="proj-pills">
-            <span class="pill pill-orange">EdTech</span>
-            <span class="pill pill-orange">Conversion</span>
-          </div>
-          <div class="proj-card-info">
-            <div class="proj-card-info-row"><span class="proj-card-info-label">Role</span><span class="proj-card-info-val">Product Designer</span></div>
-            <div class="proj-card-info-row"><span class="proj-card-info-label">Timeframe</span><span class="proj-card-info-val">1 year</span></div>
-          </div>
+      <a href="curiouscore.html" class="pc fade-up" style="transition-delay:0.1s">
+        <div class="pc-hole"></div>
+        <span class="pc-num">NO. 02</span>
+        <div class="pc-img">
+          <img src="https://static.wixstatic.com/media/c66d1c_9eb2eb4975694a7a9154dc9f83a79a78~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/OS971A1.jpg" alt="CuriousCore" loading="lazy" />
+          <div class="pc-img-dim"></div>
         </div>
-        <div class="proj-img">
-          <img
-            src="https://static.wixstatic.com/media/c66d1c_9eb2eb4975694a7a9154dc9f83a79a78~mv2.jpg/v1/fill/w_900,h_560,al_c,q_90,enc_avif/OS971A1.jpg"
-            alt="CuriousCore customer confidence"
-            loading="lazy"
-          />
+        <div class="pc-body">
+          <div class="pc-title-row">
+            <h3 class="pc-brand">CuriousCore</h3>
+            <div class="pc-tags">
+              <span class="pc-tag">EdTech</span>
+              <span class="pc-tag">Shipped</span>
+            </div>
+          </div>
+          <p class="pc-subtitle">Increasing customer confidence and sales</p>
+          <div class="pc-expand">
+            <hr class="pc-divider" />
+            <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">Product Designer</span></div>
+            <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">1 year</span></div>
+          </div>
         </div>
       </a>
 
       <!-- Nutrition Clinic -->
-      <a href="nutritionClinic.html" class="proj-card fade-up" style="transition-delay:0.15s">
-        <span class="proj-meta">Shipped</span>
-        <div class="proj-text">
-          <p class="proj-company">The Nutrition Clinic</p>
-          <h3 class="proj-title">Creating a product to improve Singaporeans' sleep</h3>
-          <div class="proj-pills">
-            <span class="pill pill-green">HealthTech</span>
-            <span class="pill pill-green">Product Design</span>
-          </div>
-          <div class="proj-card-info">
-            <div class="proj-card-info-row"><span class="proj-card-info-label">Role</span><span class="proj-card-info-val">Product Designer</span></div>
-            <div class="proj-card-info-row"><span class="proj-card-info-label">Timeframe</span><span class="proj-card-info-val">3 months</span></div>
-          </div>
+      <a href="nutritionClinic.html" class="pc fade-up" style="transition-delay:0.15s">
+        <div class="pc-hole"></div>
+        <span class="pc-num">NO. 03</span>
+        <div class="pc-img">
+          <img src="https://static.wixstatic.com/media/c66d1c_2bcf3e5eb9de487bbf4f1e97f30a1d14~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/cover.png" alt="The Nutrition Clinic" loading="lazy" />
+          <div class="pc-img-dim"></div>
         </div>
-        <div class="proj-img">
-          <img
-            src="https://static.wixstatic.com/media/c66d1c_2bcf3e5eb9de487bbf4f1e97f30a1d14~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/cover.png"
-            alt="Nutrition Clinic sleep product"
-            loading="lazy"
-          />
+        <div class="pc-body">
+          <div class="pc-title-row">
+            <h3 class="pc-brand">The Nutrition Clinic</h3>
+            <div class="pc-tags">
+              <span class="pc-tag">HealthTech</span>
+              <span class="pc-tag">Shipped</span>
+            </div>
+          </div>
+          <p class="pc-subtitle">Creating a product to improve Singaporeans' sleep</p>
+          <div class="pc-expand">
+            <hr class="pc-divider" />
+            <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">Product Designer</span></div>
+            <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">3 months</span></div>
+          </div>
         </div>
       </a>
 
       <!-- AirAsia -->
-      <a href="airasia.html" class="proj-card fade-up" style="transition-delay:0.2s">
-        <span class="proj-meta">Shipped</span>
-        <div class="proj-text">
-          <p class="proj-company">AirAsia</p>
-          <h3 class="proj-title">Optimising the check-in flow for passengers</h3>
-          <div class="proj-pills">
-            <span class="pill pill-purple">Travel</span>
-            <span class="pill pill-purple">UX Research</span>
-          </div>
-          <div class="proj-card-info">
-            <div class="proj-card-info-row"><span class="proj-card-info-label">Role</span><span class="proj-card-info-val">Product Designer</span></div>
-            <div class="proj-card-info-row"><span class="proj-card-info-label">Timeframe</span><span class="proj-card-info-val">3 months</span></div>
-          </div>
+      <a href="airasia.html" class="pc fade-up" style="transition-delay:0.2s">
+        <div class="pc-hole"></div>
+        <span class="pc-num">NO. 04</span>
+        <div class="pc-img">
+          <img src="https://static.wixstatic.com/media/c66d1c_80bc44bf073f444a8606515a559786cf~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/thumbnail.png" alt="AirAsia" loading="lazy" />
+          <div class="pc-img-dim"></div>
         </div>
-        <div class="proj-img">
-          <img
-            src="https://static.wixstatic.com/media/c66d1c_80bc44bf073f444a8606515a559786cf~mv2.png/v1/fill/w_900,h_560,al_c,q_90,enc_avif/thumbnail.png"
-            alt="AirAsia check-in flow"
-            loading="lazy"
-          />
+        <div class="pc-body">
+          <div class="pc-title-row">
+            <h3 class="pc-brand">AirAsia</h3>
+            <div class="pc-tags">
+              <span class="pc-tag">Travel</span>
+              <span class="pc-tag">Shipped</span>
+            </div>
+          </div>
+          <p class="pc-subtitle">Optimising the check-in flow for passengers</p>
+          <div class="pc-expand">
+            <hr class="pc-divider" />
+            <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">Product Designer</span></div>
+            <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">3 months</span></div>
+          </div>
         </div>
       </a>
 
       <!-- Her Velvet Vase -->
-      <a href="her-velvet-vase.html" class="proj-card fade-up" style="transition-delay:0.25s">
-        <span class="proj-meta">Research</span>
-        <div class="proj-text">
-          <p class="proj-company">Her Velvet Vase</p>
-          <h3 class="proj-title">From browse to buy — fixing the checkout experience</h3>
-          <div class="proj-pills">
-            <span class="pill pill-blue">E-Commerce</span>
-            <span class="pill pill-blue">UX Research</span>
-            <span class="pill pill-blue">Wireframing</span>
-          </div>
-          <div class="proj-card-info">
-            <div class="proj-card-info-row"><span class="proj-card-info-label">Role</span><span class="proj-card-info-val">Product Designer</span></div>
-            <div class="proj-card-info-row"><span class="proj-card-info-label">Timeframe</span><span class="proj-card-info-val">3 months</span></div>
-          </div>
+      <a href="her-velvet-vase.html" class="pc fade-up" style="transition-delay:0.25s">
+        <div class="pc-hole"></div>
+        <span class="pc-num">NO. 05</span>
+        <div class="pc-img">
+          <img src="https://static.wixstatic.com/media/c66d1c_3512807ccd6e440cbffb6ea2686da0a9~mv2.png" alt="Her Velvet Vase" loading="lazy" />
+          <div class="pc-img-dim"></div>
         </div>
-        <div class="proj-img">
-          <img
-            src="https://static.wixstatic.com/media/c66d1c_3512807ccd6e440cbffb6ea2686da0a9~mv2.png"
-            alt="Her Velvet Vase cart abandonment research"
-            loading="lazy"
-          />
+        <div class="pc-body">
+          <div class="pc-title-row">
+            <h3 class="pc-brand">Her Velvet Vase</h3>
+            <div class="pc-tags">
+              <span class="pc-tag">E-Commerce</span>
+              <span class="pc-tag">Research</span>
+            </div>
+          </div>
+          <p class="pc-subtitle">From browse to buy — fixing the checkout experience</p>
+          <div class="pc-expand">
+            <hr class="pc-divider" />
+            <div class="pc-meta-row"><span class="pc-meta-label">Role</span><span class="pc-meta-val">Product Designer</span></div>
+            <div class="pc-meta-row"><span class="pc-meta-label">Timeframe</span><span class="pc-meta-val">3 months</span></div>
+          </div>
         </div>
       </a>
 
-    </div><!-- end projects-grid -->
+    </div><!-- end proj-grid-v2 -->
 
   </div><!-- end page-wrap -->
 
