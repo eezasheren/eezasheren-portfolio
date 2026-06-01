@@ -832,6 +832,15 @@
     @media (max-width: 700px) { .proj-grid-v2 { grid-template-columns: 1fr; } }
     @media (max-width: 480px) {
       .pc-expand { max-height: 300px; opacity: 1; }
+
+      /* Tags above brand on mobile — same as work page */
+      .proj-grid-v2 .pc .pc-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .proj-grid-v2 .pc .pc-tags { order: -1; }
+      .proj-grid-v2 .pc .pc-brand { font-size: 20px; }
     }
 
     /* ─── UOB THUMBNAIL SCENE ─── */
