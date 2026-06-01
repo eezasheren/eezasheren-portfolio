@@ -3031,6 +3031,7 @@
           // Mobile: carousel
           panels[current].classList.remove('hiw-mobile-active');
           current = idx;
+          panels[current].style.display = ''; // clear any inline style set by desktop mode
           panels[current].classList.add('hiw-mobile-active');
           counter.textContent = String(current + 1).padStart(2,'0') + ' / ' + String(panels.length).padStart(2,'0');
           prevBtn.disabled = current === 0;
@@ -3041,7 +3042,11 @@
       function initMode() {
         if (isMobile()) {
           // Hide all, show first, show nav
-          panels.forEach(p => { p.classList.remove('active'); p.classList.remove('hiw-mobile-active'); });
+          panels.forEach(p => {
+            p.classList.remove('active');
+            p.classList.remove('hiw-mobile-active');
+            p.style.display = ''; // clear any inline display:none from desktop mode
+          });
           panels[current].classList.add('hiw-mobile-active');
           if (mobileNav) mobileNav.style.display = 'flex';
           counter.textContent = '01 / ' + String(panels.length).padStart(2,'0');
