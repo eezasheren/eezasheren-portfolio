@@ -149,7 +149,7 @@
       font-size: 16px;
       color: var(--gray-1);
       line-height: 1.7;
-      max-width: 480px;
+      max-width: 720px;
     }
 
     /* ─── NDA NOTE ─── */
@@ -362,10 +362,50 @@
       font-weight: 500;
     }
 
-    @media (max-width: 700px) { .proj-grid-v2 { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) {
+      /* ── Horizontal scroll-snap carousel on mobile ── */
+      .proj-grid-v2 {
+        display: flex;
+        flex-direction: row;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 14px;
+        padding: 8px 20px 28px;
+        margin: 0 -16px;
+        scrollbar-width: none;
+        align-items: start;
+      }
+      .proj-grid-v2::-webkit-scrollbar { display: none; }
+      .proj-grid-v2 .pc {
+        flex-shrink: 0;
+        width: 80vw;
+        scroll-snap-align: start;
+        transform: none !important; /* remove tilts on mobile */
+      }
+      .proj-grid-v2 .pc:first-child { margin-left: 0; }
+      .proj-grid-v2 .pc:last-child  { margin-right: 20px; }
+
+      /* Tags above brand on mobile */
+      .proj-grid-v2 .pc .pc-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+      .proj-grid-v2 .pc .pc-tags { order: -1; }
+      .proj-grid-v2 .pc .pc-brand { font-size: 20px; }
+    }
     @media (max-width: 480px) {
       .pc-expand { max-height: 300px; opacity: 1; }
     }
+
+    /* ─── CARD TILT — each card leans slightly, hovers back to straight ─── */
+    .proj-grid-v2 .pc:nth-child(1) { transform: rotate(-1.8deg); }
+    .proj-grid-v2 .pc:nth-child(2) { transform: rotate(2.2deg); }
+    .proj-grid-v2 .pc:nth-child(3) { transform: rotate(1.4deg); }
+    .proj-grid-v2 .pc:nth-child(4) { transform: rotate(-2deg); }
+    .proj-grid-v2 .pc:nth-child(5) { transform: rotate(1.6deg); }
+    .proj-grid-v2 .pc:hover       { transform: rotate(0deg) translateY(-4px) !important; }
 
     /* ─── UOB THUMBNAIL SCENE ─── */
     .pc-uob .pc-img {
