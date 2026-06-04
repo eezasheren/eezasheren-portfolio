@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Playground — Eeza Sheren</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&family=Cormorant+Garant:ital,wght@1,400;1,600;1,700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar: 64px;
+      --black: #1a1d21;
+      --gray: #6b7280;
+      --cream: #f5f0e8;
+      --lime: #c5f135;
+      --teal: #065B5C;
+    }
+
+    html, body {
+      height: 100%; overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── SKY ─── */
+    .pg-sky {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 800px 380px at 8% 18%,  rgba(255,255,255,0.94) 0%, rgba(255,255,255,0.55) 35%, transparent 68%),
+        radial-gradient(ellipse 560px 260px at 22% 10%,  rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.4)  40%, transparent 65%),
+        radial-gradient(ellipse 480px 220px at 72% 8%,   rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.5)  38%, transparent 65%),
+        radial-gradient(ellipse 700px 300px at 88% 32%,  rgba(255,255,255,0.82) 0%, rgba(255,255,255,0.38) 42%, transparent 70%),
+        radial-gradient(ellipse 600px 280px at 55% 52%,  rgba(255,255,255,0.72) 0%, transparent            62%),
+        radial-gradient(ellipse 950px 380px at 28% 82%,  rgba(255,255,255,0.88) 0%, rgba(255,255,255,0.42) 45%, transparent 70%),
+        radial-gradient(ellipse 420px 200px at 68% 78%,  rgba(255,255,255,0.72) 0%, transparent            58%),
+        radial-gradient(ellipse 380px 180px at 42% 38%,  rgba(255,255,255,0.6)  0%, transparent            55%),
+        linear-gradient(to bottom, #3d8fb8 0%, #55a5ce 12%, #72bbde 28%, #91ceec 44%, #acdcf2 58%, #c5e8f7 72%, #d9f0fb 84%, #eaf5fd 100%);
+    }
+
+    /* ─── GLASS SIDEBAR ─── */
+    .pg-sidebar {
+      position: fixed; left: 0; top: 0; bottom: 0;
+      width: var(--sidebar);
+      background: rgba(255,255,255,0.25);
+      backdrop-filter: blur(28px) saturate(180%);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      border-right: 1px solid rgba(255,255,255,0.5);
+      z-index: 200;
+      display: flex; flex-direction: column;
+      align-items: center;
+      padding: 16px 0 20px;
+    }
+
+    .pg-sb-top {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 4px; width: 100%;
+    }
+
+    .pg-sb-btn {
+      width: 38px; height: 38px; border-radius: 10px;
+      border: none; background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: rgba(26,29,33,0.5);
+      transition: background 0.18s, color 0.18s;
+      text-decoration: none; flex-shrink: 0;
+    }
+    .pg-sb-btn:hover { background: rgba(255,255,255,0.65); color: var(--black); }
+    .pg-sb-btn svg { width: 16px; height: 16px; }
+
+    .pg-sb-divider {
+      width: 24px; height: 1px;
+      background: rgba(0,0,0,0.1); margin: 8px 0;
+    }
+
+    .pg-sb-label {
+      flex: 1;
+      display: flex; align-items: center; justify-content: center;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 9px; font-weight: 800; letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: rgba(26,29,33,0.3);
+      user-select: none;
+    }
+
+    .pg-sb-logo {
+      position: relative;
+      width: 100%; height: 90px;
+      flex-shrink: 0;
+      text-decoration: none;
+      display: block;
+      overflow: hidden;
+    }
+    .pg-sb-logo img {
+      position: absolute;
+      top: 50%; left: 50%;
+      height: 22px; width: auto;
+      transform: translate(-50%, -50%) rotate(-90deg);
+    }
+
+    /* Info tooltip */
+    .pg-sb-info-tip {
+      position: fixed;
+      left: calc(var(--sidebar) + 10px);
+      top: 56px;
+      background: rgba(20,23,28,0.93);
+      backdrop-filter: blur(10px);
+      color: #fff; padding: 11px 14px;
+      border-radius: 10px;
+      font-size: 12px; line-height: 1.7; max-width: 190px;
+      z-index: 300; opacity: 0; pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      transform: translateX(-6px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    }
+    .pg-sb-info-tip.visible { opacity: 1; pointer-events: auto; transform: translateX(0); }
+    .pg-sb-info-tip::before {
+      content: ''; position: absolute; left: -4px; top: 14px;
+      width: 8px; height: 8px;
+      background: rgba(20,23,28,0.93);
+      transform: rotate(45deg); border-radius: 1px;
+    }
+
+    /* ─── FIXED TITLE ─── */
+    .pg-title-fixed {
+      position: fixed;
+      left: calc(var(--sidebar) + 36px);
+      top: 48px;
+      z-index: 60;
+      pointer-events: none;
+    }
+    .pg-title-fixed .pg-tag {
+      font-size: 9px; font-weight: 700; letter-spacing: 2.8px;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 9px;
+      display: flex; align-items: center; gap: 7px;
+    }
+    .pg-title-fixed .pg-tag::before {
+      content: ''; display: block;
+      width: 16px; height: 1.5px; background: var(--teal);
+    }
+    .pg-title-fixed h1 {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: clamp(36px, 3.2vw, 54px);
+      font-weight: 800; letter-spacing: -3px;
+      line-height: 0.9; color: var(--black);
+    }
+    .pg-title-fixed h1 em {
+      font-family: 'Cormorant Garant', serif;
+      font-style: italic; font-weight: 600;
+      letter-spacing: -2px; color: var(--teal);
+    }
+    .pg-title-fixed p {
+      font-size: 12px; color: rgba(26,29,33,0.48);
+      margin-top: 11px; max-width: 200px; line-height: 1.65;
+    }
+
+    /* ─── CANVAS ─── */
+    .pg-scroll-wrap {
+      position: fixed;
+      top: 0; left: var(--sidebar); right: 0; bottom: 0;
+      overflow: scroll; cursor: grab; z-index: 1;
+    }
+    .pg-scroll-wrap:active { cursor: grabbing; }
+    .pg-scroll-wrap::-webkit-scrollbar { display: none; }
+    .pg-scroll-wrap { scrollbar-width: none; }
+
+    .pg-canvas { position: relative; width: 3000px; height: 2200px; }
+
+    /* drag hint */
+    .pg-drag-hint {
+      position: absolute; bottom: 40px; left: 50%;
+      transform: translateX(-50%);
+      display: flex; align-items: center; gap: 9px;
+      background: rgba(26,29,33,0.62);
+      backdrop-filter: blur(10px);
+      color: #fff; border-radius: 100px;
+      padding: 9px 18px; font-size: 12px; font-weight: 500;
+      letter-spacing: 0.2px; pointer-events: none;
+      opacity: 1; transition: opacity 1s ease; white-space: nowrap;
+    }
+    .pg-drag-hint.hidden { opacity: 0; }
+
+    /* ─── FOLDER CARDS ─── */
+    .pg-folder {
+      position: absolute; cursor: pointer; user-select: none;
+    }
+    .pg-folder:hover { z-index: 80 !important; }
+    .pg-folder:hover .pg-folder-tab,
+    .pg-folder:hover .pg-folder-body {
+      transform: translateY(-6px);
+    }
+    .pg-folder:hover .pg-folder-body {
+      box-shadow: 0 28px 70px rgba(0,0,0,0.30), 0 6px 20px rgba(0,0,0,0.14);
+    }
+
+    .pg-folder-tab {
+      height: 20px; width: 80px;
+      border-radius: 8px 8px 0 0;
+      background: var(--tab-color, #1a1d21);
+      display: flex; align-items: center; padding: 0 10px;
+      font-size: 8px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: rgba(255,255,255,0.75);
+      transition: transform 0.28s cubic-bezier(0.34,1.4,0.64,1);
+      position: relative; z-index: 1;
+    }
+
+    .pg-folder-body {
+      border-radius: 0 10px 10px 10px;
+      overflow: hidden;
+      width: 195px; height: 148px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.18), 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.28s cubic-bezier(0.34,1.4,0.64,1),
+                  box-shadow 0.28s ease;
+      position: relative;
+    }
+
+    .pg-folder-label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 9px 11px;
+      background: linear-gradient(to top, rgba(0,0,0,0.68) 0%, transparent 100%);
+    }
+    .pg-folder-label .cat {
+      font-size: 7px; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: rgba(255,255,255,0.6);
+      display: block; margin-bottom: 2px;
+    }
+    .pg-folder-label .name {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 12px; font-weight: 700; color: #fff; line-height: 1.15; display: block;
+    }
+
+    /* ─── PLACEHOLDER INNER STYLES ─── */
+    .ph {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .ph-text {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      text-align: center; line-height: 0.9;
+    }
+
+    .ph-minimed { background: linear-gradient(135deg, #065B5C 0%, #0a8a8c 55%, #0fb8ba 100%); }
+    .ph-minimed .ph-text { font-size: 36px; font-weight: 800; color: rgba(255,255,255,0.95); letter-spacing: -2px; }
+    .ph-minimed .ph-pill { position: absolute; bottom: 14px; right: 14px; width: 30px; height: 13px; border-radius: 8px; background: rgba(197,241,53,0.85); }
+
+    .ph-era { background: linear-gradient(155deg, #1a0a00 0%, #5c2a00 45%, #c47a1e 100%); }
+    .ph-era .ph-text { font-family: 'Cormorant Garant', serif; font-style: italic; font-size: 56px; font-weight: 700; color: rgba(255,215,100,0.95); letter-spacing: -2px; line-height: 1; }
+
+    .ph-curiouscore { background: linear-gradient(135deg, #1a3a20 0%, #2d5a32 55%, #1f6b3c 100%); }
+    .ph-curiouscore .ph-text { font-family: 'Cormorant Garant', serif; font-size: 22px; font-style: italic; color: rgba(255,255,255,0.9); padding: 16px; line-height: 1.3; }
+
+    .ph-type { background: #0e0e12; }
+    .ph-type .ph-text { font-size: 38px; font-weight: 800; color: #fff; letter-spacing: -2px; }
+    .ph-type .ph-accent { position: absolute; bottom: 0; left: 0; right: 0; height: 5px; background: var(--lime); }
+
+    .ph-brand { background: #fff; flex-direction: column; gap: 8px; padding: 16px; align-items: flex-start; }
+    .ph-brand .ph-logo { width: 34px; height: 34px; background: #1a1d21; border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .ph-brand .ph-logo span { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 15px; color: #fff; }
+    .ph-brand .ph-wordmark { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 800; font-size: 17px; letter-spacing: -0.5px; color: #1a1d21; }
+    .ph-brand .ph-swatches { display: flex; gap: 5px; margin-top: auto; }
+    .ph-brand .ph-swatch { width: 20px; height: 20px; border-radius: 5px; }
+
+    .ph-wellness { background: linear-gradient(135deg, #1a3a20 0%, #2d5a32 60%, #0d2e14 100%); }
+    .ph-wellness .ph-text { font-family: 'Cormorant Garant', serif; font-size: 20px; font-style: italic; color: rgba(255,255,255,0.9); padding: 16px; line-height: 1.35; }
+
+    .ph-ions { background: #111; }
+    .ph-ions .ph-text { font-size: 50px; font-weight: 800; color: var(--lime); letter-spacing: -2px; }
+
+    .ph-homeland { background: linear-gradient(135deg, #1a0533 0%, #3b0e6e 65%, #5c1a8a 100%); }
+    .ph-homeland .ph-text { font-size: 32px; font-weight: 800; color: #fff; letter-spacing: -1.5px; }
+
+    .ph-funk { background: #0a3d2e; }
+    .ph-funk .ph-text { font-size: 30px; font-weight: 800; color: var(--lime); letter-spacing: -1px; }
+
+    .ph-aiflow { background: linear-gradient(135deg, #0c2051 0%, #1546a0 55%, #065B5C 100%); }
+    .ph-aiflow .ph-text { font-size: 34px; font-weight: 800; color: rgba(255,255,255,0.92); letter-spacing: -1.5px; }
+
+    .ph-studio { background: linear-gradient(135deg, #7c3aed 0%, #c026d3 100%); }
+    .ph-studio .ph-text { font-family: 'Cormorant Garant', serif; font-style: italic; font-size: 40px; font-weight: 700; color: rgba(255,255,255,0.95); letter-spacing: -1px; line-height: 1; }
+
+    .ph-henry { background: linear-gradient(135deg, #ff5c35 0%, #ff9a00 100%); }
+    .ph-henry .ph-text { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -1px; }
+
+    /* ─── COUNTER ─── */
+    .pg-counter {
+      position: fixed; right: 22px; bottom: 22px; z-index: 100;
+      font-size: 10px; font-weight: 700; letter-spacing: 1.2px;
+      color: rgba(26,29,33,0.38);
+      font-family: 'Bricolage Grotesque', sans-serif; text-transform: uppercase;
+    }
+
+    /* ─── MODAL ─── */
+    .pg-modal-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(8,12,18,0.7);
+      backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.28s ease;
+    }
+    .pg-modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+    .pg-modal {
+      background: #fff; border-radius: 20px;
+      width: 100%; max-width: 820px; max-height: 90vh;
+      overflow: hidden; display: flex; flex-direction: column;
+      box-shadow: 0 48px 128px rgba(0,0,0,0.38), 0 8px 32px rgba(0,0,0,0.16);
+      transform: translateY(18px) scale(0.97);
+      transition: transform 0.32s cubic-bezier(0.34,1.2,0.64,1);
+    }
+    .pg-modal-overlay.open .pg-modal { transform: translateY(0) scale(1); }
+
+    /* Header */
+    .pg-modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid rgba(0,0,0,0.07);
+      flex-shrink: 0;
+    }
+    .pg-modal-meta {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .pg-modal-cat {
+      font-size: 9px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--teal);
+      background: rgba(6,91,92,0.08);
+      padding: 4px 10px; border-radius: 100px;
+    }
+    .pg-modal-year {
+      font-size: 11px; font-weight: 500; color: var(--gray);
+    }
+    .pg-modal-close {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: none; background: #f0f0f0; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s; color: var(--black);
+    }
+    .pg-modal-close:hover { background: #e2e2e2; }
+    .pg-modal-close svg { width: 13px; height: 13px; }
+
+    /* Scrollable body */
+    .pg-modal-body { overflow-y: auto; flex: 1; }
+    .pg-modal-body::-webkit-scrollbar { width: 4px; }
+    .pg-modal-body::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.14); border-radius: 2px; }
+
+    /* Hero banner */
+    .pg-modal-hero {
+      width: 100%; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; flex-shrink: 0;
+    }
+    .pg-modal-hero .ph-text {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 52px; font-weight: 800; letter-spacing: -2.5px;
+      text-align: center; line-height: 0.9;
+    }
+
+    /* Content */
+    .pg-modal-content { padding: 24px 24px 28px; }
+    .pg-modal-title {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 28px; font-weight: 800; letter-spacing: -1.2px;
+      color: var(--black); margin-bottom: 5px;
+    }
+    .pg-modal-tagline {
+      font-size: 13px; color: var(--gray); margin-bottom: 22px; line-height: 1.55;
+    }
+
+    .pg-modal-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 22px;
+    }
+    .pg-modal-section { }
+    .pg-modal-section-label {
+      font-size: 8px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--teal);
+      margin-bottom: 7px; display: block;
+    }
+    .pg-modal-section-text {
+      font-size: 13px; color: rgba(26,29,33,0.72); line-height: 1.72;
+    }
+
+    /* Gallery */
+    .pg-modal-gallery {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px;
+    }
+    .pg-modal-gallery-img {
+      border-radius: 9px; overflow: hidden;
+      aspect-ratio: 16 / 10; background: #f0f0f0;
+    }
+    .pg-modal-gallery-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .pg-modal-gallery-img.ph-blank {
+      opacity: 0.28;
+    }
+
+    /* Tags */
+    .pg-modal-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .pg-modal-tag {
+      font-size: 11px; font-weight: 600; padding: 4px 11px;
+      border-radius: 100px; background: rgba(6,91,92,0.07); color: var(--teal);
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .pg-scroll-wrap { left: 0; }
+      .pg-sidebar { display: none; }
+      .pg-canvas { width: 1800px; height: 1600px; }
+      .pg-title-fixed { left: 16px; top: 16px; }
+      .pg-modal-grid { grid-template-columns: 1fr; }
+      .pg-modal-gallery { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="pg-sky"></div>
+
+  <!-- ─── GLASS SIDEBAR ─── -->
+  <aside class="pg-sidebar">
+    <div class="pg-sb-top">
+      <!-- Back -->
+      <a href="index.html" class="pg-sb-btn" title="Back to portfolio">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"/><path d="M12 5l-7 7 7 7"/>
+        </svg>
+      </a>
+      <div class="pg-sb-divider"></div>
+      <!-- Info -->
+      <button class="pg-sb-btn" id="pg-info-btn" title="How to use" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/>
+          <line x1="12" y1="16" x2="12" y2="12"/>
+          <circle cx="12" cy="8" r="0.5" fill="currentColor" stroke="none"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Vertical label -->
+    <span class="pg-sb-label">Playground</span>
+
+    <!-- Logo -->
+    <a href="index.html" class="pg-sb-logo">
+      <img src="logo.png" alt="Eeza Sheren" />
+    </a>
+  </aside>
+
+  <!-- Info tooltip -->
+  <div class="pg-sb-info-tip" id="pg-info-tip">
+    Drag anywhere to pan.<br>Click a folder to open the project.
+  </div>
+
+  <!-- ─── FIXED TITLE (stays while canvas pans) ─── -->
+  <div class="pg-title-fixed">
+    <p class="pg-tag">Playground</p>
+    <h1>where<br>ideas<br><em>run wild.</em></h1>
+    <p>Graphic design, illustration,<br>AI experiments &amp; more.</p>
+  </div>
+
+  <!-- ─── PANNABLE CANVAS ─── -->
+  <div class="pg-scroll-wrap" id="pg-scroll">
+    <div class="pg-canvas" id="pg-canvas">
+
+      <!-- ── ROW 1 ── -->
+
+      <!-- MiniMed -->
+      <div class="pg-folder" data-project="minimed" style="left:380px; top:55px; z-index:10;">
+        <div class="pg-folder-tab" style="--tab-color:#065B5C;">MiniMed</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-minimed">
+            <div class="ph-text">MINI<br>MED</div>
+            <div class="ph-pill"></div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">AI + UX Design</span>
+            <span class="name">MiniMed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ERA -->
+      <div class="pg-folder" data-project="era" style="left:630px; top:180px; z-index:9;">
+        <div class="pg-folder-tab" style="--tab-color:#5c2a00;">ERA</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-era">
+            <div class="ph-text">ERA</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">Creative Project</span>
+            <span class="name">ERA</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CuriousCore -->
+      <div class="pg-folder" data-project="curiouscore" style="left:900px; top:65px; z-index:8;">
+        <div class="pg-folder-tab" style="--tab-color:#1f6b3c;">CuriousCore</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-curiouscore">
+            <div class="ph-text">Curious<br>Core</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">UX Design</span>
+            <span class="name">CuriousCore</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Type Study -->
+      <div class="pg-folder" data-project="typestudy" style="left:1175px; top:220px; z-index:7;">
+        <div class="pg-folder-tab" style="--tab-color:#0e0e12;">Type Study</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-type">
+            <div class="ph-text">TYPE<br>STUDY</div>
+            <div class="ph-accent"></div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">Graphic Design</span>
+            <span class="name">Type Study</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Funk Orchestra -->
+      <div class="pg-folder" data-project="funk" style="left:1460px; top:85px; z-index:6;">
+        <div class="pg-folder-tab" style="--tab-color:#0a3d2e;">Funk Orch.</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-funk">
+            <div class="ph-text">FUNK<br>ORCH-<br>ESTRA</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">Poster Design</span>
+            <span class="name">Funk Orchestra</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Henry Cayons -->
+      <div class="pg-folder" data-project="henry" style="left:1740px; top:200px; z-index:5;">
+        <div class="pg-folder-tab" style="--tab-color:#c04000;">Editorial</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-henry">
+            <div class="ph-text">HENRY<br>CAYONS</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">Editorial Design</span>
+            <span name="name">Henry Cayons</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ROW 2 ── -->
+
+      <!-- Brand Identity -->
+      <div class="pg-folder" data-project="brandid" style="left:230px; top:340px; z-index:6;">
+        <div class="pg-folder-tab" style="--tab-color:#1a1d21;">Branding</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-brand" style="flex-direction:column;align-items:flex-start;">
+            <div class="ph-logo"><span>B</span></div>
+            <div class="ph-wordmark" style="margin-top:7px;">BrandCo</div>
+            <div class="ph-swatches" style="margin-top:auto;">
+              <div class="ph-swatch" style="background:#e63329;"></div>
+              <div class="ph-swatch" style="background:#1a1d21;"></div>
+              <div class="ph-swatch" style="background:#f5f0e8;border:1px solid #ddd;"></div>
+              <div class="ph-swatch" style="background:#c5b083;"></div>
+            </div>
+          </div>
+          <div class="pg-folder-label" style="background:linear-gradient(to top,rgba(0,0,0,0.35) 0%,transparent 100%);">
+            <span class="cat" style="color:rgba(0,0,0,0.5);">Brand Identity</span>
+            <span class="name" style="color:#1a1d21;">Brand Identity</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- IONS Magazine -->
+      <div class="pg-folder" data-project="ions" style="left:520px; top:460px; z-index:7;">
+        <div class="pg-folder-tab" style="--tab-color:#111;">IONS</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-ions">
+            <div class="ph-text">IONS</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">Editorial</span>
+            <span class="name">IONS Magazine</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wellness -->
+      <div class="pg-folder" data-project="wellness" style="left:790px; top:340px; z-index:6;">
+        <div class="pg-folder-tab" style="--tab-color:#1a3a20;">Wellness</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-wellness">
+            <div class="ph-text">Sixteen<br>Twenty<br>Wellness</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">Packaging Design</span>
+            <span class="name">Sixteen Twenty</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- At Homeland -->
+      <div class="pg-folder" data-project="homeland" style="left:1065px; top:450px; z-index:6;">
+        <div class="pg-folder-tab" style="--tab-color:#3b0e6e;">Poster</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-homeland">
+            <div class="ph-text">AT<br>HOME<br>LAND</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">Poster Design</span>
+            <span class="name">At Homeland</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ROW 3 ── -->
+
+      <!-- AI Flow -->
+      <div class="pg-folder" data-project="aiflow" style="left:340px; top:650px; z-index:5;">
+        <div class="pg-folder-tab" style="--tab-color:#0c2051;">AI Flow</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-aiflow">
+            <div class="ph-text">AI +<br>UX</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">AI + Interaction</span>
+            <span class="name">AI Flow</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Studio -->
+      <div class="pg-folder" data-project="studio" style="left:620px; top:730px; z-index:5;">
+        <div class="pg-folder-tab" style="--tab-color:#7c3aed;">Studio</div>
+        <div class="pg-folder-body">
+          <div class="ph ph-studio">
+            <div class="ph-text">Studio</div>
+          </div>
+          <div class="pg-folder-label">
+            <span class="cat">Illustration</span>
+            <span class="name">Studio Series</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Drag hint -->
+      <div class="pg-drag-hint" id="pg-hint">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <path d="M5 9l-3 3 3 3"/><path d="M9 5l3-3 3 3"/>
+          <path d="M15 19l-3 3-3-3"/><path d="M19 9l3 3-3 3"/>
+          <line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/>
+        </svg>
+        Drag to explore
+      </div>
+
+    </div>
+  </div>
+
+  <div class="pg-counter">12 projects</div>
+
+  <!-- ─── PROJECT MODAL ─── -->
+  <div class="pg-modal-overlay" id="pg-modal-overlay">
+    <div class="pg-modal" id="pg-modal" role="dialog" aria-modal="true">
+      <div class="pg-modal-header">
+        <div class="pg-modal-meta">
+          <span class="pg-modal-cat" id="modal-cat"></span>
+          <span class="pg-modal-year" id="modal-year"></span>
+        </div>
+        <button class="pg-modal-close" id="pg-modal-close" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+      <div class="pg-modal-body">
+        <div class="pg-modal-hero" id="modal-hero">
+          <div class="ph-text" id="modal-hero-text"></div>
+        </div>
+        <div class="pg-modal-content">
+          <h2 class="pg-modal-title" id="modal-title"></h2>
+          <p class="pg-modal-tagline" id="modal-tagline"></p>
+          <div class="pg-modal-grid">
+            <div class="pg-modal-section">
+              <span class="pg-modal-section-label">Why it was built</span>
+              <p class="pg-modal-section-text" id="modal-why"></p>
+            </div>
+            <div class="pg-modal-section">
+              <span class="pg-modal-section-label">How it was made</span>
+              <p class="pg-modal-section-text" id="modal-how"></p>
+            </div>
+          </div>
+          <div class="pg-modal-gallery" id="modal-gallery"></div>
+          <div class="pg-modal-tags" id="modal-tags"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  /* ── Project data ── */
+  const PROJECTS = {
+    minimed: {
+      title: 'MiniMed',
+      year: '2025',
+      category: 'AI + UX Design',
+      tagline: 'Medication management, reimagined with AI',
+      heroBg: 'linear-gradient(135deg,#065B5C 0%,#0a8a8c 55%,#0fb8ba 100%)',
+      heroText: 'MINIMED',
+      heroColor: 'rgba(255,255,255,0.95)',
+      why: 'Patients — especially elderly individuals or those managing chronic conditions — often struggle with complex medication schedules. MiniMed was built to reduce medication errors, deliver intelligent reminders, and give caregivers real-time visibility and peace of mind.',
+      how: 'Designed end-to-end in Figma across 3 rounds of usability testing with real patients and caregivers. The app uses a calm teal palette to reduce anxiety. An AI scheduling engine learns from user patterns to surface reminders at the right moment, not just a fixed time.',
+      tools: ['Figma', 'React Native', 'AI Scheduling', 'User Research', 'Usability Testing', 'Prototyping'],
+      images: ['minimed-1.png','minimed-2.png','minimed-3.png','minimed-4.png']
+    },
+    era: {
+      title: 'ERA',
+      year: '2024',
+      category: 'Creative Project',
+      tagline: 'A visual journey through different creative eras',
+      heroBg: 'linear-gradient(155deg,#1a0a00 0%,#5c2a00 45%,#c47a1e 100%)',
+      heroText: 'ERA',
+      heroColor: 'rgba(255,215,100,0.95)',
+      why: 'ERA explores the idea that a creative identity evolves in distinct chapters — each defined by different tools, aesthetics and influences. This project was a personal reflection on growth as a designer and a way to make that evolution visible.',
+      how: 'An interactive narrative experience where each era is represented by a distinct visual language: different typefaces, colour systems, and motion. The transitions between eras are designed to feel like flipping through the pages of a sketchbook.',
+      tools: ['Figma', 'Illustration', 'Motion Design', 'Concept Development', 'Interaction Design'],
+      images: ['era-1.png','era-2.png','era-3.png','era-4.png']
+    },
+    curiouscore: {
+      title: 'CuriousCore',
+      year: '2025',
+      category: 'UX Design',
+      tagline: 'Learning platform designed for curious minds',
+      heroBg: 'linear-gradient(135deg,#1a3a20 0%,#2d5a32 55%,#1f6b3c 100%)',
+      heroText: 'CuriousCore',
+      heroColor: 'rgba(255,255,255,0.92)',
+      why: 'Traditional e-learning platforms feel transactional and forgettable. CuriousCore was designed to bring back the joy of discovery — a space where learning feels like exploring, not just checking boxes.',
+      how: 'Built through extensive user research with students and lifelong learners. The information architecture was redesigned 4 times to arrive at something that felt natural. Progressive disclosure and micro-animations keep engagement high without overwhelming.',
+      tools: ['Figma', 'User Research', 'Information Architecture', 'Prototyping', 'Usability Testing'],
+      images: ['cc-1.png','cc-2.png','cc-3.png','cc-4.png']
+    },
+    typestudy: {
+      title: 'Type Study',
+      year: '2024',
+      category: 'Graphic Design',
+      tagline: 'Exploring how type alone carries weight and emotion',
+      heroBg: '#0e0e12',
+      heroText: 'TYPE STUDY',
+      heroColor: '#fff',
+      why: 'A personal project exploring how typography — with no imagery — can carry emotion, narrative and visual weight. Each poster uses a single typeface to tell a completely different story.',
+      how: 'Designed across a 6-week sprint with one hard constraint per piece: one typeface, one colour. The series spans 12 posters ranging from bold editorial to delicate, minimal compositions.',
+      tools: ['Adobe Illustrator', 'Typography', 'Print Design', 'Concept Development'],
+      images: []
+    },
+    brandid: {
+      title: 'Brand Identity',
+      year: '2024',
+      category: 'Branding',
+      tagline: 'Visual systems that speak before words do',
+      heroBg: '#f0ece4',
+      heroText: 'BRAND',
+      heroColor: '#1a1d21',
+      why: 'A collection of brand identity work — each system built to give a business a distinct, ownable voice. Great branding is felt before it\'s consciously understood.',
+      how: 'Each identity begins with a discovery session to understand values, audience and competitive context. From there: wordmark, colour system, type pairing, and applications across print and digital.',
+      tools: ['Figma', 'Adobe Illustrator', 'Brand Strategy', 'Typography', 'Print Production'],
+      images: []
+    },
+    wellness: {
+      title: 'Sixteen Twenty Wellness',
+      year: '2024',
+      category: 'Packaging Design',
+      tagline: 'Wellness branding that feels like actual self-care',
+      heroBg: 'linear-gradient(135deg,#1a3a20 0%,#2d5a32 60%,#0d2e14 100%)',
+      heroText: 'Sixteen Twenty',
+      heroColor: 'rgba(255,255,255,0.92)',
+      why: 'The wellness market is saturated with generic, sterile packaging. Sixteen Twenty Wellness needed something that felt premium yet approachable — rooted in nature without being clichéd about it.',
+      how: 'Designed a full packaging system: label, box, and brand collateral. Deep forest green communicates calm and trust. Cormorant Garant was chosen for its elegant editorial quality that elevates the everyday ritual of wellness.',
+      tools: ['Adobe Illustrator', 'Packaging Design', 'Brand Identity', 'Print Production'],
+      images: []
+    },
+    ions: {
+      title: 'IONS Magazine',
+      year: '2024',
+      category: 'Editorial Design',
+      tagline: 'Where science meets visual culture',
+      heroBg: '#111',
+      heroText: 'IONS',
+      heroColor: '#c5f135',
+      why: 'IONS is a concept editorial publication bringing science and visual culture together — designed to make complex ideas feel thrilling and accessible to a curious, design-literate audience.',
+      how: 'Full layout design across 48 pages: feature spreads, data visualisations, and portrait photography. Neon lime against deep black creates a high-energy, futuristic aesthetic that refuses to be ignored.',
+      tools: ['Adobe InDesign', 'Illustrator', 'Editorial Layout', 'Data Visualisation'],
+      images: []
+    },
+    homeland: {
+      title: 'At Homeland',
+      year: '2023',
+      category: 'Poster Design',
+      tagline: 'A poster series on identity and belonging',
+      heroBg: 'linear-gradient(135deg,#1a0533 0%,#3b0e6e 65%,#5c1a8a 100%)',
+      heroText: 'AT HOMELAND',
+      heroColor: '#fff',
+      why: 'A conceptual poster series exploring themes of identity, displacement and belonging. Each piece asks: what does "home" mean in a globalised, constantly moving world?',
+      how: 'A series of 6 A1 posters, each using a different visual metaphor. Bold typography, rich purple tones, and layered imagery create depth and melancholy without being heavy-handed.',
+      tools: ['Adobe Photoshop', 'Illustrator', 'Concept Development', 'Print Design'],
+      images: []
+    },
+    funk: {
+      title: 'Funk Orchestra',
+      year: '2023',
+      category: 'Poster Design',
+      tagline: 'Event posters with energy that jumps off the wall',
+      heroBg: '#0a3d2e',
+      heroText: 'FUNK ORCHESTRA',
+      heroColor: '#c5f135',
+      why: 'A poster campaign for a live funk and jazz ensemble. The brief: make people feel the music before they even hear it. The result had to be bold, loud, and unmissable from across a room.',
+      how: 'Four poster variations for different events. Dark forest green grounds the design while neon lime creates high-contrast pops of energy. The type treatment draws from 70s funk album artwork, updated for a modern context.',
+      tools: ['Adobe Illustrator', 'Typography', 'Event Design', 'Print Production'],
+      images: []
+    },
+    aiflow: {
+      title: 'AI Flow',
+      year: '2025',
+      category: 'AI + Interaction Design',
+      tagline: 'Designing clearer interfaces for intelligent systems',
+      heroBg: 'linear-gradient(135deg,#0c2051 0%,#1546a0 55%,#065B5C 100%)',
+      heroText: 'AI FLOW',
+      heroColor: 'rgba(255,255,255,0.92)',
+      why: 'As AI is embedded into everyday software, there is an urgent need for clearer, more trustworthy interaction patterns. AI Flow explores how to design interfaces that feel transparent, human, and in control.',
+      how: 'A research-led design exploration. Developed a component library and design system for AI-powered interfaces — including loading states, confidence indicators, edge-case handling, and graceful error states.',
+      tools: ['Figma', 'Design Systems', 'AI UX Patterns', 'Research', 'Prototyping'],
+      images: []
+    },
+    studio: {
+      title: 'Studio Series',
+      year: '2024',
+      category: 'Illustration',
+      tagline: 'Personal illustration and visual experiments',
+      heroBg: 'linear-gradient(135deg,#7c3aed 0%,#c026d3 100%)',
+      heroText: 'Studio',
+      heroColor: 'rgba(255,255,255,0.95)',
+      why: 'A collection of personal illustration work made outside of client briefs — a space for pure creative exploration with no constraints, no brief, just colour, form, and feeling.',
+      how: 'Mixed-media approach combining digital illustration with hand-drawn elements. Works range from character studies to abstract compositions. Each piece begins with a single word or emotion as the only prompt.',
+      tools: ['Procreate', 'Adobe Illustrator', 'Hand Drawing', 'Digital Painting'],
+      images: []
+    },
+    henry: {
+      title: 'Henry Cayons',
+      year: '2023',
+      category: 'Editorial Design',
+      tagline: 'Bold editorial design for a bold independent voice',
+      heroBg: 'linear-gradient(135deg,#ff5c35 0%,#ff9a00 100%)',
+      heroText: 'HENRY CAYONS',
+      heroColor: '#fff',
+      why: 'Henry Cayons is a conceptual publication celebrating independent music and culture. The brief: create an editorial identity as raw and unfiltered as the artists it features.',
+      how: 'Full magazine design including masthead, grid system, feature layouts, and advertising pages. The coral-to-gold gradient became the signature element, capturing the kinetic energy of a live set.',
+      tools: ['Adobe InDesign', 'Illustrator', 'Editorial Design', 'Photography Direction'],
+      images: []
+    }
+  };
+
+  /* ── Modal ── */
+  const overlay  = document.getElementById('pg-modal-overlay');
+  const closeBtn = document.getElementById('pg-modal-close');
+
+  function openModal(key) {
+    const p = PROJECTS[key]; if (!p) return;
+    document.getElementById('modal-cat').textContent   = p.category;
+    document.getElementById('modal-year').textContent  = p.year;
+    document.getElementById('modal-title').textContent = p.title;
+    document.getElementById('modal-tagline').textContent = p.tagline;
+    document.getElementById('modal-why').textContent   = p.why;
+    document.getElementById('modal-how').textContent   = p.how;
+
+    const hero = document.getElementById('modal-hero');
+    hero.style.background = p.heroBg;
+    const heroTxt = document.getElementById('modal-hero-text');
+    heroTxt.textContent    = p.heroText;
+    heroTxt.style.color    = p.heroColor;
+    heroTxt.style.fontSize = p.heroText.length > 10 ? '38px' : '52px';
+
+    // Gallery
+    const gallery = document.getElementById('modal-gallery');
+    gallery.innerHTML = '';
+    const count = p.images.length > 0 ? p.images.length : 4;
+    for (let i = 0; i < count; i++) {
+      const div = document.createElement('div');
+      div.className = 'pg-modal-gallery-img' + (p.images.length === 0 ? ' ph-blank' : '');
+      div.style.background = p.heroBg;
+      if (p.images[i]) {
+        const img = document.createElement('img');
+        img.src = p.images[i]; img.alt = p.title;
+        div.appendChild(img);
+        div.style.background = '';
+      }
+      gallery.appendChild(div);
+    }
+
+    // Tags
+    const tagsEl = document.getElementById('modal-tags');
+    tagsEl.innerHTML = '';
+    p.tools.forEach(t => {
+      const s = document.createElement('span');
+      s.className = 'pg-modal-tag'; s.textContent = t;
+      tagsEl.appendChild(s);
+    });
+
+    overlay.classList.add('open');
+    document.getElementById('pg-modal-close').focus();
+  }
+
+  function closeModal() { overlay.classList.remove('open'); }
+
+  closeBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  document.querySelectorAll('.pg-folder').forEach(f => {
+    f.addEventListener('click', () => { if (f.dataset.project) openModal(f.dataset.project); });
+  });
+
+  /* ── Info tooltip ── */
+  const infoBtn = document.getElementById('pg-info-btn');
+  const infoTip = document.getElementById('pg-info-tip');
+  let tipOpen = false;
+  infoBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    tipOpen = !tipOpen;
+    infoTip.classList.toggle('visible', tipOpen);
+  });
+  document.addEventListener('click', () => { tipOpen = false; infoTip.classList.remove('visible'); });
+
+  /* ── Hint hide ── */
+  (function () {
+    const hint = document.getElementById('pg-hint');
+    const wrap = document.getElementById('pg-scroll');
+    const hide = () => hint.classList.add('hidden');
+    setTimeout(() => {
+      wrap.addEventListener('scroll', hide, { once: true });
+      wrap.addEventListener('mousedown', hide, { once: true });
+    }, 800);
+    setTimeout(hide, 5500);
+  })();
+
+  /* ── Drag to pan ── */
+  (function () {
+    const wrap = document.getElementById('pg-scroll');
+    let down = false, sx, sy, sl, st, dragged = false;
+
+    wrap.addEventListener('mousedown', e => {
+      if (e.target.closest('.pg-folder')) return;
+      down = true; dragged = false;
+      sx = e.pageX - wrap.offsetLeft; sy = e.pageY - wrap.offsetTop;
+      sl = wrap.scrollLeft; st = wrap.scrollTop;
+      wrap.style.cursor = 'grabbing';
+    });
+    document.addEventListener('mouseup',    () => { down = false; wrap.style.cursor = 'grab'; });
+    document.addEventListener('mouseleave', () => { down = false; });
+    document.addEventListener('mousemove',  e => {
+      if (!down) return;
+      e.preventDefault(); dragged = true;
+      wrap.scrollLeft = sl - (e.pageX - wrap.offsetLeft - sx);
+      wrap.scrollTop  = st - (e.pageY - wrap.offsetTop  - sy);
+    });
+
+    /* prevent accidental modal open after drag */
+    document.querySelectorAll('.pg-folder').forEach(f => {
+      f.addEventListener('mousedown', () => { dragged = false; });
+      const orig = f.onclick;
+      f.addEventListener('click', e => { if (dragged) e.stopImmediatePropagation(); });
+    });
+  })();
+  </script>
+</body>
+</html>

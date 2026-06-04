@@ -559,7 +559,103 @@
     }
     .footer-contact:hover { background: var(--blue); }
 
+    /* ─── PROTOTYPE STICKY SCROLL ─── */
+    /* ─── PROTOTYPE SLIDE SECTION ─── */
+    .proto-scroll { margin-top: 40px; }
+
+    /* Stack all slides in the same grid cell — height = tallest slide */
+    .proto-slides-wrap {
+      display: grid;
+      grid-template-areas: 'stack';
+    }
+    .proto-slide {
+      grid-area: stack;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+    .proto-slide.proto-slide-active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .proto-img-col {
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--gray-3);
+      box-shadow: 0 4px 28px rgba(0,0,0,0.10);
+      aspect-ratio: 16 / 10;
+    }
+    .proto-img-col img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+    .proto-text-col { min-width: 0; }
+    .proto-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--cc-teal);
+      margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+    }
+    .proto-num::before {
+      content: ''; display: block;
+      width: 20px; height: 1.5px; background: var(--cc-teal);
+    }
+    .proto-title {
+      font-size: clamp(20px, 2.2vw, 26px);
+      font-weight: 700; letter-spacing: -0.5px;
+      color: var(--black); margin-bottom: 14px; line-height: 1.2;
+    }
+    .proto-body { font-size: 15px; line-height: 1.8; color: var(--gray-1); }
+    .proto-details { display: flex; flex-direction: column; gap: 8px; margin-top: 24px; }
+    .proto-detail {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: var(--white); border-radius: 10px; padding: 14px 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .proto-detail-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--cc-teal); flex-shrink: 0; margin-top: 7px;
+    }
+    .proto-detail p { font-size: 14px; line-height: 1.65; color: var(--black); font-weight: 500; }
+
+    /* Controls bar */
+    .proto-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid var(--gray-3);
+    }
+    .proto-dots { display: flex; gap: 7px; align-items: center; }
+    .proto-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--gray-3); border: none; cursor: pointer; padding: 0;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .proto-dot.proto-dot-active { background: var(--cc-teal); transform: scale(1.5); }
+    .proto-nav { display: flex; gap: 8px; }
+    .proto-nav-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1.5px solid var(--gray-3); background: transparent;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: border-color 0.2s, background 0.2s, color 0.2s;
+      color: var(--black);
+    }
+    .proto-nav-btn:hover:not(:disabled) { border-color: var(--cc-teal); background: var(--cc-teal); color: #fff; }
+    .proto-nav-btn:disabled { opacity: 0.25; cursor: default; }
+    .proto-nav-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
     /* ─── RESPONSIVE ─── */
+    @media (max-width: 720px) {
+      .proto-slide { grid-template-columns: 1fr; gap: 20px; }
+      .proto-img-col { aspect-ratio: 16 / 9; }
+    }
     @media (max-width: 720px) {
       .page-layout { grid-template-columns: 1fr; }
       .sidebar { display: none; }
@@ -1102,54 +1198,134 @@
           <p>The final prototype brought together improved information hierarchy, clearer CTAs, and a warmer brand voice — guiding users through their decision journey and building confidence at every step.</p>
         </div>
 
-        <div class="img-wrap-full">
-          <img loading="lazy"
-            src="https://static.wixstatic.com/media/c66d1c_1f3b0c4f271a413d96ec5f0269e94da4~mv2.gif/v1/fit/w_1000,h_600,q_90,enc_avif,quality_auto/c66d1c_1f3b0c4f271a413d96ec5f0269e94da4~mv2.gif"
-            alt="CuriousCore prototype walkthrough"
-          />
-        </div>
-        <p class="img-caption">Hero and navigation — clearer structure and welcoming tone</p>
+        <div class="proto-scroll">
+          <div class="proto-slides-wrap">
 
-        <div class="img-grid-2">
-          <div class="img-cell">
-            <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_b54ac13022fe438aa4dd7236a656a073~mv2.png/v1/fit/w_957,h_613,q_90,enc_avif,quality_auto/c66d1c_b54ac13022fe438aa4dd7236a656a073~mv2.png" alt="Final design screen 1" />
-          </div>
-          <div class="img-cell">
-            <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_52a85eb3b737442e926dff4b17428f2a~mv2.png/v1/fit/w_957,h_613,q_90,enc_avif,quality_auto/c66d1c_52a85eb3b737442e926dff4b17428f2a~mv2.png" alt="Final design screen 2" />
-          </div>
-          <div class="img-cell">
-            <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_edcb6bd159ac4dd5a60dddded4c9e679~mv2.png/v1/fit/w_957,h_613,q_90,enc_avif,quality_auto/c66d1c_edcb6bd159ac4dd5a60dddded4c9e679~mv2.png" alt="Final design screen 3" />
-          </div>
-          <div class="img-cell">
-            <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_4f1991924f374409824ed573745aa11e~mv2.png/v1/fit/w_957,h_613,q_90,enc_avif,quality_auto/c66d1c_4f1991924f374409824ed573745aa11e~mv2.png" alt="Final design screen 4" />
-          </div>
-        </div>
-        <p class="img-caption">Key screens — improved content structure and CTA visibility</p>
+            <!-- Slide 01 -->
+            <div class="proto-slide proto-slide-active">
+              <div class="proto-img-col">
+                <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_1f3b0c4f271a413d96ec5f0269e94da4~mv2.gif/v1/fit/w_1000,h_600,q_90,enc_avif,quality_auto/c66d1c_1f3b0c4f271a413d96ec5f0269e94da4~mv2.gif" alt="Hero and navigation walkthrough" />
+              </div>
+              <div class="proto-text-col">
+                <p class="proto-num">01</p>
+                <h3 class="proto-title">Hero &amp; Navigation</h3>
+                <p class="proto-body">The original homepage lacked a clear entry point and felt visually overwhelming. The redesigned hero communicates CuriousCore's value proposition immediately, with a warm, human tone that invites exploration rather than demanding action.</p>
+                <div class="proto-details">
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Simplified top navigation reduces cognitive load and keeps focus on core pathways.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Hero headline leads with outcome — "transition into tech" — speaking directly to user intent.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Social proof elements (alumni logos, student count) positioned above the fold to build early confidence.</p></div>
+                </div>
+              </div>
+            </div>
 
-        <div class="img-wrap-full" style="margin-top:8px;">
-          <img loading="lazy"
-            src="https://static.wixstatic.com/media/c66d1c_c451c28af3ea464698fc0a180391b914~mv2.gif/v1/fit/w_1000,h_600,q_90,enc_avif,quality_auto/c66d1c_c451c28af3ea464698fc0a180391b914~mv2.gif"
-            alt="CuriousCore prototype interaction 2"
-          />
-        </div>
-        <p class="img-caption">Course comparison flow — simplified and scannable</p>
+            <!-- Slide 02 -->
+            <div class="proto-slide">
+              <div class="proto-img-col">
+                <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_b54ac13022fe438aa4dd7236a656a073~mv2.png/v1/fit/w_957,h_613,q_90,enc_avif,quality_auto/c66d1c_b54ac13022fe438aa4dd7236a656a073~mv2.png" alt="Course listing page" />
+              </div>
+              <div class="proto-text-col">
+                <p class="proto-num">02</p>
+                <h3 class="proto-title">Course Listings &amp; Detail</h3>
+                <p class="proto-body">Users struggled to compare courses and identify what was right for them. The redesigned listing page introduces a consistent card format with clear outcome labels, while the detail page reorganises content in order of decision priority.</p>
+                <div class="proto-details">
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Card layout surfaces duration, format, and outcome in a scannable format — reducing time-to-decision.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Detail page leads with "what you'll be able to do" before diving into curriculum content.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Sticky CTA panel ensures the enrolment action is always accessible during scroll without being intrusive.</p></div>
+                </div>
+              </div>
+            </div>
 
-        <div class="img-wrap-full">
-          <img loading="lazy"
-            src="https://static.wixstatic.com/media/c66d1c_4f0e40d924694d00885a4801d24ee39b~mv2.gif/v1/fit/w_1000,h_600,q_90,enc_avif,quality_auto/c66d1c_4f0e40d924694d00885a4801d24ee39b~mv2.gif"
-            alt="CuriousCore prototype interaction 3"
-          />
-        </div>
-        <p class="img-caption">B2B section — clear separation from B2C offering</p>
+            <!-- Slide 03 -->
+            <div class="proto-slide">
+              <div class="proto-img-col">
+                <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_edcb6bd159ac4dd5a60dddded4c9e679~mv2.png/v1/fit/w_957,h_613,q_90,enc_avif,quality_auto/c66d1c_edcb6bd159ac4dd5a60dddded4c9e679~mv2.png" alt="Testimonials section" />
+              </div>
+              <div class="proto-text-col">
+                <p class="proto-num">03</p>
+                <h3 class="proto-title">Testimonials &amp; Human Touch</h3>
+                <p class="proto-body">Users lacked confidence that CuriousCore could truly support their transition. The redesigned testimonial and about sections lead with real people and real outcomes — making the brand feel credible, approachable, and personally invested.</p>
+                <div class="proto-details">
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Alumni testimonials now include role change context (e.g. "from teacher to UX researcher") to create relatability.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Instructor profiles show personality and teaching style — not just credentials — to reduce intimidation.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Consistent card format across testimonials enables quicker scanning and comparison of experiences.</p></div>
+                </div>
+              </div>
+            </div>
 
-        <div class="img-grid-2">
-          <div class="img-cell">
-            <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_21fc2b28b62c4dffaadef05bc94a155b~mv2.png/v1/fit/w_956,h_613,q_90,enc_avif,quality_auto/c66d1c_21fc2b28b62c4dffaadef05bc94a155b~mv2.png" alt="Final design screen 5" />
+            <!-- Slide 04 -->
+            <div class="proto-slide">
+              <div class="proto-img-col">
+                <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_c451c28af3ea464698fc0a180391b914~mv2.gif/v1/fit/w_1000,h_600,q_90,enc_avif,quality_auto/c66d1c_c451c28af3ea464698fc0a180391b914~mv2.gif" alt="Course comparison flow" />
+              </div>
+              <div class="proto-text-col">
+                <p class="proto-num">04</p>
+                <h3 class="proto-title">Course Comparison Flow</h3>
+                <p class="proto-body">Previously, users had to navigate back and forth between course pages to compare options — a friction-heavy experience that eroded confidence. The comparison flow introduces a structured side-by-side view so users can evaluate and commit in one place.</p>
+                <div class="proto-details">
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Side-by-side layout makes differences in duration, cost, and outcomes immediately apparent.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Filter controls let users narrow by goal (career switch, upskilling) rather than course type.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>A persistent "talk to an advisor" prompt reduces decision anxiety for users who need guidance.</p></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 05 -->
+            <div class="proto-slide">
+              <div class="proto-img-col">
+                <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_4f0e40d924694d00885a4801d24ee39b~mv2.gif/v1/fit/w_1000,h_600,q_90,enc_avif,quality_auto/c66d1c_4f0e40d924694d00885a4801d24ee39b~mv2.gif" alt="B2B enterprise section" />
+              </div>
+              <div class="proto-text-col">
+                <p class="proto-num">05</p>
+                <h3 class="proto-title">B2B Enterprise Section</h3>
+                <p class="proto-body">The original site mixed B2C and B2B content across the same pages, confusing both audiences. The redesign separates the enterprise offering into a dedicated section with its own tone, use cases, and conversion path — speaking directly to HR and L&amp;D buyers.</p>
+                <div class="proto-details">
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Clear visual and tonal separation from B2C content prevents audience confusion.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>B2B section leads with business outcomes (team upskilling, retention) rather than individual benefits.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Dedicated CTA ("Request a proposal") replaces generic enrolment button for a more appropriate enterprise action.</p></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Slide 06 -->
+            <div class="proto-slide">
+              <div class="proto-img-col">
+                <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_21fc2b28b62c4dffaadef05bc94a155b~mv2.png/v1/fit/w_956,h_613,q_90,enc_avif,quality_auto/c66d1c_21fc2b28b62c4dffaadef05bc94a155b~mv2.png" alt="Application flow" />
+              </div>
+              <div class="proto-text-col">
+                <p class="proto-num">06</p>
+                <h3 class="proto-title">FAQ &amp; Application Flow</h3>
+                <p class="proto-body">The final supporting screens address the last mile of the user journey — answering remaining questions and making the application step feel straightforward and low-risk. Clear structure and reassuring copy guide users across the finish line.</p>
+                <div class="proto-details">
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>FAQ section organised by decision stage (before applying, during the course, after graduating) rather than topic.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Application form broken into steps with progress indicator — reducing perceived complexity.</p></div>
+                  <div class="proto-detail"><div class="proto-detail-dot"></div><p>Confirmation page sets expectations for next steps, maintaining confidence post-submission.</p></div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /proto-slides-wrap -->
+
+          <!-- Navigation controls -->
+          <div class="proto-controls">
+            <div class="proto-dots">
+              <button class="proto-dot proto-dot-active" aria-label="Slide 1"></button>
+              <button class="proto-dot" aria-label="Slide 2"></button>
+              <button class="proto-dot" aria-label="Slide 3"></button>
+              <button class="proto-dot" aria-label="Slide 4"></button>
+              <button class="proto-dot" aria-label="Slide 5"></button>
+              <button class="proto-dot" aria-label="Slide 6"></button>
+            </div>
+            <div class="proto-nav">
+              <button class="proto-nav-btn proto-prev" aria-label="Previous" disabled>
+                <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button class="proto-nav-btn proto-next" aria-label="Next">
+                <svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg>
+              </button>
+            </div>
           </div>
-          <div class="img-cell">
-            <img loading="lazy" src="https://static.wixstatic.com/media/c66d1c_c3bf1577f55d4502b938f66b20e3d2a6~mv2.png/v1/fit/w_957,h_613,q_90,enc_avif,quality_auto/c66d1c_c3bf1577f55d4502b938f66b20e3d2a6~mv2.png" alt="Final design screen 6" />
-          </div>
-        </div>
+
+        </div><!-- /proto-scroll -->
       </section>
 
       <div class="section-divider"></div>
@@ -1262,6 +1438,72 @@
           dot.addEventListener('animationend', () => dot.remove());
         }
       });
+    })();
+  </script>
+
+  <!-- ─── Prototype slide-advance on scroll ─── -->
+  <script>
+    (function () {
+      const section  = document.getElementById('prototype');
+      if (!section) return;
+      const slides   = section.querySelectorAll('.proto-slide');
+      const dots     = section.querySelectorAll('.proto-dot');
+      const prevBtn  = section.querySelector('.proto-prev');
+      const nextBtn  = section.querySelector('.proto-next');
+      const total    = slides.length;
+      let current    = 0;
+      let locked     = false;
+
+      function goTo(idx) {
+        if (locked || idx < 0 || idx >= total) return;
+        slides[current].classList.remove('proto-slide-active');
+        dots[current].classList.remove('proto-dot-active');
+        current = idx;
+        slides[current].classList.add('proto-slide-active');
+        dots[current].classList.add('proto-dot-active');
+        if (prevBtn) prevBtn.disabled = current === 0;
+        if (nextBtn) nextBtn.disabled = current === total - 1;
+        locked = true;
+        setTimeout(() => locked = false, 550);
+      }
+
+      // Dot clicks
+      dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+
+      // Arrow buttons
+      prevBtn?.addEventListener('click', () => goTo(current - 1));
+      nextBtn?.addEventListener('click', () => goTo(current + 1));
+
+      // Keyboard
+      document.addEventListener('keydown', e => {
+        if (!sectionFocused) return;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); goTo(current + 1); }
+        if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   { e.preventDefault(); goTo(current - 1); }
+      });
+
+      // Scroll-hijack: intercept wheel only while section is centred in viewport
+      let sectionFocused = false;
+      const obs = new IntersectionObserver(([e]) => {
+        sectionFocused = e.isIntersecting;
+      }, { threshold: 0.45 });
+      obs.observe(section);
+
+      let wheelCooldown = false;
+      window.addEventListener('wheel', e => {
+        if (!sectionFocused || wheelCooldown) return;
+        const goingDown = e.deltaY > 0;
+        // On last slide going down, or first slide going up → let page scroll through
+        if (goingDown && current >= total - 1) return;
+        if (!goingDown && current <= 0) return;
+        e.preventDefault();
+        wheelCooldown = true;
+        setTimeout(() => wheelCooldown = false, 700);
+        goTo(goingDown ? current + 1 : current - 1);
+      }, { passive: false });
+
+      // Init button state
+      if (prevBtn) prevBtn.disabled = true;
+      if (nextBtn) nextBtn.disabled = total <= 1;
     })();
   </script>
 </body>

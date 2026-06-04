@@ -6,7 +6,7 @@
   <title>Eeza Sheren — UX Designer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preconnect" href="https://unpkg.com" crossorigin />
+  <link rel="dns-prefetch" href="https://api.allorigins.win" />
   <link rel="preconnect" href="https://static.wixstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Bricolage+Grotesque:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
@@ -1801,7 +1801,7 @@
   <!-- NAV -->
   <nav>
     <a href="#hero" class="nav-logo">
-      <img src="logo.png" alt="Eezasheren" style="height:32px;width:auto;display:block;" />
+      <img src="logo.png" alt="Eezasheren" style="height:32px;width:auto;display:block;" fetchpriority="high" decoding="sync" />
     </a>
 
     <div class="nav-center">
@@ -1949,15 +1949,15 @@
           <div class="pc-img">
             <!-- Side frame LEFT — mobile portrait -->
             <div class="pc-uob-sf pc-uob-sf-left">
-              <img src="14_1.png" alt="UOB mobile screen" />
+              <img src="14_1.png" alt="UOB mobile screen" loading="lazy" decoding="async" />
             </div>
             <!-- Side frame RIGHT 1 — stepper component -->
             <div class="pc-uob-sf pc-uob-sf-right1">
-              <img src="Frame%205690.png" alt="UOB journey stepper" />
+              <img src="Frame%205690.png" alt="UOB journey stepper" loading="lazy" decoding="async" />
             </div>
             <!-- Side frame RIGHT 2 — balance chart -->
             <div class="pc-uob-sf pc-uob-sf-right2">
-              <img src="Frame%205691.png" alt="UOB balance chart" />
+              <img src="Frame%205691.png" alt="UOB balance chart" loading="lazy" decoding="async" />
             </div>
             <!-- Main browser frame -->
             <div class="pc-uob-frame-wrap">
@@ -1972,6 +1972,7 @@
                   alt="UOB Infinity Dashboard"
                   class="pc-uob-main-img"
                   loading="lazy"
+                  decoding="async"
                 />
               </div>
             </div>
@@ -2005,10 +2006,10 @@
           <span class="pc-num">NO. 02</span>
           <div class="pc-img">
             <div class="pc-cc-sf pc-cc-sf-right1">
-              <img src="Screenshot%202026-06-01%20at%205.50.54%20PM.png" alt="CuriousCore courses" />
+              <img src="Screenshot%202026-06-01%20at%205.50.54%20PM.png" alt="CuriousCore courses" loading="lazy" decoding="async" />
             </div>
             <div class="pc-cc-sf pc-cc-sf-left">
-              <img src="Screenshot%202026-06-01%20at%205.50.49%20PM.png" alt="CuriousCore skills" />
+              <img src="Screenshot%202026-06-01%20at%205.50.49%20PM.png" alt="CuriousCore skills" loading="lazy" decoding="async" />
             </div>
             <div class="pc-cc-frame-wrap">
               <div class="pc-cc-frame">
@@ -2017,7 +2018,7 @@
                   <span class="pc-cc-dot"></span>
                   <span class="pc-cc-dot"></span>
                 </div>
-                <img src="Frame%201204.jpg" alt="CuriousCore website" class="pc-cc-main-img" loading="lazy" />
+                <img src="Frame%201204.jpg" alt="CuriousCore website" class="pc-cc-main-img" loading="lazy" decoding="async" />
               </div>
             </div>
             <div class="pc-img-dim"></div>
@@ -2677,10 +2678,11 @@
       if (!track) return;
 
       const SUBSTACK_URL = 'https://eezasheren.substack.com/feed';
+      const timeout = (ms, fn) => Promise.race([fn(), new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))]);
       const proxies = [
-        () => fetch('/api/rss').then(r => r.text()),
-        () => fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(SUBSTACK_URL)).then(r => r.json()).then(d => d.contents),
-        () => fetch('https://corsproxy.io/?' + SUBSTACK_URL).then(r => r.text())
+        () => timeout(4000, () => fetch('/api/rss').then(r => r.text())),
+        () => timeout(5000, () => fetch('https://api.allorigins.win/get?url=' + encodeURIComponent(SUBSTACK_URL)).then(r => r.json()).then(d => d.contents)),
+        () => timeout(5000, () => fetch('https://corsproxy.io/?' + SUBSTACK_URL).then(r => r.text()))
       ];
 
       (async () => {
