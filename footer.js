@@ -38,12 +38,13 @@
     }
     .footer-tagline {
       font-family: 'Bricolage Grotesque', sans-serif;
-      font-size: clamp(20px, 2.5vw, 32px);
+      font-size: clamp(18px, 2vw, 26px);
       font-weight: 600;
       letter-spacing: -0.8px;
       line-height: 1.2;
       color: #fff;
       margin-bottom: 16px;
+      text-wrap: balance;
     }
     .footer-type-cursor {
       display: inline-block;
