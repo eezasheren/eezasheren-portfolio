@@ -228,7 +228,7 @@
       background: var(--white);
       margin: 24px 0;
     }
-    .img-wrap-full img { width: 100%; display: block; }
+    .img-wrap-full img, .img-wrap-full video { width: 100%; display: block; }
 
     /* 2-col image grid */
     .img-grid-2 {
@@ -956,11 +956,7 @@
 
         <div style="display:flex; flex-direction:column; gap:24px; margin-top:32px;">
           <div style="border-radius:12px; overflow:hidden;">
-            <img loading="lazy"
-              src="images/wix/af9047b290-409e6b.gif"
-              alt="Final prototype — all screens overview"
-              style="width:100%; height:auto; display:block;"
-            />
+            <video autoplay muted loop playsinline preload="metadata" src="images/wix/af9047b290-409e6b.mp4" aria-label="Final prototype — all screens overview" style="width:100%; height:auto; display:block;"></video>
           </div>
           <div style="border-radius:12px; overflow:hidden;">
             <img loading="lazy"

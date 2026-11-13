@@ -168,7 +168,7 @@
       border-radius: var(--radius); overflow: hidden;
       background: var(--white); margin: 24px 0;
     }
-    .img-wrap-full img { width: 100%; display: block; max-height: 680px; object-fit: contain; background: #f8f9fb; }
+    .img-wrap-full img, .img-wrap-full video { width: 100%; display: block; max-height: 680px; object-fit: contain; background: #f8f9fb; }
     .img-grid-2 {
       display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 24px 0;
     }
@@ -393,7 +393,7 @@
       background: #f8f9fb; border: 1px solid var(--gray-3);
       margin: 24px 0; text-align: center;
     }
-    .gif-wrap img { max-width: 100%; display: block; margin: 0 auto; }
+    .gif-wrap img, .gif-wrap video { max-width: 100%; display: block; margin: 0 auto; }
 
     /* ─── FADE UP ─── */
     .fade-up {
@@ -852,7 +852,7 @@
 
       <!-- Prototype gif -->
       <div class="gif-wrap fade-up">
-        <img loading="lazy" src="images/wix/b71f55cd8b-390648.gif" alt="Prototype walkthrough animation" />
+        <video autoplay muted loop playsinline preload="metadata" src="images/wix/b71f55cd8b-390648.mp4" aria-label="Prototype walkthrough animation"></video>
       </div>
       <p class="img-caption fade-up">Interactive prototype walkthrough</p>
     </section>
