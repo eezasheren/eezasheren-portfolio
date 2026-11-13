@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<title>Ball · Eeza Sheren</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+  }
+  canvas {
+    display: block;
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    touch-action: none;              /* the finger moves the ball, not the page */
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  canvas.grabbing { cursor: grabbing; }
+  #hint {
+    position: fixed;
+    left: 0; right: 0;
+    top: calc(22px + env(safe-area-inset-top));
+    text-align: center;
+    font: 500 13px/1.4 -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    letter-spacing: 0.04em;
+    color: rgba(255,255,255,0.45);
+    pointer-events: none;
+    transition: opacity 0.8s;
+  }
+  #hint.gone { opacity: 0; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="hint">drag the ball and let go</div>
+
+<script>
+/* ============================================================
+   SETTINGS. Change these freely.
+   ============================================================ */
+const SETTINGS = {
+  // The words that wrap around the ball. Keep a separator at the end so the loop joins up.
+  text: 'eeza sheren is a product designer who builds things people can touch · drag me, throw me, see what happens · ',
+  textColor: '#ffffff',
+  // Ball diameter as a share of the shorter side of the screen.
+  size: 0.56,
+  // Background colours the page cycles through when the ball hits a wall.
+  // Keep them dark or strong enough for white text to read.
+  backgrounds: ['#000000', '#d52b1e', '#1f4bd8', '#0f8a5f', '#7b2cbf', '#e8590c', '#c2185b', '#1b1b4d', '#2f6f3e', '#8a6d00'],
+  // Patterns drawn over the background colour. 'plain' alone means colours only.
+  // To bring patterns back, add any of: 'dots', 'stripes', 'diagonal', 'grid', 'checker', 'crosses', 'triangles', 'waves'.
+  patterns: ['plain'],
+  patternInk: 'rgba(255,255,255,0.14)',   // how strong the pattern marks are
+  gravity: 2400,     // pixels per second squared
+  bounce: 0.8,       // side walls and ceiling: 1 = never loses height, 0 = thud
+  floorSpring: 700,  // how firm the floor is: the ball presses in, flattens, and springs back
+  floorDamping: 3.8, // how much bounce the floor takes away (higher = deader)
+  maxPress: 0.55,    // deepest the ball can be pressed into the floor, as a share of its radius
+  rollFriction: 0.985,
+  maxThrow: 4200,    // cap on flick speed, pixels per second
+  crumble: 1.0,      // how far the touching letters get pushed in (0 = off, 1 = all the way)
+  crumbleChance: 0.4, // share of floor hits that jumble the letters (1 = every floor hit, 0 = never)
+  crumbleArc: 60,    // how much of the ball jumbles, in degrees either side of the spot that touched
+  font: '600 100px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif',
+};
+
+// Let the text be swapped from the address bar: index.html?text=hello%20world
+const fromUrl = new URLSearchParams(location.search).get('text');
+if (fromUrl) SETTINGS.text = fromUrl.endsWith(' ') ? fromUrl : fromUrl + ' · ';
+
+/* ============================================================
+   Setup
+   ============================================================ */
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+const hint = document.getElementById('hint');
+let W = 0, H = 0, dpr = 1;
+
+const ball = {
+  x: 0, y: 0, r: 100,
+  vx: 0, vy: 0,
+  angle: 0, spin: 0,
+  squashX: 1, squashY: 1,
+  onGround: false,
+  contact: false,          // currently pressed into the floor
+  // crumble: 0 = letters in a neat ring, 1 = collapsed into a heap. Springs back after a hit.
+  crumble: 0, crumbleV: 0,
+  hitX: 0, hitY: 1,        // which way the last hit pushed the letters (floor = down)
+};
+
+let dragging = false;
+let grabDX = 0, grabDY = 0;
+let trail = [];               // recent pointer positions, used to work out the throw
+let ripples = [];             // little rings where the ball hit
+let lastHit = 0;
+let touched = false;          // browsers only allow a buzz after the first tap
+
+// Letters: each one's place on the ring, plus a few random numbers so the heap looks messy.
+let letters = [];
+let fontString = SETTINGS.font;
+let textRadius = 80;
+let fontPx = 20;
+
+function buildLetters() {
+  const r = ball.r;
+  const chars = Array.from(SETTINGS.text);
+  ctx.font = SETTINGS.font;
+  const baseSize = parseFloat(SETTINGS.font.match(/(\d+(\.\d+)?)px/)[1]);
+  const widths = chars.map(ch => ctx.measureText(ch).width);
+  const total = widths.reduce((a, b) => a + b, 0);
+
+  // Scale the font so the text goes round the ring exactly once.
+  const k = total / baseSize;
+  const fontSize = (2 * Math.PI * r) / (k + 2 * Math.PI * 0.55);
+  textRadius = r - fontSize * 0.55;
+  const circumference = 2 * Math.PI * textRadius;
+  const scale = fontSize / baseSize;
+  fontString = SETTINGS.font.replace(/(\d+(\.\d+)?)px/, fontSize.toFixed(2) + 'px');
+  fontPx = fontSize;
+
+  const keep = letters.length === chars.length ? letters : null;
+  letters = [];
+  let run = 0;
+  for (let i = 0; i < chars.length; i++) {
+    const w = widths[i] * scale;
+    const a = ((run + w / 2) / circumference) * Math.PI * 2;
+    run += w;
+    if (chars[i] === ' ') continue;
+    const old = keep && keep.find(l => l.i === i);
+    letters.push({
+      i, ch: chars[i], a,
+      spread: old ? old.spread : (Math.random() * 2 - 1),      // where it lands across the heap
+      depth: old ? old.depth : Math.random(),                  // how deep in the heap
+      pull: old ? old.pull : (0.55 + Math.random() * 0.45),    // how strongly it collapses
+      tilt: old ? old.tilt : (Math.random() * 2 - 1) * 2.2,    // how much it tumbles
+    });
+  }
+}
+
+/* ============================================================
+   Backgrounds: a colour plus a pattern, cross-faded on each hit
+   ============================================================ */
+let bg = { color: SETTINGS.backgrounds[0], pattern: 'plain', fill: null };
+let bgPrev = null;
+let bgFadeStart = 0;
+
+function makePattern(type) {
+  if (type === 'plain') return null;
+  const s = 36;                                  // tile size in css pixels
+  const tile = document.createElement('canvas');
+  tile.width = s * dpr; tile.height = s * dpr;
+  const t = tile.getContext('2d');
+  t.setTransform(dpr, 0, 0, dpr, 0, 0);
+  t.strokeStyle = SETTINGS.patternInk;
+  t.fillStyle = SETTINGS.patternInk;
+  t.lineWidth = 2;
+  t.lineCap = 'round';
+  switch (type) {
+    case 'dots':
+      t.beginPath(); t.arc(s / 2, s / 2, 3, 0, Math.PI * 2); t.fill();
+      break;
+    case 'stripes':
+      t.fillRect(0, 0, s, s / 3);
+      break;
+    case 'diagonal':
+      t.beginPath();
+      t.moveTo(-s / 2, s); t.lineTo(s, -s / 2);
+      t.moveTo(0, s * 1.5); t.lineTo(s * 1.5, 0);
+      t.stroke();
+      break;
+    case 'grid':
+      t.lineWidth = 1.5;
+      t.beginPath(); t.moveTo(0.5, 0); t.lineTo(0.5, s); t.moveTo(0, 0.5); t.lineTo(s, 0.5); t.stroke();
+      break;
+    case 'checker':
+      t.fillRect(0, 0, s / 2, s / 2); t.fillRect(s / 2, s / 2, s / 2, s / 2);
+      break;
+    case 'crosses':
+      t.beginPath();
+      t.moveTo(s / 2 - 5, s / 2); t.lineTo(s / 2 + 5, s / 2);
+      t.moveTo(s / 2, s / 2 - 5); t.lineTo(s / 2, s / 2 + 5);
+      t.stroke();
+      break;
+    case 'triangles':
+      t.beginPath(); t.moveTo(s / 2, 6); t.lineTo(s - 6, s - 8); t.lineTo(6, s - 8); t.closePath(); t.fill();
+      break;
+    case 'waves':
+      t.beginPath();
+      t.moveTo(0, s / 2);
+      t.quadraticCurveTo(s / 4, s / 2 - 8, s / 2, s / 2);
+      t.quadraticCurveTo(s * 3 / 4, s / 2 + 8, s, s / 2);
+      t.stroke();
+      break;
+  }
+  return ctx.createPattern(tile, 'repeat');
+}
+
+function pickOther(list, current) {
+  if (list.length < 2) return list[0];
+  let next;
+  do { next = list[Math.floor(Math.random() * list.length)]; } while (next === current);
+  return next;
+}
+
+function newBackground() {
+  bgPrev = bg;
+  bgFadeStart = performance.now();
+  const color = pickOther(SETTINGS.backgrounds, bg.color);
+  const pattern = pickOther(SETTINGS.patterns, bg.pattern);
+  bg = { color, pattern, fill: makePattern(pattern) };
+  // colour the page itself too, so the edges round the canvas (notch, home bar, overscroll) match
+  document.documentElement.style.background = color;
+  document.body.style.background = color;
+  const meta = document.querySelector('meta[name=theme-color]');
+  if (meta) meta.content = color;
+}
+
+function paintBackground(b, alpha) {
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = b.color;
+  ctx.fillRect(0, 0, W, H);
+  if (b.fill) { ctx.fillStyle = b.fill; ctx.fillRect(0, 0, W, H); }
+  ctx.globalAlpha = 1;
+}
+
+function resize() {
+  dpr = Math.min(window.devicePixelRatio || 1, 3);
+  W = window.innerWidth;
+  H = window.innerHeight;
+  canvas.width = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const wasFirst = ball.r === 100 && ball.x === 0;
+  ball.r = Math.min(W, H) * SETTINGS.size / 2;
+  if (wasFirst) {
+    // Start above the screen and drop in.
+    ball.x = W / 2;
+    ball.y = -ball.r - 20;
+    ball.vx = 0; ball.vy = 0;
+  }
+  // Keep the ball on screen if the window shrank.
+  ball.x = Math.min(Math.max(ball.x, ball.r), W - ball.r);
+  ball.y = Math.min(ball.y, H - ball.r * (1 - SETTINGS.maxPress));
+  buildLetters();
+  bg.fill = makePattern(bg.pattern);     // patterns depend on pixel density
+  if (bgPrev) bgPrev.fill = makePattern(bgPrev.pattern);
+}
+
+/* ============================================================
+   Hits: new background, crumble, squash, ripple, a tiny buzz on phones
+   ============================================================ */
+function hit(speed, nx, ny, px, py) {
+  // nx, ny: which way the wall pushes the ball (0,-1 for the floor). px, py: contact point.
+  const now = performance.now();
+  const strength = Math.min(1, speed / 2200);
+  const b = ball;
+  if (speed > 90 && now - lastHit > 60) {
+    lastHit = now;
+    newBackground();
+    ripples.push({ x: px, y: py, t: now, size: b.r * (0.6 + strength) });
+    if (touched && navigator.vibrate) { try { navigator.vibrate(6 + Math.round(strength * 14)); } catch (e) {} }
+    // now and then, a floor hit jumbles the letters that touched the floor
+    const floor = ny < 0;
+    if (floor && speed > 250 && Math.random() < SETTINGS.crumbleChance) {
+      b.hitX = -nx; b.hitY = -ny;
+      b.crumble = Math.max(b.crumble, (0.5 + strength * 0.6) * SETTINGS.crumble);
+      b.crumbleV = 0;
+    }
+  }
+  // squash along the direction of the wall (the floor bends the ball instead, see draw)
+  if (speed < 60 || ny < 0) return;
+  const s = 0.08 + strength * 0.22;
+  if (ny !== 0) { b.squashY = 1 - s; b.squashX = 1 + s; }
+  else          { b.squashX = 1 - s; b.squashY = 1 + s; }
+}
+
+/* ============================================================
+   Physics
+   ============================================================ */
+let last = performance.now();
+function step(now) {
+  let dt = (now - last) / 1000;
+  last = now;
+  if (dt > 1 / 30) dt = 1 / 30;      // tab was hidden; don't let it tunnel through walls
+
+  const b = ball;
+  if (!dragging) {
+    b.vy += SETTINGS.gravity * dt;
+    b.x += b.vx * dt;
+    b.y += b.vy * dt;
+
+    b.onGround = false;
+    // floor: soft. The ball presses in, flattens, and the squeeze pushes it back up.
+    const pen = b.y + b.r - H;
+    if (pen > 0) {
+      if (!b.contact) { b.contact = true; if (b.vy > 0) hit(b.vy, 0, -1, b.x, H); }
+      b.vy += (-SETTINGS.floorSpring * pen - SETTINGS.floorDamping * b.vy) * dt;
+      const deepest = b.r * SETTINGS.maxPress;
+      if (pen > deepest) { b.y = H - b.r + deepest; if (b.vy > 0) b.vy = 0; }
+      b.onGround = true;
+    } else {
+      b.contact = false;
+    }
+    // ceiling
+    if (b.y - b.r < 0) {
+      b.y = b.r;
+      if (b.vy < 0) { hit(-b.vy, 0, 1, b.x, 0); b.vy = -b.vy * SETTINGS.bounce; }
+    }
+    // left wall
+    if (b.x - b.r < 0) {
+      b.x = b.r;
+      if (b.vx < 0) { hit(-b.vx, 1, 0, 0, b.y); b.vx = -b.vx * SETTINGS.bounce; }
+    }
+    // right wall
+    if (b.x + b.r > W) {
+      b.x = W - b.r;
+      if (b.vx > 0) { hit(b.vx, -1, 0, W, b.y); b.vx = -b.vx * SETTINGS.bounce; }
+    }
+
+    if (b.onGround) {
+      b.vx *= Math.pow(SETTINGS.rollFriction, dt * 60);
+      if (Math.abs(b.vx) < 4) b.vx = 0;
+      b.spin = b.vx / b.r;              // roll without sliding
+    } else {
+      b.spin *= Math.pow(0.999, dt * 60);
+    }
+    b.angle += b.spin * dt;
+  }
+
+  // squash springs back
+  b.squashX += (1 - b.squashX) * Math.min(1, dt * 14);
+  b.squashY += (1 - b.squashY) * Math.min(1, dt * 14);
+
+  // the heap springs back into a ring, with a little overshoot
+  const k = 60, damp = 7;
+  b.crumbleV += (-k * b.crumble - damp * b.crumbleV) * dt;
+  b.crumble += b.crumbleV * dt;
+  if (b.crumble < -0.08) { b.crumble = -0.08; b.crumbleV = 0; }
+  if (Math.abs(b.crumble) < 0.002 && Math.abs(b.crumbleV) < 0.01) { b.crumble = 0; b.crumbleV = 0; }
+
+  draw(now);
+  requestAnimationFrame(step);
+}
+
+/* ============================================================
+   Drawing
+   ============================================================ */
+function draw(now) {
+  // background, cross-faded from the previous one
+  const fade = bgPrev ? Math.min(1, (now - bgFadeStart) / 260) : 1;
+  if (bgPrev && fade < 1) {
+    paintBackground(bgPrev, 1);
+    paintBackground(bg, fade);
+  } else {
+    bgPrev = null;
+    paintBackground(bg, 1);
+  }
+
+  // ripples
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const rp = ripples[i];
+    const p = (now - rp.t) / 420;
+    if (p >= 1) { ripples.splice(i, 1); continue; }
+    ctx.beginPath();
+    ctx.arc(rp.x, rp.y, rp.size * (0.2 + p * 0.8), 0, Math.PI * 2);
+    ctx.strokeStyle = SETTINGS.textColor;
+    ctx.globalAlpha = (1 - p) * 0.5;
+    ctx.lineWidth = 2 * (1 - p) + 0.5;
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+  }
+
+  // ball: every letter drawn on its own so the ring can collapse
+  const b = ball;
+  // pressed into the floor, the ball widens a little at the sides
+  const pressed = Math.max(0, (b.y + b.r - H) / b.r);
+  ctx.save();
+  ctx.translate(b.x, b.y);
+  ctx.scale(b.squashX * (1 + pressed * 0.3), b.squashY);
+  ctx.font = fontString;
+  ctx.fillStyle = SETTINGS.textColor;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+
+  const c = b.crumble;
+  // across = sideways along the floor, so the squashed letters spread out
+  const acrossX = -b.hitY, acrossY = b.hitX;
+  const arcCos = Math.cos(SETTINGS.crumbleArc * Math.PI / 180);
+  // where the floor is, in the ball's own coordinates; letters never go below it
+  const floorLocal = (H - b.y) / b.squashY - fontPx * 0.38;
+  const band = fontPx * 1.2;          // over this distance letters turn to lie flat
+  for (const l of letters) {
+    const ang = l.a + b.angle;
+    const dx = Math.sin(ang), dy = -Math.cos(ang);   // which way this letter faces
+    let x = dx * textRadius;
+    let y = dy * textRadius;
+    let rot = ang;
+    if (c !== 0) {
+      // only letters near the spot that touched the floor move; the weight fades out across the arc
+      const facing = dx * b.hitX + dy * b.hitY;
+      let w = (facing - arcCos) / (1 - arcCos);
+      if (w > 0) {
+        w = w * w * (3 - 2 * w);                      // soft edge
+        // where this letter gets pushed: flattened against the floor and spread sideways
+        const toWall = b.r * (0.72 + l.depth * 0.2);
+        const side = dx * acrossX + dy * acrossY;      // how far left or right of the touch spot it sits
+        const hx = b.hitX * toWall + acrossX * (l.spread * 0.6 + side * 0.5) * b.r * 0.9;
+        const hy = b.hitY * toWall + acrossY * (l.spread * 0.6 + side * 0.5) * b.r * 0.9;
+        const m = c * l.pull * w;
+        x += (hx - x) * m;
+        y += (hy - y) * m;
+        rot += l.tilt * Math.max(c, 0) * w;          // tumble only while collapsing
+      }
+    }
+    // the bend: anything that would be below the floor lies flat along it
+    if (y > floorLocal - band) {
+      const t = Math.min(1, (y - (floorLocal - band)) / band);
+      if (y > floorLocal) y = floorLocal;
+      let diff = Math.PI - rot;                       // turn towards lying flat (upside down, like the ring's underside)
+      diff = Math.atan2(Math.sin(diff), Math.cos(diff));
+      rot += diff * t * t;
+    }
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    ctx.fillText(l.ch, 0, 0);
+    ctx.restore();
+  }
+  ctx.restore();
+}
+
+/* ============================================================
+   Dragging and throwing. Pointer events cover mouse, pen and touch.
+   ============================================================ */
+function pointerPos(e) {
+  const rect = canvas.getBoundingClientRect();
+  return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+}
+
+canvas.addEventListener('pointerdown', e => {
+  const p = pointerPos(e);
+  const dx = p.x - ball.x, dy = p.y - ball.y;
+  // a little forgiving: you can grab slightly outside the ball
+  if (dx * dx + dy * dy > (ball.r * 1.15) ** 2) return;
+  e.preventDefault();
+  touched = true;
+  dragging = true;
+  canvas.classList.add('grabbing');
+  try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+  grabDX = ball.x - p.x;
+  grabDY = ball.y - p.y;
+  ball.vx = 0; ball.vy = 0; ball.spin = 0;
+  trail = [{ x: ball.x, y: ball.y, t: performance.now() }];
+});
+
+canvas.addEventListener('pointermove', e => {
+  if (!dragging) return;
+  e.preventDefault();
+  const p = pointerPos(e);
+  const nx = Math.min(Math.max(p.x + grabDX, ball.r), W - ball.r);
+  const ny = Math.min(Math.max(p.y + grabDY, ball.r), H - ball.r * (1 - SETTINGS.maxPress));
+  // the ball rolls a little as you drag it sideways
+  ball.angle += (nx - ball.x) / ball.r * 0.6;
+  ball.x = nx; ball.y = ny;
+  const now = performance.now();
+  trail.push({ x: nx, y: ny, t: now });
+  while (trail.length > 2 && now - trail[0].t > 110) trail.shift();
+});
+
+function release(e) {
+  if (!dragging) return;
+  dragging = false;
+  canvas.classList.remove('grabbing');
+  try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
+
+  const now = performance.now();
+  // Throw speed = how the finger moved over the last ~100 ms.
+  // If the finger was still for a moment before letting go, it's a drop, not a throw.
+  const first = trail[0];
+  const lastP = trail[trail.length - 1];
+  const dtS = Math.max((lastP.t - first.t) / 1000, 0.016);
+  let vx = 0, vy = 0;
+  if (now - lastP.t < 90 && trail.length > 1) {
+    vx = (lastP.x - first.x) / dtS;
+    vy = (lastP.y - first.y) / dtS;
+    const speed = Math.hypot(vx, vy);
+    if (speed > SETTINGS.maxThrow) { vx *= SETTINGS.maxThrow / speed; vy *= SETTINGS.maxThrow / speed; }
+    if (speed > 300) hint.classList.add('gone');
+  }
+  ball.vx = vx; ball.vy = vy;
+  ball.spin = vx / ball.r * 0.8;
+  trail = [];
+}
+canvas.addEventListener('pointerup', release);
+canvas.addEventListener('pointercancel', release);
+canvas.addEventListener('lostpointercapture', release);
+
+// Stop iOS from zooming on a quick double tap on the page.
+document.addEventListener('gesturestart', e => e.preventDefault());
+document.addEventListener('dblclick', e => e.preventDefault());
+
+window.addEventListener('resize', resize);
+window.addEventListener('orientationchange', () => setTimeout(resize, 200));
+document.addEventListener('visibilitychange', () => { last = performance.now(); });
+
+resize();
+requestAnimationFrame(step);
+</script>
+</body>
+</html>
