@@ -90,12 +90,58 @@
   .dock .l { font-size: 9.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
   .dock .sep { width: 1px; margin: 10px 4px; background: rgba(255,255,255,0.35); }
   .dock button.mute { width: 50px; }
+  /* the ball dropper, top centre, only on the band */
+  .dropper {
+    position: fixed;
+    left: 50%;
+    top: calc(12px + env(safe-area-inset-top));
+    transform: translateX(-50%) translateY(-140%);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 5px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.38);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.4);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    transition: transform 0.35s cubic-bezier(.2,.8,.2,1), opacity 0.3s;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    pointer-events: none;
+  }
+  .dropper.show { transform: translateX(-50%) translateY(0); opacity: 1; pointer-events: auto; }
+  .dropper button {
+    appearance: none; border: 0; margin: 0; padding: 0;
+    width: 40px; height: 40px; border-radius: 16px;
+    background: transparent; color: #fff; font-family: inherit; font-size: 20px; font-weight: 700;
+    cursor: pointer; transition: background 0.2s, transform 0.12s;
+  }
+  .dropper button:active { transform: scale(0.92); }
+  .dropper .count { min-width: 28px; text-align: center; font-size: 17px; font-weight: 700; color: #fff; }
+  .dropper .sep { width: 1px; height: 24px; margin: 0 6px; background: rgba(255,255,255,0.35); }
+  .dropper button.drop {
+    width: auto; padding: 0 16px; border-radius: 16px; background: #fff; color: var(--bg);
+    display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .dropper button.drop .arrow { font-size: 18px; line-height: 1; }
   .dock button.mute.off .g { opacity: 0.45; text-decoration: line-through; }
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
 <div id="hint"></div>
+<div class="dropper" id="dropper" aria-label="Ball dropper">
+  <button id="dropMinus" aria-label="Fewer balls">−</button>
+  <span class="count" id="dropCount">1</span>
+  <button id="dropPlus" aria-label="More balls">+</button>
+  <span class="sep"></span>
+  <button class="drop" id="dropGo"><span class="arrow">↓</span>Drop</button>
+</div>
 <nav class="dock" id="dock" aria-label="Toys">
   <button data-toy="ball" class="on"><span class="g">o</span><span class="l">Ball</span></button>
   <button data-toy="spin"><span class="g">@</span><span class="l">Spin</span></button>
@@ -136,8 +182,9 @@ const SETTINGS = {
   spinDrag: 0.22,    // how quickly a spin dies down (higher = sooner)
   wrapCreases: false, // true draws fine crease lines on the bubbles
   // Rubber band
-  bandBalls: 3,      // balls sitting on the band to begin with (tap to add more, up to bandMaxBalls)
-  bandMaxBalls: 12,
+  bandBalls: 3,      // balls dropped onto the band to begin with
+  bandMaxBalls: 12,  // the dropper reuses fallen balls once this many are in play
+  bandDropMax: 6,    // the most the dropper can release in one press
   bandPull: 0.6,     // how far the band can be pulled, as a share of its length
   font: '600 100px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif',
   // On phones (shorter side under 700px) everything is smaller, so the same numbers feel heavy.
@@ -829,7 +876,7 @@ const Band = {
   chars: [], widths: [], textW: 0, fontPx: 0, font: '',
   pts: [], cum: [], total: 0,
   grab: false, t0: 0.5, off: null,
-  balls: [], ballR: 16, nextLetter: 0,
+  balls: [], ballR: 16, nextLetter: 0, pending: 0, dropTimer: 0, dropBottom: 70,
   enter() {
     this.layout();
     this.P = { x: this.R.x, y: this.R.y + Math.min(60, FLOOR * 0.08) };
@@ -837,20 +884,29 @@ const Band = {
     this.Pprev = { x: this.P.x, y: this.P.y };
     this.balls = [];
     this.curve();
-    const n = SETTINGS.bandBalls;
-    for (let i = 0; i < n; i++) {
-      const f = (i + 1) / (n + 1);
-      const q = this.at(this.total * f);
-      this.addBall(q.x, q.y - this.ballR * 1.5);
-    }
-    showHint(this.key, 'pull it and let go · tap to add a ball');
+    this.pending = SETTINGS.bandBalls; this.dropTimer = 0.4;
+    showHint(this.key, 'pull it and let go · the dropper sends balls down');
   },
+  // the dropper: each press releases the chosen number, one after another
+  drop(n) { this.pending += n; if (this.dropTimer <= 0) this.dropTimer = 0.01; },
+  dropOne() {
+    const x = W / 2 + rnd(-10, 10), y = this.dropBottom + this.ballR + 4;
+    // a ball lying on the floor goes back up first; then a new one; then the oldest
+    let b = this.balls.find(q => this.onFloor(q));
+    if (!b && this.balls.length < SETTINGS.bandMaxBalls) { this.addBall(x, y); b = this.balls[this.balls.length - 1]; }
+    if (!b) b = this.balls.shift(), this.balls.push(b);
+    b.x = x; b.y = y; b.vx = rnd(-20, 20); b.vy = 0;
+    Sound.tick(0.6);
+  },
+  onFloor(b) { return b.y >= FLOOR - this.ballR - 2 && Math.abs(b.vy) < 40; },
+  redrop(b) { b.y = this.dropBottom + this.ballR + 4; b.x = W / 2 + rnd(-10, 10); b.vx = rnd(-20, 20); b.vy = 0; Sound.tick(0.6); },
   layout() {
     const pad = Math.max(28, W * 0.09);
     this.A = { x: pad, y: FLOOR * 0.5 };
     this.B = { x: W - pad, y: FLOOR * 0.5 };
-    this.R = { x: (this.A.x + this.B.x) / 2, y: this.A.y };
     this.L0 = this.B.x - this.A.x;
+    // at rest the band sags a little, so balls roll to its middle and stay
+    this.R = { x: (this.A.x + this.B.x) / 2, y: this.A.y + this.L0 * 0.07 };
     // readable letters: as many words of the sentence as fit between the pegs at this size
     this.fontPx = clamp(W * 0.028, 13, 24);
     this.font = fontAt(this.fontPx);
@@ -869,6 +925,8 @@ const Band = {
     this.widths = this.chars.map(ch => ctx.measureText(ch).width);
     this.textW = this.widths.reduce((a, b) => a + b, 0);
     this.ballR = clamp(this.fontPx * 1.1, 14, 26);
+    const dr = dropperEl.getBoundingClientRect();
+    this.dropBottom = dr.height ? (parseFloat(getComputedStyle(dropperEl).top) || 12) + dr.height : 70;
     if (!this.P) { this.P = { x: this.R.x, y: this.R.y }; this.V = { x: 0, y: 0 }; }
     else { this.P.x = clamp(this.P.x, 0, W); this.P.y = clamp(this.P.y, 0, FLOOR); }
     for (const b of this.balls) { b.x = clamp(b.x, this.ballR, W - this.ballR); b.y = Math.min(b.y, FLOOR - this.ballR); }
@@ -919,6 +977,10 @@ const Band = {
     return out;
   },
   step(dt) {
+    if (this.pending > 0) {
+      this.dropTimer -= dt;
+      if (this.dropTimer <= 0) { this.dropOne(); this.pending--; this.dropTimer = 0.14; }
+    }
     if (!this.grab) {
       const k = 170, c = 4.5;
       this.V.x += (-k * (this.P.x - this.R.x) - c * this.V.x) * dt;
@@ -951,19 +1013,24 @@ const Band = {
       let tx = q1.x - q0.x, ty = q1.y - q0.y; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
       let nx = -ty, ny = tx; if (ny > 0) { nx = -nx; ny = -ny; }   // normal pointing up, away from the band
       const d = (b.x - q.x) * nx + (b.y - q.y) * ny;        // how far above the band the centre is
-      if (d < r && d > -r * 1.2) {
+      // touching, or swept through in one frame when the band snaps up fast
+      const crossed = b.lastD !== undefined && b.lastD > 0 && d <= -r * 1.2 && d > -r * 8;
+      const touching = d < r && d > -r * 1.2;
+      b.lastD = d;
+      if (touching || crossed) {
+        if (crossed) b.lastD = r;
         b.x += nx * (r - d); b.y += ny * (r - d);
         const t = bi / n, u = 1 - t;
         const bvx = 4 * u * t * this.Vp.x, bvy = 4 * u * t * this.Vp.y;   // the band's own speed here
         const vn = (b.vx - bvx) * nx + (b.vy - bvy) * ny;
         if (vn < 0) {
-          const e = 0.45;
+          const e = 0.22;                                   // the band catches rather than bounces
           b.vx -= nx * vn * (1 + e); b.vy -= ny * vn * (1 + e);
           if (vn < -250) { Sound.knock(Math.min(1, -vn / 1500)); }
         }
         // rolling along the band loses a little speed
         const vt = b.vx * tx + b.vy * ty;
-        b.vx -= tx * vt * 0.01; b.vy -= ty * vt * 0.01;
+        b.vx -= tx * vt * 0.03; b.vy -= ty * vt * 0.03;
       }
     }
     // balls don't overlap
@@ -1008,8 +1075,9 @@ const Band = {
       this.V = { x: 0, y: 0 };
       return true;
     }
-    // anywhere else: a new ball drops in
-    if (p.y < FLOOR - this.ballR) { this.addBall(clamp(p.x, this.ballR, W - this.ballR), p.y); hideHint(this.key); Sound.knock(0.2); }
+    // a fallen ball: tap it and it goes back to the top
+    const fallen = this.balls.find(b => this.onFloor(b) && Math.hypot(b.x - p.x, b.y - p.y) < this.ballR * 1.6);
+    if (fallen) { this.redrop(fallen); hideHint(this.key); }
     return false;
   },
   move(p) {
@@ -1039,6 +1107,13 @@ const Band = {
 /* ============================================================
    Switching toys, the dock, the sound switch
    ============================================================ */
+const dropperEl = document.getElementById('dropper');
+let dropN = 1;
+function showDropN() { document.getElementById('dropCount').textContent = dropN; }
+document.getElementById('dropMinus').addEventListener('click', () => { dropN = Math.max(1, dropN - 1); showDropN(); });
+document.getElementById('dropPlus').addEventListener('click', () => { dropN = Math.min(SETTINGS.bandDropMax, dropN + 1); showDropN(); });
+document.getElementById('dropGo').addEventListener('click', () => { Sound.init(); touched = true; if (toy === Band) { Band.drop(dropN); hideHint('band'); } });
+showDropN();
 const TOYS = { ball: Ball, spin: Spinner, wrap: Wrap, band: Band };
 let toy = null;
 function setToy(name) {
@@ -1046,6 +1121,8 @@ function setToy(name) {
   toy = TOYS[name];
   canvas.classList.remove('grabbing');
   toy.enter();
+  dropperEl.classList.toggle('show', toy === Band);
+  hintEl.style.top = toy === Band ? 'calc(76px + env(safe-area-inset-top))' : '';   // the hint sits under the dropper
   dock.querySelectorAll('button[data-toy]').forEach(b => b.classList.toggle('on', b.dataset.toy === name));
 }
 dock.querySelectorAll('button[data-toy]').forEach(b => b.addEventListener('click', () => { Sound.init(); setToy(b.dataset.toy); }));
