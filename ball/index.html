@@ -358,12 +358,17 @@ function step(now) {
   b.squashX += (1 - b.squashX) * Math.min(1, dt * 14);
   b.squashY += (1 - b.squashY) * Math.min(1, dt * 14);
 
-  // the heap springs back into a ring, with a little overshoot
-  const k = 60, damp = 7;
-  b.crumbleV += (-k * b.crumble - damp * b.crumbleV) * dt;
-  b.crumble += b.crumbleV * dt;
-  if (b.crumble < -0.08) { b.crumble = -0.08; b.crumbleV = 0; }
-  if (Math.abs(b.crumble) < 0.002 && Math.abs(b.crumbleV) < 0.01) { b.crumble = 0; b.crumbleV = 0; }
+  // the jumble only lives while the ball is on the floor; in the air the ring pulls itself whole at once
+  if (b.contact && !dragging) {
+    const k = 60, damp = 7;
+    b.crumbleV += (-k * b.crumble - damp * b.crumbleV) * dt;
+    b.crumble += b.crumbleV * dt;
+  } else {
+    b.crumble -= b.crumble * Math.min(1, dt * 30);
+    b.crumbleV = 0;
+  }
+  if (b.crumble < 0) { b.crumble = 0; b.crumbleV = 0; }     // never overshoot outwards
+  if (b.crumble < 0.002 && Math.abs(b.crumbleV) < 0.01) { b.crumble = 0; b.crumbleV = 0; }
 
   draw(now);
   requestAnimationFrame(step);
@@ -409,7 +414,8 @@ function draw(now) {
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
 
-  const c = b.crumble;
+  // the jumble fades with how hard the ball is pressed into the floor, so it is exactly zero once airborne
+  const c = b.crumble * Math.min(1, pressed / 0.08);
   // across = sideways along the floor, so the squashed letters spread out
   const acrossX = -b.hitY, acrossY = b.hitX;
   const arcCos = Math.cos(SETTINGS.crumbleArc * Math.PI / 180);
