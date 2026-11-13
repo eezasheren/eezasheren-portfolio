@@ -134,6 +134,7 @@ const SETTINGS = {
   // Spinner: one to five words, one per arm
   spinWords: ['SPIN', 'TOUCH', 'PLAY'],
   spinDrag: 0.22,    // how quickly a spin dies down (higher = sooner)
+  wrapCreases: false, // true draws fine crease lines on the bubbles
   // Rubber band
   bandBalls: 3,      // balls sitting on the band to begin with (tap to add more, up to bandMaxBalls)
   bandMaxBalls: 12,
@@ -228,14 +229,8 @@ const Sound = {
     return this._noise;
   },
   pop() {
-    // a crisp little burst of air, like real bubble wrap
-    if (!this.on || !this.ctx || this.ctx.state !== 'running') return;
-    const c = this.ctx, t = c.currentTime;
-    const src = c.createBufferSource(); src.buffer = this.noise();
-    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = rnd(1300, 3400); f.Q.value = 1.1;
-    const g = c.createGain(); g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
-    src.connect(f).connect(g).connect(c.destination); src.start(t); src.stop(t + 0.08);
-    this.play('sine', rnd(200, 260), 90, 0.05, 0.12);
+    // "Bloop": wet and playful, the pitch rising like a water bubble (Eeza's pick, 14 Nov 2026)
+    this.play('sine', rnd(260, 340), rnd(650, 800), 0.09, 0.35);
   },
   twang(st){ const f = 150 + st * 110; this.play('sawtooth', f * 1.6, f, 0.3, 0.1); this.play('triangle', f * 2.02, f * 1.97, 0.55, 0.07); },
   snap()   { this.play('square', 900, 80, 0.12, 0.18); },
@@ -731,6 +726,7 @@ const Wrap = {
       ctx.save(); ctx.translate(g.x * R, g.y * R); ctx.rotate(g.rot); ctx.scale(1, g.ry / g.rx); ctx.translate(-g.x * R, -g.y * R);
       ctx.fillStyle = grad; ctx.beginPath(); ctx.arc(g.x * R, g.y * R, g.rx * R, 0, TAU); ctx.fill(); ctx.restore();
     }
+    if (!SETTINGS.wrapCreases) return;
     ctx.save();
     ctx.shadowColor = 'rgba(255,255,255,0.9)';
     for (const f of cr.list) {
