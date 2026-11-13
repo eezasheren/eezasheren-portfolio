@@ -131,10 +131,13 @@ const SETTINGS = {
   crumble: 1.0,      // how far the touching letters get pushed in on a floor jumble (0 = off)
   crumbleChance: 0.4, // share of floor hits that jumble the letters
   crumbleArc: 60,    // how much of the ball jumbles, in degrees either side of the spot that touched
-  // Spinner
-  spinDrag: 0.25,    // how quickly a spin dies down (higher = sooner)
+  // Spinner: one to five words, one per arm
+  spinWords: ['SPIN', 'TOUCH', 'PLAY'],
+  spinDrag: 0.22,    // how quickly a spin dies down (higher = sooner)
   // Rubber band
-  bandSnap: 1.8,     // the band snaps when stretched to this many times its length
+  bandBalls: 3,      // balls sitting on the band to begin with (tap to add more, up to bandMaxBalls)
+  bandMaxBalls: 12,
+  bandPull: 0.6,     // how far the band can be pulled, as a share of its length
   font: '600 100px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif',
   // On phones (shorter side under 700px) everything is smaller, so the same numbers feel heavy.
   // These replace the ones above there.
@@ -216,7 +219,24 @@ const Sound = {
   thud(s)  { this.play('sine', 150, 45, 0.18, 0.08 + 0.3 * s); },
   knock(s) { this.play('triangle', 420, 160, 0.08, 0.05 + 0.15 * s); },
   tick(v)  { this.play('square', 2200, 1500, 0.012, 0.015 + 0.05 * v); },
-  pop()    { this.play('sine', rnd(800, 1200), 220, 0.07, 0.22); },
+  noise() {
+    if (!this._noise) {
+      const c = this.ctx, b = c.createBuffer(1, Math.floor(c.sampleRate * 0.15), c.sampleRate), d = b.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      this._noise = b;
+    }
+    return this._noise;
+  },
+  pop() {
+    // a crisp little burst of air, like real bubble wrap
+    if (!this.on || !this.ctx || this.ctx.state !== 'running') return;
+    const c = this.ctx, t = c.currentTime;
+    const src = c.createBufferSource(); src.buffer = this.noise();
+    const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = rnd(1300, 3400); f.Q.value = 1.1;
+    const g = c.createGain(); g.gain.setValueAtTime(0.9, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.05);
+    src.connect(f).connect(g).connect(c.destination); src.start(t); src.stop(t + 0.08);
+    this.play('sine', rnd(200, 260), 90, 0.05, 0.12);
+  },
   twang(st){ const f = 150 + st * 110; this.play('sawtooth', f * 1.6, f, 0.3, 0.1); this.play('triangle', f * 2.02, f * 1.97, 0.55, 0.07); },
   snap()   { this.play('square', 900, 80, 0.12, 0.18); },
   whir()   { this.play('sine', 320, 640, 0.14, 0.05); },
@@ -444,28 +464,41 @@ const Ball = {
 };
 
 /* ============================================================
-   TOY 2: the spinner. The ring, pinned at its centre. Flick it.
+   TOY 2: the spinner. A fidget spinner whose arms are words.
+   Flick it: the words blur into rings of light.
    ============================================================ */
 const Spinner = {
   key: 'spin',
   angle: 0, w: 0, grab: false, lastA: 0, samples: [], tickAcc: 0, lastTick: 0, turns: 0,
-  ring: null, cx: 0, cy: 0, r: 0,
+  cx: 0, cy: 0, r: 0, fontPx: 0, font: '', words: [], hub: 0, gap: 0,
   enter() { this.layout(); this.w = 2.5; showHint(this.key, 'flick it round, hold to brake'); },
   layout() {
     this.r = Math.min(W, FLOOR) * SETTINGS.size / 2;
     this.cx = W / 2; this.cy = FLOOR / 2;
-    this.ring = ringLayout(this.r);
+    this.words = SETTINGS.spinWords.slice(0, 5).map(w => String(w).toUpperCase());
+    this.hub = this.r * 0.17;
+    // the longest word runs from just outside the hub to just inside the rim
+    ctx.font = SETTINGS.font;
+    const widest = Math.max(...this.words.map(w => this.wordWidth(w, 100)));
+    const room = this.r * 0.95 - this.hub * 1.5;
+    this.fontPx = Math.min(room / (widest / 100), this.r * 0.3);
+    this.font = fontAt(this.fontPx);
+    this.gap = this.fontPx * 0.12;
+  },
+  wordWidth(word, px) {
+    ctx.font = fontAt(px);
+    let w = 0;
+    for (const ch of word) w += ctx.measureText(ch).width + px * 0.12;
+    return w - px * 0.12;
   },
   step(dt) {
     if (!this.grab) {
-      // slows like a wheel: a little air drag plus a constant rub
       const sign = Math.sign(this.w);
       let mag = Math.abs(this.w) * Math.exp(-SETTINGS.spinDrag * dt) - 0.5 * dt;
       if (mag < 0) mag = 0;
       this.w = sign * mag;
       this.angle += this.w * dt;
     }
-    // ticks, like a bike wheel
     this.tickAcc += Math.abs(this.w) * dt;
     const stepA = TAU / 16;
     if (this.tickAcc >= stepA) {
@@ -473,35 +506,70 @@ const Spinner = {
       const now = performance.now();
       if (now - this.lastTick > 35) { this.lastTick = now; Sound.tick(Math.min(1, Math.abs(this.w) / 15)); }
     }
-    // every full turn at speed changes the colour
     this.turns += Math.abs(this.w) * dt;
     if (this.turns >= TAU) { this.turns %= TAU; if (Math.abs(this.w) > 3) newBackground(); }
   },
-  drawRing(offset, alpha) {
-    const { letters, textRadius } = this.ring;
+  drawArms(a, alpha) {
     ctx.globalAlpha = alpha;
-    for (const l of letters) {
-      const ang = l.a + this.angle + offset;
+    const n = this.words.length;
+    ctx.font = this.font;
+    ctx.textAlign = 'left';
+    for (let i = 0; i < n; i++) {
       ctx.save();
-      ctx.translate(Math.sin(ang) * textRadius, -Math.cos(ang) * textRadius);
-      ctx.rotate(ang);
-      ctx.fillText(l.ch, 0, 0);
+      ctx.rotate(a + i * TAU / n);
+      let x = this.hub * 1.5;
+      for (const ch of this.words[i]) {
+        ctx.fillText(ch, x, 0);
+        x += ctx.measureText(ch).width + this.gap;
+      }
       ctx.restore();
     }
     ctx.globalAlpha = 1;
   },
   draw() {
-    const { fontPx, font } = this.ring;
     ctx.save();
     ctx.translate(this.cx, this.cy);
-    ctx.font = font; setText();
+    setText();
     const speed = Math.abs(this.w);
-    // at speed the letters streak
-    const ghosts = speed > 5 ? Math.min(4, Math.floor(speed / 5)) : 0;
-    for (let g = ghosts; g >= 1; g--) this.drawRing(-this.w * 0.012 * g, 0.3 / g);
-    this.drawRing(0, 1);
+    const glow = clamp((speed - 2) / 22, 0, 1);
+    // light: rings that brighten with speed
+    if (glow > 0) {
+      ctx.save();
+      ctx.globalCompositeOperation = 'lighter';
+      const disc = ctx.createRadialGradient(0, 0, this.hub, 0, 0, this.r * 1.05);
+      disc.addColorStop(0, `rgba(255,255,255,${0.10 * glow})`);
+      disc.addColorStop(0.55, `rgba(255,255,255,${0.16 * glow})`);
+      disc.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = disc;
+      ctx.beginPath(); ctx.arc(0, 0, this.r * 1.05, 0, TAU); ctx.fill();
+      ctx.shadowColor = 'rgba(255,255,255,0.9)';
+      ctx.shadowBlur = 18 * glow;
+      ctx.lineCap = 'round';
+      const rings = [0.42, 0.66, 0.9];
+      rings.forEach((f, i) => {
+        ctx.beginPath();
+        // broken rings that turn with the spinner, like trails of light
+        const sweep = 1.1 + glow * 2.2;
+        const a0 = this.angle * (1 + i * 0.15);
+        ctx.arc(0, 0, this.r * f, a0, a0 + sweep);
+        ctx.lineWidth = this.fontPx * (0.35 + 0.25 * glow);
+        ctx.strokeStyle = `rgba(255,255,255,${0.08 + 0.22 * glow})`;
+        ctx.stroke();
+      });
+      ctx.restore();
+    }
+    // motion blur: trailing copies of the arms, closer together when slow
+    const ghosts = speed > 3 ? Math.min(10, Math.ceil(speed / 2.5)) : 0;
+    const spread = 0.03 + Math.min(0.09, speed / 400);
+    for (let g = ghosts; g >= 1; g--) this.drawArms(this.angle - Math.sign(this.w) * g * spread, 0.55 / (g + 0.5));
+    this.drawArms(this.angle, 1);
     // the hub
-    ctx.beginPath(); ctx.arc(0, 0, fontPx * 0.3, 0, TAU); ctx.fill();
+    ctx.save();
+    ctx.shadowColor = 'rgba(255,255,255,0.8)'; ctx.shadowBlur = 10 + 20 * glow;
+    ctx.beginPath(); ctx.arc(0, 0, this.hub, 0, TAU); ctx.fill();
+    ctx.restore();
+    ctx.fillStyle = bg.color;
+    ctx.beginPath(); ctx.arc(0, 0, this.hub * 0.42, 0, TAU); ctx.fill();
     ctx.restore();
   },
   down(p) {
@@ -539,17 +607,21 @@ const Spinner = {
 };
 
 /* ============================================================
-   TOY 3: bubble wrap. Every word in its own bubble. Pop them.
+   TOY 3: bubble wrap. Frosted glass bubbles over soft 3D shapes.
    ============================================================ */
 const Wrap = {
   key: 'wrap',
-  words: [], bubbles: [], pieces: [], D: 0, fontPx: 0, font: '', allPoppedAt: 0, pops: 0,
-  enter() { this.layout(); this.inflate(); showHint(this.key, 'pop them'); },
+  bubbles: [], D: 0, allPoppedAt: 0, pops: 0, blobs: [], lo: null, loCtx: null, mid: null, midCtx: null,
+  enter() {
+    this.layout();
+    if (!this.blobs.length) this.makeBlobs();
+    this.inflate();
+    showHint(this.key, 'pop them');
+  },
   layout() {
-    this.words = SETTINGS.text.split(/\s+/).filter(w => w && w !== '·' && w !== '-' && w !== '•');
-    const N = this.words.length;
-    const top = 64, areaH = FLOOR - top - 8;
-    let best = { D: 0, cols: 1 };
+    const N = 20;
+    const top = 60, areaH = FLOOR - top - 8;
+    let best = { D: 0, cols: 1, rows: 1 };
     for (let cols = 2; cols <= 8; cols++) {
       const rows = Math.ceil(N / cols);
       const D = Math.min(W / cols, areaH / rows);
@@ -557,72 +629,108 @@ const Wrap = {
     }
     const cell = best.D;
     this.D = cell * 0.9;
-    ctx.font = SETTINGS.font;
-    const maxW = Math.max(...this.words.map(w => ctx.measureText(w).width));
-    this.fontPx = Math.min(this.D * 0.26, (this.D * 0.74) / (maxW / 100));
-    this.font = fontAt(this.fontPx);
     const gridW = best.cols * cell, gridH = best.rows * cell;
     const ox = (W - gridW) / 2 + cell / 2, oy = top + (areaH - gridH) / 2 + cell / 2;
     const old = this.bubbles.length === N ? this.bubbles : null;
-    this.bubbles = this.words.map((word, i) => ({
-      word, x: ox + (i % best.cols) * cell, y: oy + Math.floor(i / best.cols) * cell,
+    this.bubbles = [];
+    for (let i = 0; i < N; i++) this.bubbles.push({
+      x: ox + (i % best.cols) * cell, y: oy + Math.floor(i / best.cols) * cell,
       popped: old ? old[i].popped : false, born: old ? old[i].born : 0, phase: rnd(0, TAU),
-    }));
+    });
+    // the blurred copy of the scene that shows through the glass
+    this.lo = this.lo || document.createElement('canvas');
+    this.lo.width = Math.max(8, Math.round(W / 10)); this.lo.height = Math.max(8, Math.round(H / 10));
+    this.loCtx = this.lo.getContext('2d');
+    this.mid = this.mid || document.createElement('canvas');
+    this.mid.width = Math.round(W * dpr); this.mid.height = Math.round(H * dpr);
+    this.midCtx = this.mid.getContext('2d');
+  },
+  makeBlobs() {
+    // soft, glossy pebbles that drift slowly behind the glass
+    this.blobs = [];
+    for (let i = 0; i < 7; i++) {
+      this.blobs.push({ x: rnd(0.05, 0.95), y: rnd(0.05, 0.85), rx: rnd(0.12, 0.26), ry: rnd(0.07, 0.16),
+        rot: rnd(0, Math.PI), vx: rnd(-0.012, 0.012), vy: rnd(-0.008, 0.008), vr: rnd(-0.08, 0.08), shade: rnd(0.3, 0.6) });
+    }
+  },
+  drawBlobs(c, scale) {
+    const w = W * scale, h = H * scale, base = Math.min(W, H) * scale;
+    for (const b of this.blobs) {
+      const rx = b.rx * base, ry = b.ry * base;
+      c.save();
+      c.translate(b.x * w, b.y * h);
+      c.rotate(b.rot);
+      const g = c.createRadialGradient(-rx * 0.35, -ry * 0.45, 0, 0, 0, rx);
+      g.addColorStop(0, 'rgba(255,255,255,0.85)');
+      g.addColorStop(0.3, 'rgba(255,255,255,0.35)');
+      g.addColorStop(0.75, `rgba(0,0,0,${b.shade * 0.5})`);
+      g.addColorStop(1, `rgba(0,0,0,${b.shade})`);
+      c.fillStyle = g;
+      c.beginPath(); c.ellipse(0, 0, rx, ry, 0, 0, TAU); c.fill();
+      c.restore();
+    }
   },
   inflate() {
     const now = performance.now();
-    for (const pc of this.pieces) pc.fade = pc.fade || now;
     this.bubbles.forEach((b, i) => { b.popped = false; b.born = now + i * 35; });
     this.allPoppedAt = 0;
   },
   step(dt) {
-    const now = performance.now();
-    const rest = FLOOR - this.fontPx * 0.5;
-    for (let i = this.pieces.length - 1; i >= 0; i--) {
-      const pc = this.pieces[i];
-      if (pc.fade) { if (now - pc.fade > 400) this.pieces.splice(i, 1); continue; }
-      pc.vy += live.gravity * dt;
-      pc.x += pc.vx * dt; pc.y += pc.vy * dt; pc.rot += pc.vr * dt;
-      if (pc.y > rest) {
-        pc.y = rest;
-        if (pc.vy > 60) { pc.vy = -pc.vy * 0.3; pc.vr *= 0.5; } else { pc.vy = 0; pc.vr = 0; pc.vx *= 0.8; }
-      }
-      if (pc.x < 10 || pc.x > W - 10) { pc.vx = -pc.vx * 0.5; pc.x = clamp(pc.x, 10, W - 10); }
+    for (const b of this.blobs) {
+      b.x += b.vx * dt; b.y += b.vy * dt; b.rot += b.vr * dt;
+      if (b.x < -0.1 || b.x > 1.1) b.vx = -b.vx;
+      if (b.y < -0.1 || b.y > 1.0) b.vy = -b.vy;
     }
-    if (this.allPoppedAt && now - this.allPoppedAt > 1500) this.inflate();
+    if (this.allPoppedAt && performance.now() - this.allPoppedAt > 1500) this.inflate();
   },
   draw(now) {
-    ctx.save();
-    ctx.font = this.font; setText();
+    // the sharp scene
+    this.drawBlobs(ctx, 1);
+    // the blurred scene: drawn small, then scaled up (and blurred where the browser can)
+    const lo = this.loCtx, mid = this.midCtx;
+    lo.setTransform(1, 0, 0, 1, 0, 0);
+    lo.fillStyle = bg.color; lo.fillRect(0, 0, this.lo.width, this.lo.height);
+    lo.save(); lo.scale(this.lo.width / W, this.lo.height / H); this.drawBlobs(lo, 1); lo.restore();
+    mid.setTransform(dpr, 0, 0, dpr, 0, 0);
+    mid.imageSmoothingEnabled = true; mid.imageSmoothingQuality = 'high';
+    if ('filter' in mid) mid.filter = 'blur(8px)';
+    mid.drawImage(this.lo, -12, -12, W + 24, H + 24);
+    if ('filter' in mid) mid.filter = 'none';
+
     const R = this.D / 2;
     for (const b of this.bubbles) {
-      if (b.popped) continue;
+      if (b.popped) {
+        // a popped cell lies flat: a faint ring on the sharp scene
+        ctx.beginPath(); ctx.arc(b.x, b.y, R * 0.96, 0, TAU);
+        ctx.fillStyle = 'rgba(0,0,0,0.07)'; ctx.fill();
+        ctx.lineWidth = 1; ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.stroke();
+        continue;
+      }
       const age = (now - b.born) / 380;
       if (age < 0) continue;
       let s;
-      if (age < 1) { const k = 1 - age; s = 1 - k * k * Math.cos(age * 9) * 1.0; s = Math.max(0, s); }
-      else s = 1 + 0.02 * Math.sin(now / 650 + b.phase);
+      if (age < 1) { const k = 1 - age; s = Math.max(0, 1 - k * k * Math.cos(age * 9)); }
+      else s = 1 + 0.015 * Math.sin(now / 700 + b.phase);
       ctx.save();
       ctx.translate(b.x, b.y);
       ctx.scale(s, s);
       ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU);
-      ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fill();
-      ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(255,255,255,0.75)'; ctx.stroke();
-      // a little shine
-      ctx.beginPath(); ctx.arc(-R * 0.35, -R * 0.35, R * 0.18, 0, TAU);
-      ctx.fillStyle = 'rgba(255,255,255,0.35)'; ctx.fill();
-      ctx.fillStyle = SETTINGS.textColor;
-      ctx.fillText(b.word, 0, 0);
-      ctx.restore();
-    }
-    for (const pc of this.pieces) {
       ctx.save();
-      if (pc.fade) ctx.globalAlpha = Math.max(0, 1 - (now - pc.fade) / 400);
-      ctx.translate(pc.x, pc.y); ctx.rotate(pc.rot);
-      ctx.fillText(pc.word, 0, 0);
+      ctx.clip();
+      // frosted: the blurred scene, lightened
+      ctx.drawImage(this.mid, 0, 0, this.mid.width, this.mid.height, -b.x, -b.y, W, H);
+      ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.fillRect(-R, -R, R * 2, R * 2);
+      // depth: light from the top left, a shadow along the bottom edge
+      const hi = ctx.createRadialGradient(-R * 0.4, -R * 0.45, 0, -R * 0.2, -R * 0.2, R * 1.1);
+      hi.addColorStop(0, 'rgba(255,255,255,0.45)'); hi.addColorStop(0.5, 'rgba(255,255,255,0.05)'); hi.addColorStop(1, 'rgba(0,0,0,0.10)');
+      ctx.fillStyle = hi; ctx.fillRect(-R, -R, R * 2, R * 2);
+      ctx.restore();
+      ctx.lineWidth = 1.2; ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.stroke();
+      // a crisp little highlight
+      ctx.beginPath(); ctx.ellipse(-R * 0.38, -R * 0.42, R * 0.2, R * 0.11, -0.7, 0, TAU);
+      ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fill();
       ctx.restore();
     }
-    ctx.restore();
   },
   popAt(p) {
     const R = this.D / 2 * 0.95, now = performance.now();
@@ -630,8 +738,7 @@ const Wrap = {
       if (b.popped || now < b.born + 150) continue;
       if (Math.hypot(p.x - b.x, p.y - b.y) > R) continue;
       b.popped = true;
-      this.pieces.push({ word: b.word, x: b.x, y: b.y, vx: rnd(-160, 160), vy: rnd(-260, -80), rot: 0, vr: rnd(-4, 4) });
-      ripple(b.x, b.y, this.D * 0.9);
+      ripple(b.x, b.y, this.D * 0.8);
       Sound.pop(); buzz(5);
       this.pops++;
       if (this.pops % 3 === 0) newBackground();
@@ -649,21 +756,30 @@ const Wrap = {
 };
 
 /* ============================================================
-   TOY 4: the rubber band. The sentence strung between two pegs.
+   TOY 4: the rubber band. Words strung between two pegs, with
+   balls riding on it. Pull and let go: the balls jump.
    ============================================================ */
 const Band = {
   key: 'band',
-  A: null, B: null, R: null, P: null, V: null, L0: 0,
+  A: null, B: null, R: null, P: null, V: null, Pprev: null, Vp: { x: 0, y: 0 }, L0: 0,
   chars: [], widths: [], textW: 0, fontPx: 0, font: '',
   pts: [], cum: [], total: 0,
   grab: false, t0: 0.5, off: null,
-  broken: false, brokenAt: 0, pieces: [], healAt: 0,
+  balls: [], ballR: 16, nextLetter: 0,
   enter() {
     this.layout();
     this.P = { x: this.R.x, y: this.R.y + Math.min(60, FLOOR * 0.08) };
     this.V = { x: 0, y: 0 };
-    this.broken = false; this.pieces = [];
-    showHint(this.key, 'pull it and let go');
+    this.Pprev = { x: this.P.x, y: this.P.y };
+    this.balls = [];
+    this.curve();
+    const n = SETTINGS.bandBalls;
+    for (let i = 0; i < n; i++) {
+      const f = (i + 1) / (n + 1);
+      const q = this.at(this.total * f);
+      this.addBall(q.x, q.y - this.ballR * 1.5);
+    }
+    showHint(this.key, 'pull it and let go · tap to add a ball');
   },
   layout() {
     const pad = Math.max(28, W * 0.09);
@@ -688,11 +804,18 @@ const Band = {
     this.chars = Array.from(words.join(' '));
     this.widths = this.chars.map(ch => ctx.measureText(ch).width);
     this.textW = this.widths.reduce((a, b) => a + b, 0);
+    this.ballR = clamp(this.fontPx * 1.1, 14, 26);
     if (!this.P) { this.P = { x: this.R.x, y: this.R.y }; this.V = { x: 0, y: 0 }; }
     else { this.P.x = clamp(this.P.x, 0, W); this.P.y = clamp(this.P.y, 0, FLOOR); }
+    for (const b of this.balls) { b.x = clamp(b.x, this.ballR, W - this.ballR); b.y = Math.min(b.y, FLOOR - this.ballR); }
+  },
+  addBall(x, y) {
+    if (this.balls.length >= SETTINGS.bandMaxBalls) return;
+    const letters = Array.from(SETTINGS.text).filter(ch => /\S/.test(ch) && ch !== '·' && ch !== '-' && ch !== '•' && ch !== ',' && ch !== '.');
+    const ch = letters[this.nextLetter++ % letters.length];
+    this.balls.push({ x, y, vx: 0, vy: 0, ch });
   },
   curve() {
-    // a smooth curve through the pull point P, from peg A to peg B
     const A = this.A, B = this.B, P = this.P;
     const C = { x: 2 * P.x - (A.x + B.x) / 2, y: 2 * P.y - (A.y + B.y) / 2 };
     const n = 48;
@@ -707,7 +830,6 @@ const Band = {
     this.total = this.cum[n];
   },
   at(s) {
-    // point and direction at arc length s along the curve
     const cum = this.cum, pts = this.pts;
     let lo = 0, hi = cum.length - 1;
     while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (cum[mid] <= s) lo = mid; else hi = mid; }
@@ -717,7 +839,6 @@ const Band = {
     return { x: a.x + (b.x - a.x) * f, y: a.y + (b.y - a.y) * f, rot: Math.atan2(b.y - a.y, b.x - a.x) };
   },
   letterPositions() {
-    // letters sit centred on the band with their natural spacing, which stretches with it
     this.curve();
     const k = this.total / this.L0;
     const start = (this.total - this.textW * k) / 2;
@@ -734,28 +855,7 @@ const Band = {
     return out;
   },
   step(dt) {
-    const now = performance.now();
-    if (this.broken) {
-      const rest = FLOOR - this.fontPx * 0.5;
-      for (const pc of this.pieces) {
-        if (this.healAt) continue;
-        pc.vy += live.gravity * dt;
-        pc.x += pc.vx * dt; pc.y += pc.vy * dt; pc.rot += pc.vr * dt;
-        if (pc.y > rest) { pc.y = rest; if (pc.vy > 60) { pc.vy = -pc.vy * 0.3; } else { pc.vy = 0; pc.vr = 0; pc.vx *= 0.8; } }
-        pc.x = clamp(pc.x, 6, W - 6);
-      }
-      if (!this.healAt && now - this.brokenAt > 1300) {
-        // string it back up: every letter glides home
-        this.healAt = now;
-        this.P = { x: this.R.x, y: this.R.y }; this.V = { x: 0, y: 0 };
-        const home = this.letterPositions();
-        this.pieces.forEach((pc, i) => { pc.sx = pc.x; pc.sy = pc.y; pc.sr = pc.rot; pc.hx = home[i].x; pc.hy = home[i].y; pc.hr = home[i].rot; });
-      }
-      if (this.healAt && now - this.healAt > 650) {
-        this.broken = false; this.healAt = 0; this.pieces = [];
-        this.V = { x: 0, y: -160 };              // a little wobble on arrival
-      }
-    } else if (!this.grab) {
+    if (!this.grab) {
       const k = 170, c = 4.5;
       this.V.x += (-k * (this.P.x - this.R.x) - c * this.V.x) * dt;
       this.V.y += (-k * (this.P.y - this.R.y) - c * this.V.y) * dt;
@@ -764,50 +864,103 @@ const Band = {
         this.P.x = this.R.x; this.P.y = this.R.y; this.V.x = 0; this.V.y = 0;
       }
     }
+    // how fast the pull point is moving right now (dragged or springing)
+    const sdt = Math.max(dt, 0.001);
+    this.Vp = { x: (this.P.x - this.Pprev.x) / sdt, y: (this.P.y - this.Pprev.y) / sdt };
+    this.Pprev = { x: this.P.x, y: this.P.y };
+    this.curve();
+
+    const r = this.ballR, n = this.pts.length - 1;
+    for (const b of this.balls) {
+      b.vy += live.gravity * dt;
+      b.x += b.vx * dt; b.y += b.vy * dt;
+      // walls and floor
+      if (b.x < r) { b.x = r; b.vx = -b.vx * 0.5; }
+      if (b.x > W - r) { b.x = W - r; b.vx = -b.vx * 0.5; }
+      if (b.y > FLOOR - r) { b.y = FLOOR - r; if (b.vy > 0) b.vy = -b.vy * 0.35; b.vx *= 0.98; if (Math.abs(b.vy) < 30) b.vy = 0; }
+      if (b.y < r) { b.y = r; if (b.vy < 0) b.vy = -b.vy * 0.5; }
+      // the band: find the nearest point of the curve
+      let bi = 0, bd = Infinity;
+      for (let i = 0; i <= n; i++) { const q = this.pts[i]; const d = (q.x - b.x) ** 2 + (q.y - b.y) ** 2; if (d < bd) { bd = d; bi = i; } }
+      if (bi === 0 || bi === n) continue;                 // off the end of the band
+      const q = this.pts[bi], q0 = this.pts[bi - 1], q1 = this.pts[bi + 1];
+      let tx = q1.x - q0.x, ty = q1.y - q0.y; const tl = Math.hypot(tx, ty) || 1; tx /= tl; ty /= tl;
+      let nx = -ty, ny = tx; if (ny > 0) { nx = -nx; ny = -ny; }   // normal pointing up, away from the band
+      const d = (b.x - q.x) * nx + (b.y - q.y) * ny;        // how far above the band the centre is
+      if (d < r && d > -r * 1.2) {
+        b.x += nx * (r - d); b.y += ny * (r - d);
+        const t = bi / n, u = 1 - t;
+        const bvx = 4 * u * t * this.Vp.x, bvy = 4 * u * t * this.Vp.y;   // the band's own speed here
+        const vn = (b.vx - bvx) * nx + (b.vy - bvy) * ny;
+        if (vn < 0) {
+          const e = 0.45;
+          b.vx -= nx * vn * (1 + e); b.vy -= ny * vn * (1 + e);
+          if (vn < -250) { Sound.knock(Math.min(1, -vn / 1500)); }
+        }
+        // rolling along the band loses a little speed
+        const vt = b.vx * tx + b.vy * ty;
+        b.vx -= tx * vt * 0.01; b.vy -= ty * vt * 0.01;
+      }
+    }
+    // balls don't overlap
+    for (let i = 0; i < this.balls.length; i++) for (let j = i + 1; j < this.balls.length; j++) {
+      const a = this.balls[i], c = this.balls[j];
+      const dx = c.x - a.x, dy = c.y - a.y, d = Math.hypot(dx, dy) || 0.001;
+      if (d < r * 2) {
+        const push = (r * 2 - d) / 2, ux = dx / d, uy = dy / d;
+        a.x -= ux * push; a.y -= uy * push; c.x += ux * push; c.y += uy * push;
+        const rv = (c.vx - a.vx) * ux + (c.vy - a.vy) * uy;
+        if (rv < 0) { a.vx += ux * rv * 0.5; a.vy += uy * rv * 0.5; c.vx -= ux * rv * 0.5; c.vy -= uy * rv * 0.5; }
+      }
+    }
   },
-  draw(now) {
+  draw() {
     ctx.save();
     ctx.font = this.font; setText();
-    // the pegs
     for (const peg of [this.A, this.B]) {
       ctx.beginPath(); ctx.arc(peg.x, peg.y, Math.max(3, this.fontPx * 0.18), 0, TAU); ctx.fill();
     }
-    if (this.broken) {
-      let f = 0;
-      if (this.healAt) { f = Math.min(1, (now - this.healAt) / 650); f = 1 - Math.pow(1 - f, 3); }
-      for (const pc of this.pieces) {
-        let x = pc.x, y = pc.y, rot = pc.rot;
-        if (this.healAt) { x = pc.sx + (pc.hx - pc.sx) * f; y = pc.sy + (pc.hy - pc.sy) * f; rot = pc.sr + normAngle(pc.hr - pc.sr) * f; }
-        ctx.save(); ctx.translate(x, y); ctx.rotate(rot); ctx.fillText(pc.ch, 0, 0); ctx.restore();
-      }
-    } else {
-      for (const l of this.letterPositions()) {
-        ctx.save(); ctx.translate(l.x, l.y); ctx.rotate(l.rot); ctx.fillText(l.ch, 0, 0); ctx.restore();
-      }
+    for (const l of this.letterPositions()) {
+      ctx.save(); ctx.translate(l.x, l.y); ctx.rotate(l.rot); ctx.fillText(l.ch, 0, 0); ctx.restore();
+    }
+    // the balls: white, with a letter in the page colour
+    ctx.font = fontAt(this.ballR * 1.15);
+    for (const b of this.balls) {
+      ctx.fillStyle = SETTINGS.textColor;
+      ctx.beginPath(); ctx.arc(b.x, b.y, this.ballR, 0, TAU); ctx.fill();
+      ctx.fillStyle = bg.color;
+      ctx.fillText(b.ch, b.x, b.y + this.ballR * 0.05);
     }
     ctx.restore();
   },
   down(p) {
-    if (this.broken) return false;
     this.curve();
     let best = -1, bd = Infinity;
     this.pts.forEach((q, i) => { const d = Math.hypot(q.x - p.x, q.y - p.y); if (d < bd) { bd = d; best = i; } });
-    if (bd > Math.max(44, this.fontPx * 1.4)) return false;
-    this.grab = true;
-    this.t0 = clamp(best / (this.pts.length - 1), 0.12, 0.88);
-    this.off = { x: this.pts[best].x - p.x, y: this.pts[best].y - p.y };
-    this.V = { x: 0, y: 0 };
-    return true;
+    if (bd <= Math.max(44, this.fontPx * 1.6)) {
+      this.grab = true;
+      this.t0 = clamp(best / (this.pts.length - 1), 0.12, 0.88);
+      this.off = { x: this.pts[best].x - p.x, y: this.pts[best].y - p.y };
+      this.V = { x: 0, y: 0 };
+      return true;
+    }
+    // anywhere else: a new ball drops in
+    if (p.y < FLOOR - this.ballR) { this.addBall(clamp(p.x, this.ballR, W - this.ballR), p.y); hideHint(this.key); Sound.knock(0.2); }
+    return false;
   },
   move(p) {
     if (!this.grab) return;
-    // move the curve so the grabbed spot follows the finger
     const A = this.A, B = this.B, t = this.t0, u = 1 - t;
-    const Q = { x: clamp(p.x + this.off.x, 0, W), y: clamp(p.y + this.off.y, 0, FLOOR) };
+    const Q = { x: p.x + this.off.x, y: p.y + this.off.y };
     const C = { x: (Q.x - u * u * A.x - t * t * B.x) / (2 * u * t), y: (Q.y - u * u * A.y - t * t * B.y) / (2 * u * t) };
-    this.P = { x: (A.x + 2 * C.x + B.x) / 4, y: (A.y + 2 * C.y + B.y) / 4 };
-    this.curve();
-    if (this.total / this.L0 > SETTINGS.bandSnap) this.snap();
+    let px = (A.x + 2 * C.x + B.x) / 4, py = (A.y + 2 * C.y + B.y) / 4;
+    // the band only stretches so far: past that it holds
+    const maxPull = this.L0 * SETTINGS.bandPull;
+    const dx = px - this.R.x, dy = py - this.R.y, d = Math.hypot(dx, dy);
+    if (d > maxPull) { px = this.R.x + dx / d * maxPull; py = this.R.y + dy / d * maxPull; }
+    px = clamp(px, A.x + this.L0 * 0.2, B.x - this.L0 * 0.2);
+    py = clamp(py, 16, FLOOR - 16);
+    this.P = { x: px, y: py };
   },
   up() {
     if (!this.grab) return;
@@ -816,18 +969,6 @@ const Band = {
     const stretch = this.total / this.L0;
     if (stretch > 1.06) { Sound.twang(stretch); buzz(10); newBackground(); hideHint(this.key); }
     this.V = { x: 0, y: 0 };
-  },
-  snap() {
-    this.grab = false;
-    this.broken = true; this.brokenAt = performance.now(); this.healAt = 0;
-    const P = this.P;
-    this.pieces = this.letterPositions().map(l => {
-      const dx = l.x - P.x, dy = l.y - P.y, d = Math.max(1, Math.hypot(dx, dy));
-      const sp = rnd(250, 700);
-      return { ch: l.ch, x: l.x, y: l.y, rot: l.rot, vx: dx / d * sp + rnd(-120, 120), vy: dy / d * sp - 200 + rnd(-120, 120), vr: rnd(-8, 8) };
-    });
-    ripple(P.x, P.y, this.L0 * 0.4);
-    Sound.snap(); buzz(25); newBackground(); hideHint(this.key);
   },
 };
 
