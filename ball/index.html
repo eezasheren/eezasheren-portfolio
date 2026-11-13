@@ -639,11 +639,21 @@ const Wrap = {
     });
     // the blurred copy of the scene that shows through the glass
     this.lo = this.lo || document.createElement('canvas');
-    this.lo.width = Math.max(8, Math.round(W / 10)); this.lo.height = Math.max(8, Math.round(H / 10));
+    this.lo.width = Math.max(8, Math.round(W / 16)); this.lo.height = Math.max(8, Math.round(H / 16));
     this.loCtx = this.lo.getContext('2d');
     this.mid = this.mid || document.createElement('canvas');
     this.mid.width = Math.round(W * dpr); this.mid.height = Math.round(H * dpr);
     this.midCtx = this.mid.getContext('2d');
+  },
+  grain() {
+    // a fine speckle, the texture of frosted glass
+    if (this._grain) return this._grain;
+    const t = document.createElement('canvas'); t.width = t.height = 96;
+    const g = t.getContext('2d'), img = g.createImageData(96, 96), d = img.data;
+    for (let i = 0; i < d.length; i += 4) { const v = 200 + Math.random() * 55; d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = Math.random() * 70; }
+    g.putImageData(img, 0, 0);
+    this._grain = ctx.createPattern(t, 'repeat');
+    return this._grain;
   },
   makeBlobs() {
     // soft, glossy pebbles that drift slowly behind the glass
@@ -693,9 +703,10 @@ const Wrap = {
     lo.save(); lo.scale(this.lo.width / W, this.lo.height / H); this.drawBlobs(lo, 1); lo.restore();
     mid.setTransform(dpr, 0, 0, dpr, 0, 0);
     mid.imageSmoothingEnabled = true; mid.imageSmoothingQuality = 'high';
-    if ('filter' in mid) mid.filter = 'blur(8px)';
-    mid.drawImage(this.lo, -12, -12, W + 24, H + 24);
+    if ('filter' in mid) mid.filter = 'blur(14px)';
+    mid.drawImage(this.lo, -20, -20, W + 40, H + 40);
     if ('filter' in mid) mid.filter = 'none';
+    const grain = this.grain();
 
     const R = this.D / 2;
     for (const b of this.bubbles) {
@@ -714,21 +725,34 @@ const Wrap = {
       ctx.save();
       ctx.translate(b.x, b.y);
       ctx.scale(s, s);
+      // a soft shadow under the bubble, so it sits above the scene
+      ctx.save();
+      ctx.shadowColor = 'rgba(0,0,0,0.28)'; ctx.shadowBlur = R * 0.5; ctx.shadowOffsetY = R * 0.12;
+      ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU); ctx.fillStyle = 'rgba(255,255,255,0.01)'; ctx.fill();
+      ctx.restore();
       ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU);
       ctx.save();
       ctx.clip();
-      // frosted: the blurred scene, lightened
-      ctx.drawImage(this.mid, 0, 0, this.mid.width, this.mid.height, -b.x, -b.y, W, H);
-      ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.fillRect(-R, -R, R * 2, R * 2);
+      // frosted: the blurred scene, slightly magnified like a lens, then milked over
+      const z = 1.14;
+      ctx.drawImage(this.mid, 0, 0, this.mid.width, this.mid.height, -b.x * z, -b.y * z, W * z, H * z);
+      ctx.fillStyle = 'rgba(255,255,255,0.30)'; ctx.fillRect(-R, -R, R * 2, R * 2);
+      // the grain of the frost
+      ctx.save(); ctx.globalAlpha = 0.5; ctx.fillStyle = grain; ctx.translate(-b.x, -b.y); ctx.fillRect(b.x - R, b.y - R, R * 2, R * 2); ctx.restore();
       // depth: light from the top left, a shadow along the bottom edge
-      const hi = ctx.createRadialGradient(-R * 0.4, -R * 0.45, 0, -R * 0.2, -R * 0.2, R * 1.1);
-      hi.addColorStop(0, 'rgba(255,255,255,0.45)'); hi.addColorStop(0.5, 'rgba(255,255,255,0.05)'); hi.addColorStop(1, 'rgba(0,0,0,0.10)');
+      const hi = ctx.createRadialGradient(-R * 0.4, -R * 0.45, 0, -R * 0.15, -R * 0.15, R * 1.15);
+      hi.addColorStop(0, 'rgba(255,255,255,0.55)'); hi.addColorStop(0.45, 'rgba(255,255,255,0.08)'); hi.addColorStop(0.85, 'rgba(0,0,0,0.06)'); hi.addColorStop(1, 'rgba(0,0,0,0.22)');
       ctx.fillStyle = hi; ctx.fillRect(-R, -R, R * 2, R * 2);
+      // the thick edge of the glass: a bright inner ring
+      ctx.beginPath(); ctx.arc(0, 0, R * 0.9, 0, TAU);
+      ctx.lineWidth = R * 0.08; ctx.strokeStyle = 'rgba(255,255,255,0.22)'; ctx.stroke();
       ctx.restore();
-      ctx.lineWidth = 1.2; ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.stroke();
-      // a crisp little highlight
-      ctx.beginPath(); ctx.ellipse(-R * 0.38, -R * 0.42, R * 0.2, R * 0.11, -0.7, 0, TAU);
-      ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.fill();
+      ctx.lineWidth = 1.6; ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.stroke();
+      // crisp highlights: a long one top left, a dot bottom right
+      ctx.beginPath(); ctx.ellipse(-R * 0.36, -R * 0.44, R * 0.24, R * 0.1, -0.75, 0, TAU);
+      ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.fill();
+      ctx.beginPath(); ctx.arc(R * 0.42, R * 0.46, R * 0.06, 0, TAU);
+      ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fill();
       ctx.restore();
     }
   },
