@@ -246,11 +246,30 @@ function paintBackground(now) {
 }
 
 // sound: tiny synthesised blips, no files. Browsers only allow sound after the first tap.
+const SILENT_WAV = 'data:audio/wav;base64,UklGRkQDAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YSADAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgA==';
 const Sound = {
-  ctx: null, on: SETTINGS.sound,
+  ctx: null, on: SETTINGS.sound, unlocked: false,
   init() {
     if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; this.ctx = new AC(); }
     if (this.ctx.state === 'suspended') this.ctx.resume();
+    this.unlock();
+  },
+  unlock() {
+    // iPhones keep Web Audio silent under the ringer switch unless a normal audio element is
+    // also playing, so a silent one loops in the background from the first tap on.
+    if (this.unlocked) return;
+    this.unlocked = true;
+    try {
+      const a = document.createElement('audio');
+      a.setAttribute('playsinline', ''); a.setAttribute('webkit-playsinline', '');
+      a.preload = 'auto'; a.loop = true; a.src = SILENT_WAV;
+      const p = a.play(); if (p && p.catch) p.catch(() => { this.unlocked = false; });
+      this.keepAlive = a;
+    } catch (e) { this.unlocked = false; }
+    // and a silent note through the context itself, which wakes it up on older iPhones
+    if (this.ctx) {
+      try { const b = this.ctx.createBuffer(1, 1, 22050), src = this.ctx.createBufferSource(); src.buffer = b; src.connect(this.ctx.destination); src.start(0); } catch (e) {}
+    }
   },
   play(type, f0, f1, dur, gain) {
     if (!this.on || !this.ctx || this.ctx.state !== 'running') return;
@@ -1162,6 +1181,8 @@ function release(e) {
 canvas.addEventListener('pointerup', release);
 canvas.addEventListener('pointercancel', release);
 canvas.addEventListener('lostpointercapture', release);
+// iPhones only count a finished tap as permission for sound, so listen for those too
+['touchend', 'click', 'keydown'].forEach(t => document.addEventListener(t, () => { touched = true; Sound.init(); }, { passive: true }));
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('dblclick', e => e.preventDefault());
 
