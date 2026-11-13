@@ -74,7 +74,20 @@ const SETTINGS = {
   crumbleChance: 0.4, // share of floor hits that jumble the letters (1 = every floor hit, 0 = never)
   crumbleArc: 60,    // how much of the ball jumbles, in degrees either side of the spot that touched
   font: '600 100px -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif',
+  throwBoost: 1,     // multiplies the flick speed
+  // On phones (shorter side under 700px) everything is smaller, so the same numbers feel heavy.
+  // These replace the ones above there. Raise them for an even livelier ball.
+  phone: {
+    gravity: 3800,
+    floorSpring: 1500,
+    floorDamping: 5.6,
+    bounce: 0.84,
+    maxThrow: 5600,
+    throwBoost: 1.5,
+  },
 };
+// The numbers in play right now: SETTINGS, with the phone ones on top on a small screen.
+let live = SETTINGS;
 
 // Let the text be swapped from the address bar: index.html?text=hello%20world
 const fromUrl = new URLSearchParams(location.search).get('text');
@@ -239,6 +252,7 @@ function resize() {
   dpr = Math.min(window.devicePixelRatio || 1, 3);
   W = window.innerWidth;
   H = window.innerHeight;
+  live = Math.min(W, H) < 700 ? Object.assign({}, SETTINGS, SETTINGS.phone) : SETTINGS;
   canvas.width = Math.round(W * dpr);
   canvas.height = Math.round(H * dpr);
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -298,7 +312,7 @@ function step(now) {
 
   const b = ball;
   if (!dragging) {
-    b.vy += SETTINGS.gravity * dt;
+    b.vy += live.gravity * dt;
     b.x += b.vx * dt;
     b.y += b.vy * dt;
 
@@ -307,7 +321,7 @@ function step(now) {
     const pen = b.y + b.r - H;
     if (pen > 0) {
       if (!b.contact) { b.contact = true; if (b.vy > 0) hit(b.vy, 0, -1, b.x, H); }
-      b.vy += (-SETTINGS.floorSpring * pen - SETTINGS.floorDamping * b.vy) * dt;
+      b.vy += (-live.floorSpring * pen - live.floorDamping * b.vy) * dt;
       const deepest = b.r * SETTINGS.maxPress;
       if (pen > deepest) { b.y = H - b.r + deepest; if (b.vy > 0) b.vy = 0; }
       b.onGround = true;
@@ -317,17 +331,17 @@ function step(now) {
     // ceiling
     if (b.y - b.r < 0) {
       b.y = b.r;
-      if (b.vy < 0) { hit(-b.vy, 0, 1, b.x, 0); b.vy = -b.vy * SETTINGS.bounce; }
+      if (b.vy < 0) { hit(-b.vy, 0, 1, b.x, 0); b.vy = -b.vy * live.bounce; }
     }
     // left wall
     if (b.x - b.r < 0) {
       b.x = b.r;
-      if (b.vx < 0) { hit(-b.vx, 1, 0, 0, b.y); b.vx = -b.vx * SETTINGS.bounce; }
+      if (b.vx < 0) { hit(-b.vx, 1, 0, 0, b.y); b.vx = -b.vx * live.bounce; }
     }
     // right wall
     if (b.x + b.r > W) {
       b.x = W - b.r;
-      if (b.vx > 0) { hit(b.vx, -1, 0, W, b.y); b.vx = -b.vx * SETTINGS.bounce; }
+      if (b.vx > 0) { hit(b.vx, -1, 0, W, b.y); b.vx = -b.vx * live.bounce; }
     }
 
     if (b.onGround) {
@@ -494,10 +508,10 @@ function release(e) {
   const dtS = Math.max((lastP.t - first.t) / 1000, 0.016);
   let vx = 0, vy = 0;
   if (now - lastP.t < 90 && trail.length > 1) {
-    vx = (lastP.x - first.x) / dtS;
-    vy = (lastP.y - first.y) / dtS;
+    vx = (lastP.x - first.x) / dtS * live.throwBoost;
+    vy = (lastP.y - first.y) / dtS * live.throwBoost;
     const speed = Math.hypot(vx, vy);
-    if (speed > SETTINGS.maxThrow) { vx *= SETTINGS.maxThrow / speed; vy *= SETTINGS.maxThrow / speed; }
+    if (speed > live.maxThrow) { vx *= live.maxThrow / speed; vy *= live.maxThrow / speed; }
     if (speed > 300) hint.classList.add('gone');
   }
   ball.vx = vx; ball.vy = vy;
